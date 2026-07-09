@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "analystkit-mcp"
+version = "0.1.0"
+description = "MCP server exposing AnalystKit data-quality tools - read-only, hash-verified findings"
+requires-python = ">=3.12"
+authors = [{ name = "Mohd Saif Hussain" }]
+dependencies = [
+    "analystkit>=2.0",
+    # Pinned per the official MCP Python SDK README (fetched 2026-07-09):
+    # "If your package depends on mcp, add a <2 upper bound to your version
+    # constraint (for example mcp>=1.27,<2) before the stable release lands."
+    # MCP spec 2026-07-28 + SDK v2 bring breaking changes (FastMCP -> MCPServer).
+    # Upgrade path: see MIGRATION.md.
+    "mcp>=1.27,<2",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=9.0", "pytest-asyncio>=0.24", "mypy>=2.0", "ruff>=0.15"]
+
+[project.scripts]
+analystkit-mcp = "analystkit_mcp.server:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+analystkit_mcp = ["py.typed"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "C4", "SIM", "RUF"]
+ignore = ["E501"]
+
+[tool.mypy]
+strict = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
