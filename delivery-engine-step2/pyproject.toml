@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "delivery-engine"
+version = "0.1.0"
+description = "Project patterns as governed, executable workflows"
+requires-python = ">=3.12"
+authors = [{ name = "Mohd Saif Hussain" }]
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=9.0", "mypy>=2.0", "ruff>=0.15"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+delivery_engine = ["py.typed"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "C4", "SIM", "RUF"]
+ignore = ["E501"]
+
+[tool.mypy]
+strict = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
