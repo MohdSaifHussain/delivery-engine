@@ -1,0 +1,19 @@
+{
+  "files": {
+    "README.md": "b21ed1a7d9518e79577299661a059974eb798342245c9f94e83d5ba9992dba46",
+    "audit_log.jsonl": "f33e243e9cb349b3ab0677ea298c83c4d095946f872dc8a8ffbaf1f6214d01bc",
+    "eda_notebook.ipynb": "acbc21566da73bbbd22cef8ebe2830152ca3c8ba66177789524bf4f61e425db3",
+    "findings/dq_dedupe.json": "bfcbaa66577547bc38235011e1b8c2af144ce67e934aca8eab78e4bde39d661a",
+    "findings/dq_profile.json": "5479007e711cf810a95a1588b71bf46057bd5218e77948f623270b7ff5a40804",
+    "findings/dq_validate.json": "8549089450ba2c0ffda099f94d3ab1931eb5a28ca8a10ae23503cf0c649bb112",
+    "narrative_report.md": "76557f649db66a6f587ff593b3eaf191634ea097d56e11d6cbd503f0f969444c",
+    "plan.json": "eeacfadc08e60dc1cf1a18dc6b4ef72553f81128cb48a981f706775997d6fb7e"
+  },
+  "findings": {
+    "dq_dedupe": "c304c11a27d5fb7382e933d1a3fbbd8c35889137dc46ba87d42c3c953f426953",
+    "dq_profile": "9414a98a2edea0b601c6a95070b5dc2ebde647de885080ad97adc7777a3d768b",
+    "dq_validate": "8170ce34b5338b20fdbb7f520ffaf3594c77e4d6fb52040a43f8886655eb094b"
+  },
+  "note": "Verify each file's SHA-256 against this manifest. Matching hashes = unaltered evidence. The audit log records when and why each entry came to exist.",
+  "plan_sha256": "e71bfe7cfaa69b680bded785236a4fd1abcf9b61bb9fbe843fa495c56d0b1407"
+}

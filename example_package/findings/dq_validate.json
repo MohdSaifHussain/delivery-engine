@@ -1,0 +1,46 @@
+{
+  "findings": {
+    "results": [
+      {
+        "column": "customer_id",
+        "detail": "value must be unique",
+        "failures": 0,
+        "rule": "unique",
+        "rule_id": "R01",
+        "sample": []
+      },
+      {
+        "column": "churned",
+        "detail": "value not in the allowed set (2 values)",
+        "failures": 0,
+        "rule": "allowed",
+        "rule_id": "R02",
+        "sample": []
+      },
+      {
+        "column": "tenure_months",
+        "detail": "value outside [0, inf]",
+        "failures": 13,
+        "rule": "range",
+        "rule_id": "R03",
+        "sample": [
+          "-1",
+          "-1",
+          "-1"
+        ]
+      },
+      {
+        "column": "monthly_charge",
+        "detail": "value outside [0, inf]",
+        "failures": 0,
+        "rule": "range",
+        "rule_id": "R04",
+        "sample": []
+      }
+    ],
+    "rules_evaluated": 4,
+    "total_exceptions": 13
+  },
+  "sha256": "8170ce34b5338b20fdbb7f520ffaf3594c77e4d6fb52040a43f8886655eb094b",
+  "stage": "dq_validate"
+}

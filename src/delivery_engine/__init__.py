@@ -1,4 +1,9 @@
 """delivery_engine — project patterns as governed, executable workflows."""
+from delivery_engine.executor import (
+    ExecutionStopped,
+    ExecutorError,
+    run,
+)
 from delivery_engine.planner import (
     ColumnKind,
     DecisionSource,
@@ -26,6 +31,8 @@ __all__ = [
     "AiSlot",
     "ColumnKind",
     "DecisionSource",
+    "ExecutionStopped",
+    "ExecutorError",
     "GateMode",
     "Plan",
     "PlannerAmbiguityError",
@@ -40,4 +47,5 @@ __all__ = [
     "load_playbook",
     "make_plan",
     "render_plan",
+    "run",
 ]

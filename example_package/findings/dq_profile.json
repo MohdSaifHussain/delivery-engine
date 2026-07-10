@@ -1,0 +1,67 @@
+{
+  "findings": {
+    "accuracy_note": "Accuracy is never scored from the dataset alone \u2014 that would be fabrication. Use analystkit_reconcile against an authoritative source.",
+    "columns": [
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 1200,
+        "dtype": "VARCHAR",
+        "name": "customer_id",
+        "nulls": 0,
+        "total": 1200,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 2,
+        "dtype": "VARCHAR",
+        "name": "churned",
+        "nulls": 0,
+        "total": 1200,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 73,
+        "dtype": "BIGINT",
+        "name": "tenure_months",
+        "nulls": 0,
+        "total": 1200,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 1141,
+        "dtype": "DOUBLE",
+        "name": "monthly_charge",
+        "nulls": 0,
+        "total": 1200,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 4,
+        "dtype": "VARCHAR",
+        "name": "plan_type",
+        "nulls": 0,
+        "total": 1200,
+        "valid_ratio": 1.0
+      }
+    ],
+    "dama_scores": {
+      "accuracy": null,
+      "completeness": 1.0,
+      "consistency": 1.0,
+      "timeliness": null,
+      "uniqueness": 1.0,
+      "validity": 1.0
+    }
+  },
+  "sha256": "9414a98a2edea0b601c6a95070b5dc2ebde647de885080ad97adc7777a3d768b",
+  "stage": "dq_profile"
+}

@@ -1,0 +1,75 @@
+{
+  "approved": true,
+  "approved_at_ist": "2026-07-10T10:59:52+05:30",
+  "approved_by": "Saif",
+  "candidates_considered": [
+    "churn_analysis"
+  ],
+  "column_kinds": [
+    [
+      "churned",
+      "binary_target"
+    ],
+    [
+      "churned",
+      "categorical_column"
+    ],
+    [
+      "customer_id",
+      "id_column"
+    ],
+    [
+      "monthly_charge",
+      "numeric_column"
+    ],
+    [
+      "plan_type",
+      "categorical_column"
+    ],
+    [
+      "tenure_months",
+      "numeric_column"
+    ]
+  ],
+  "created_at_ist": "2026-07-10T10:59:52+05:30",
+  "decision_rationale": "only playbook whose requirements the source satisfies",
+  "decision_source": "deterministic",
+  "goal": "churn analysis for the retention team",
+  "plan_sha256": "e71bfe7cfaa69b680bded785236a4fd1abcf9b61bb9fbe843fa495c56d0b1407",
+  "playbook_name": "churn_analysis",
+  "playbook_path": "playbooks/churn_analysis.toml",
+  "playbook_version": "1.0.0",
+  "requirement_results": [
+    [
+      "min_rows >= 100",
+      true,
+      "source has 1,200 rows"
+    ],
+    [
+      "required kind 'binary_target'",
+      true,
+      "found in: churned"
+    ],
+    [
+      "required kind 'id_column'",
+      true,
+      "found in: customer_id"
+    ],
+    [
+      "source type 'csv' accepted",
+      true,
+      "playbook accepts: csv, excel, sqlite, postgres, mysql"
+    ]
+  ],
+  "source": "/tmp/telecom_churn.csv",
+  "stage_ids": [
+    "dq_profile",
+    "dq_validate",
+    "dq_dedupe",
+    "plan_approval",
+    "eda",
+    "report",
+    "readme",
+    "package"
+  ]
+}
