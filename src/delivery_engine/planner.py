@@ -311,7 +311,7 @@ def _llm_resolve(goal: str, candidates: tuple[str, ...]) -> tuple[str, str]:
     )
     text = "".join(
         block.text for block in message.content
-        if getattr(block, "type", "") == "text"
+        if hasattr(block, "text") and isinstance(block.text, str)
     )
     choice, reason = "", ""
     for line in text.splitlines():

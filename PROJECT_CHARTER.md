@@ -1,7 +1,13 @@
 # PROJECT CHARTER — Delivery Engine
 
-**Version:** 0.2
-**Date:** 9 July 2026 (v0.1 founding) · amended 11 July 2026 (v0.2)
+**Version:** 0.3
+**Date:** 9 July 2026 (v0.1 founding) · amended 11 July 2026 (v0.2, v0.3)
+**Amendment record (v0.3):** Build-sequence step 7 recorded as built:
+OpsKit wired into the engine as a kit stage (tool `opskit_run_playbook`,
+schema rule V11, archetype ops_review), with envelope seal verification
+and declared insight-vs-unfitness gate semantics. Section 8's deferred
+list updated: OpsKit engine wiring is done; ops narrative artifacts
+(report/readme built from OpsKit findings) are the named next deferral.
 **Amendment record (v0.2):** Build-sequence steps 5 and 6 recorded as built.
 Section 8's deferred list updated: OpsKit integration has begun via
 opskit-mcp; engine-stage wiring is the explicitly remaining deferred piece.
@@ -219,8 +225,9 @@ archetypes, user-authored playbook validation tooling.
 *(v0.2 status of this list: a second archetype and the rules_draft slot with
 Human Gate 2 landed in step 5. OpsKit integration began in step 6 with
 opskit-mcp, exposing OpsKit v4.1 as the second MCP server with hashed
-envelopes; wiring OpsKit stages into engine playbooks is the explicitly
-remaining deferred piece of that integration. Model training, PPT
+envelopes, and completed its engine wiring in step 7 (the ops_review
+archetype). Ops narrative artifacts built from OpsKit findings are the
+named remaining deferral of that track. Model training, PPT
 generation, feature-engineering agent, dashboard agent, and user-authored
 playbook validation tooling remain deferred.)*
 
@@ -248,8 +255,11 @@ playbook validation tooling remain deferred.)*
 | 5 | rules_draft slot with content-bound Human Gate 2 (approval quotes the draft's SHA-256), second archetype; a genuine AnalystKit bug (BOOLEAN sniffing) found by integration, fixed upstream | 95/95 tests, mypy strict, ruff |
 | 6 | opskit-mcp: OpsKit v4.1 as the second MCP server; four tools, hashed envelopes, stdout isolation per MCP stdio spec, explicit-only config with hashing, source sealed before execution, structured Simpson's refusal, eager metric validation; two loopholes found and fixed with regression tests; live protocol test against the official MCP client | 29/29 tests, mypy strict, ruff |
 
-Step 7 candidate: engine-stage wiring for OpsKit (an ops-review stage kind
-callable from playbooks through opskit-mcp), per the deferred list.
+| 7 | OpsKit engine wiring: `opskit_run_playbook` kit tool with schema rule V11 (`ops_playbook` key), the ops_review archetype, envelope seal verification (schema check, hash recomputation, post-seal shape validation), declared insight-vs-unfitness gate semantics; two loopholes found and fixed with regression tests | 69/69 runnable tests, mypy strict, ruff; full-suite certification on the private repo |
+
+Step 8 candidate: ops narrative artifacts (an AI slot rendering OpsKit
+findings into the report/readme under the injected-numbers rule), per the
+deferred list.
 
 ## 10. Success criteria for v0.1
 

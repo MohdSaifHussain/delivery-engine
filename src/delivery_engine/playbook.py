@@ -39,7 +39,13 @@ KNOWN_KIT_TOOLS: Final[frozenset[str]] = frozenset({
     "analystkit_validate",
     "analystkit_dedupe",
     "analystkit_reconcile",
+    "opskit_run_playbook",
 })
+
+# V11: opskit stages must name which OpsKit playbook to run. OpsKit
+# playbook keys are lowercase with hyphens (e.g. "weekly-review"),
+# distinct from V10's snake_case engine identifiers.
+OPSKIT_PLAYBOOK_RE: Final[re.Pattern[str]] = re.compile(r"^[a-z][a-z0-9-]{0,63}$")
 
 KNOWN_REQUIRED_KINDS: Final[frozenset[str]] = frozenset({
     "binary_target",
@@ -101,6 +107,7 @@ class Stage:
     # kit
     tool: str | None = None
     gate: GateMode | None = None
+    ops_playbook: str | None = None    # opskit_run_playbook stages only (V11)
     # ai
     slot: AiSlot | None = None
     numbers_from: str | None = None
@@ -195,7 +202,7 @@ def _parse_requirements(raw: dict[str, Any]) -> Requirements:
 
 _STAGE_KEYS_COMMON: Final[frozenset[str]] = frozenset({"id", "kind", "needs"})
 _STAGE_KEYS: Final[dict[StageKind, frozenset[str]]] = {
-    StageKind.KIT: _STAGE_KEYS_COMMON | {"tool", "gate"},
+    StageKind.KIT: _STAGE_KEYS_COMMON | {"tool", "gate", "ops_playbook"},
     StageKind.AI: _STAGE_KEYS_COMMON
     | {"slot", "numbers_from", "human_approval", "feeds_deterministic"},
     StageKind.HUMAN_GATE: _STAGE_KEYS_COMMON,
@@ -242,7 +249,31 @@ def _parse_stage(raw: dict[str, Any], index: int) -> Stage:
                 f"{where}: unknown gate '{gate_raw}'. "
                 f"Valid gates: {sorted(g.value for g in GateMode)}. (V8)"
             ) from None
-        return Stage(stage_id=stage_id, kind=kind, needs=needs, tool=tool, gate=gate)
+        ops_playbook = raw.get("ops_playbook")
+        if tool == "opskit_run_playbook":
+            if not isinstance(ops_playbook, str) or not ops_playbook:
+                raise PlaybookError(
+                    f"{where}: tool 'opskit_run_playbook' requires "
+                    f"ops_playbook = '<opskit playbook key>' (e.g. "
+                    f"'weekly-review'). The engine never guesses which "
+                    f"analysis to run. (V11)"
+                )
+            if not OPSKIT_PLAYBOOK_RE.match(ops_playbook):
+                raise PlaybookError(
+                    f"{where}: ops_playbook '{ops_playbook}' is invalid. "
+                    f"OpsKit playbook keys are lowercase letters, digits, "
+                    f"and hyphens, starting with a letter, max 64 chars. (V11)"
+                )
+        elif ops_playbook is not None:
+            raise PlaybookError(
+                f"{where}: ops_playbook is only valid on "
+                f"tool = 'opskit_run_playbook' stages; tool '{tool}' does "
+                f"not accept it. (V11)"
+            )
+        return Stage(
+            stage_id=stage_id, kind=kind, needs=needs, tool=tool, gate=gate,
+            ops_playbook=ops_playbook if tool == "opskit_run_playbook" else None,
+        )
 
     if kind is StageKind.AI:
         slot_raw = _require(raw, "slot", str, where)

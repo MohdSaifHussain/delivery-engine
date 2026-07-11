@@ -23,6 +23,7 @@ constitution fails to load with a clean, numbered error. The rules:
 | V8 | Enum fields only accept declared values | no undefined behavior |
 | V9 | Stage `needs` references only earlier stage ids (no forward/unknown refs) | executable ordering |
 | V10 | Stage ids and playbook names are snake_case ASCII (max 64 chars) | ids become audit references and filenames |
+| V11 | `tool = "opskit_run_playbook"` stages declare `ops_playbook` (lowercase/hyphen key, e.g. `"weekly-review"`); no other tool accepts the key | the engine never guesses which analysis to run |
 
 ## Version choice, sourced
 
@@ -64,6 +65,16 @@ tool = "analystkit_validate"
 gate = "must_pass"
 needs = ["dq_gate"]                   # V9: only earlier ids
 
+[[stages]]                            # step 7: the OpsKit stage
+id = "ops_review"
+kind = "kit"
+tool = "opskit_run_playbook"          # V8: now a declared tool
+ops_playbook = "weekly-review"        # V11: which OpsKit playbook; required
+gate = "must_pass"                    # fails on data unfitness (zero rows);
+                                      # operational criticals (surges,
+                                      # shifts) are evidence, never a stop
+needs = ["dq_gate"]
+
 [[stages]]
 id = "eda"
 kind = "ai"
@@ -95,6 +106,15 @@ artifacts = ["eda_notebook", "readme", "workpaper", "audit_log", "manifest"]
    every error says what is wrong, where, and what the valid options are.
 4. **The engine stays small.** The loader returns frozen dataclasses. The
    executor (build step 4) consumes them. New archetypes are new TOML files.
+
+## Schema evolution note (step 7)
+
+Step 7 added the `opskit_run_playbook` tool and the `ops_playbook` stage key
+as a **backward-compatible extension of schema v1**: every playbook valid
+before step 7 remains valid and means the same thing. New declared values
+and new optional-by-tool keys extend the constitution; they do not break it.
+A change that altered the meaning of an existing playbook would require
+schema_version 2.
 
 ## Out of scope for schema v1 (deferred consciously)
 

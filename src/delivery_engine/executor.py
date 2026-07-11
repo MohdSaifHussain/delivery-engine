@@ -227,6 +227,10 @@ def _run_kit_stage(
     max_exception_rate: float,
     ctx: dict[str, Any],
 ) -> None:
+    if stage.tool == "opskit_run_playbook":
+        _run_opskit_stage(stage, plan, store, audit, out_dir, ctx)
+        return
+
     from analystkit_mcp import tools as kit
 
     try:
@@ -277,6 +281,139 @@ def _run_kit_stage(
     if not passed and stage.gate is GateMode.MUST_PASS:
         audit.write(out_dir / "audit_log.jsonl")
         raise ExecutionStopped(stage.stage_id, reason)
+
+
+def _run_opskit_stage(
+    stage: Stage,
+    plan: Plan,
+    store: FindingsStore,
+    audit: AuditLog,
+    out_dir: Path,
+    ctx: dict[str, Any],
+) -> None:
+    """The OpsKit kit stage (step 7 wiring).
+
+    Same consumption pattern as analystkit stages: the engine imports the
+    MCP wrapper's tool layer directly - the same function an MCP client
+    would hit - and stores the deterministic payload as findings.
+
+    SEAL VERIFICATION (layered defense, charter 4.9): the opskit-mcp
+    envelope carries its own payload_sha256, computed by the wrapper. The
+    engine recomputes it before storing. A mismatch means the payload was
+    altered between the wrapper and the engine - the store verifies the
+    kit's seal rather than trusting it.
+
+    GATE SEMANTICS, declared: OpsKit marks findings CRITICAL for two very
+    different reasons - data unfitness (zero rows) and operational insight
+    (a volume surge, a sustained shift). Unfitness fails must_pass;
+    insight IS the deliverable and is recorded as evidence. A pipeline
+    that stops precisely when it finds something interesting would be a
+    broken control. This deliberately diverges from OpsKit's CLI exit
+    codes (exit 2 on any critical), which are right for CI and wrong for
+    a delivery pipeline.
+    """
+    from opskit_mcp.envelope import sha256_of
+    from opskit_mcp.server import opskit_run_playbook
+
+    assert stage.ops_playbook is not None  # guaranteed by playbook V11
+    try:
+        envelope = opskit_run_playbook(stage.ops_playbook, plan.source)
+    except (ExecutorError, ExecutionStopped):
+        raise
+    except Exception as exc:
+        audit.record(
+            stage.stage_id, f"kit:{stage.tool}", "error", str(exc)[:300]
+        )
+        audit.write(out_dir / "audit_log.jsonl")
+        raise ExecutionStopped(
+            stage.stage_id, f"kit tool failed: {exc}"
+        ) from None
+
+    payload = dict(envelope["payload"])
+    schema = str(envelope.get("schema", ""))
+    if schema != "opskit.envelope/v1":
+        audit.record(
+            stage.stage_id, f"kit:{stage.tool}", "unknown_envelope_schema",
+            f"envelope schema '{schema}' is not the supported "
+            f"'opskit.envelope/v1' - refusing to interpret it",
+        )
+        audit.write(out_dir / "audit_log.jsonl")
+        raise ExecutionStopped(
+            stage.stage_id,
+            f"opskit envelope schema '{schema}' is not supported by this "
+            f"engine version. Fail closed: unknown schemas are never "
+            f"interpreted by guesswork.",
+        )
+    claimed = str(envelope.get("payload_sha256", ""))
+    recomputed = sha256_of(payload)
+    if claimed != recomputed:
+        audit.record(
+            stage.stage_id, f"kit:{stage.tool}", "seal_mismatch",
+            f"envelope claims payload sha256 {claimed[:16]}... but the "
+            f"payload recomputes to {recomputed[:16]}... - the payload "
+            f"was altered between the kit and the engine",
+        )
+        audit.write(out_dir / "audit_log.jsonl")
+        raise ExecutionStopped(
+            stage.stage_id,
+            "opskit envelope seal mismatch: the payload does not hash to "
+            "its claimed sha256. Evidence that cannot verify its own seal "
+            "does not enter the Findings Store.",
+        )
+
+    findings = payload.get("findings")
+    if not isinstance(findings, list) or not all(
+        isinstance(f, dict) for f in findings
+    ):
+        audit.record(
+            stage.stage_id, f"kit:{stage.tool}", "malformed_payload",
+            "payload.findings is not a list of finding objects - the seal "
+            "proves integrity, not shape; refusing malformed content",
+        )
+        audit.write(out_dir / "audit_log.jsonl")
+        raise ExecutionStopped(
+            stage.stage_id,
+            "opskit payload is malformed: findings is not a list of "
+            "finding objects. A correctly sealed payload with the wrong "
+            "shape is still refused.",
+        )
+
+    digest = store.put(stage.stage_id, payload)
+    (out_dir / "findings" / f"{stage.stage_id}.json").write_text(
+        store.to_json(stage.stage_id), encoding="utf-8"
+    )
+
+    unfit = [
+        f for f in findings
+        if f.get("severity") == "CRITICAL" and f.get("step") == "shape"
+    ]
+    insight_criticals = sum(
+        1 for f in findings
+        if f.get("severity") == "CRITICAL" and f.get("step") != "shape"
+    )
+
+    if unfit:
+        reason = (
+            f"opskit '{stage.ops_playbook}' found the source unfit: "
+            f"{unfit[0].get('text', 'shape critical')}"
+        )
+        outcome = "fail" if stage.gate is GateMode.MUST_PASS else "advisory_flag"
+        audit.record(
+            stage.stage_id, f"kit:{stage.tool}", outcome, reason, sha256=digest
+        )
+        if stage.gate is GateMode.MUST_PASS:
+            audit.write(out_dir / "audit_log.jsonl")
+            raise ExecutionStopped(stage.stage_id, reason)
+        return
+
+    audit.record(
+        stage.stage_id, f"kit:{stage.tool}", "pass",
+        f"opskit '{stage.ops_playbook}': {len(findings)} finding(s), "
+        f"{insight_criticals} operational critical(s) recorded as evidence "
+        f"(insight criticals do not stop the pipeline - declared step 7 "
+        f"gate semantics); wrapper seal verified",
+        sha256=digest,
+    )
 
 
 def _evaluate_gate(
