@@ -1,7 +1,13 @@
 # PROJECT CHARTER — Delivery Engine
 
-**Version:** 0.1 (founding document)
-**Date:** 9 July 2026
+**Version:** 0.2
+**Date:** 9 July 2026 (v0.1 founding) · amended 11 July 2026 (v0.2)
+**Amendment record (v0.2):** Build-sequence steps 5 and 6 recorded as built.
+Section 8's deferred list updated: OpsKit integration has begun via
+opskit-mcp; engine-stage wiring is the explicitly remaining deferred piece.
+Section 9 updated with the as-built sequence. Section 4.9 added: the
+layered-defense observation from the step 5 loophole hunt, recorded as
+charter-level evidence that the architecture composes.
 **Owner:** Mohd Saif Hussain — designer, specifier, governor
 **Status:** Approved architecture, pre-build
 **Companion artifact:** delivery-engine-architecture.png (the one-page system diagram)
@@ -125,6 +131,16 @@ A reviewer who was never in the room can re-perform any stage from the
 delivery package alone and get the same hashes. If they can, it is evidence.
 If they cannot, it is just output.
 
+### 4.9 Layered defense, observed (recorded v0.2)
+During the step 5 loophole hunt, a source swapped AFTER Human Gate 2
+approval was caught by the step 4 TOCTOU control (fresh profile compared
+against the plan's classified kinds) at the first gate. A control built for
+one surface covered the next. This is recorded as evidence that the
+architecture composes: gates and seals designed independently protect each
+other's blind spots. Future stages preserve this property by sealing
+declared inputs before execution; the opskit-mcp wrapper applies the same
+ordering, taking the source hash before the engine opens the file.
+
 ## 5. What this is NOT (anti-scope)
 
 - **Not an assignment-submission machine.** Positioning is: "accelerates
@@ -200,6 +216,14 @@ One vertical slice, end to end, every gate real:
 OpsKit integration, feature-engineering agent, dashboard agent, multiple
 archetypes, user-authored playbook validation tooling.
 
+*(v0.2 status of this list: a second archetype and the rules_draft slot with
+Human Gate 2 landed in step 5. OpsKit integration began in step 6 with
+opskit-mcp, exposing OpsKit v4.1 as the second MCP server with hashed
+envelopes; wiring OpsKit stages into engine playbooks is the explicitly
+remaining deferred piece of that integration. Model training, PPT
+generation, feature-engineering agent, dashboard agent, and user-authored
+playbook validation tooling remain deferred.)*
+
 ## 9. Build sequence
 
 1. **MCP wrappers first.** Expose AnalystKit (and later OpsKit) commands as
@@ -212,6 +236,20 @@ archetypes, user-authored playbook validation tooling.
 4. **Thin slice** (Section 8) working end to end with the audit trail.
 5. **Expansion:** one stage or one playbook at a time, each with its own
    tests and its own loophole hunt. Never two half-built stages at once.
+
+**As built (v0.2):**
+
+| Step | Delivered | Gates at completion |
+|---|---|---|
+| 1 | analystkit-mcp: AnalystKit tools via MCP, hashed findings envelope | green |
+| 2 | Playbook schema: constitutional rules V1-V10, churn archetype | green |
+| 3 | Planner: 80/20 deterministic/LLM, Human Gate 1 | green |
+| 4 | Executor: stage contract, Findings Store, audit log, first package | green |
+| 5 | rules_draft slot with content-bound Human Gate 2 (approval quotes the draft's SHA-256), second archetype; a genuine AnalystKit bug (BOOLEAN sniffing) found by integration, fixed upstream | 95/95 tests, mypy strict, ruff |
+| 6 | opskit-mcp: OpsKit v4.1 as the second MCP server; four tools, hashed envelopes, stdout isolation per MCP stdio spec, explicit-only config with hashing, source sealed before execution, structured Simpson's refusal, eager metric validation; two loopholes found and fixed with regression tests; live protocol test against the official MCP client | 29/29 tests, mypy strict, ruff |
+
+Step 7 candidate: engine-stage wiring for OpsKit (an ops-review stage kind
+callable from playbooks through opskit-mcp), per the deferred list.
 
 ## 10. Success criteria for v0.1
 
