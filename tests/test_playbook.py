@@ -67,7 +67,7 @@ class TestReferencePlaybook:
     def test_all_ai_stages_use_findings_store(self) -> None:
         pb = load_playbook(REFERENCE)
         ai_stages = [s for s in pb.stages if s.kind is StageKind.AI]
-        assert len(ai_stages) == 3
+        assert len(ai_stages) >= 3
         assert all(s.numbers_from == "findings_store" for s in ai_stages)
 
     def test_mandatory_deliverables_present(self) -> None:

@@ -73,6 +73,12 @@ class FindingsStore:
     def digests(self) -> dict[str, str]:
         return {sid: d for sid, (_, d) in self._entries.items()}
 
+    def all_entries(self) -> dict[str, tuple[dict[str, Any], str]]:
+        """Returns a copy of all (findings, digest) pairs. Used by the
+        presentation stage to snapshot the full store for script
+        generation without accessing private state."""
+        return dict(self._entries)
+
     def to_json(self, stage_id: str) -> str:
         findings, digest = self._entries[stage_id]
         return json.dumps(

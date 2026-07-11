@@ -1,7 +1,17 @@
 # PROJECT CHARTER — Delivery Engine
 
-**Version:** 0.6
-**Date:** 9 July 2026 (v0.1 founding) · amended 11 July 2026 (v0.2 through v0.6)
+**Version:** 0.7
+**Date:** 9 July 2026 (v0.1 founding) · amended 11 July 2026 (v0.2 through v0.7)
+**Amendment record (v0.7):** Build-sequence step 11 recorded as built:
+the deterministic PPT builder. CONSCIOUS DESIGN DECISION: the slot is
+named PRESENTATION under the AI stage kind, but it generates NO AI
+content. Every number on every slide is a Python literal from the
+Findings Store. The generator script is the auditable artifact; its
+SHA-256 (computed on a path-normalised form) is the integrity seal in
+the audit trail. pptxgenjs embeds a creation timestamp in the OOXML
+package so the binary .pptx bytes legitimately differ across runs, but
+the script hash proves content identity — a tool limitation, not an
+engine failure. Section 11's artifact box is now complete.
 **Amendment record (v0.6):** Build-sequence step 10 recorded as built: the
 deterministic baseline model stage. CONSCIOUS AMENDMENT of the original
 architecture: the diagram placed "Baseline Model" under bounded AI slots
@@ -292,7 +302,10 @@ playbook validation tooling remain deferred.)*
 
 | 10 | Deterministic baseline model stage: StageKind.MODEL + V12, fixed-seed sklearn pipeline per official controlling-randomness guidance, metrics hashed into the store, optional report section, churn archetype v1.1.0, [ml] extra; three loopholes found (null crash, id leakage, silent target pick) - two fixed fail-closed, one fixed as disclosed deterministic selection after the refusal design was rejected as over-engineering | 145/145, mypy strict, ruff |
 
-Step 11 candidate: PPT generation (the last artifact box on the diagram).
+| 11 | Deterministic PPT builder: PRESENTATION slot, pptxgenjs 4.0.1, 7-slide deck (title, overview, profile, validation, ops, baseline, evidence trail), path-normalised script hash as integrity seal; three loopholes found — unused import (ruff fix), f-string leak into JS (clean rewrite), output-path in hash (content-hash sentinel); plus the byte-reproducibility finding recorded honestly as a tool limitation | 156/156, mypy strict, ruff |
+
+Step 12 candidate: resume context is now available (stop and discuss next
+direction with Saif).
 
 Standing archetype-authoring rule (from step 9): a new playbook's
 description is a routing surface. Before adding an archetype, check its

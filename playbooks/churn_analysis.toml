@@ -5,7 +5,7 @@ schema_version = 1
 
 [playbook]
 name = "churn_analysis"
-version = "1.1.0"
+version = "1.2.0"
 description = "Customer churn analysis: DQ-gated EDA, narrative, packaged as re-performable evidence"
 
 [requirements]
@@ -78,9 +78,18 @@ feeds_deterministic = false
 needs = ["report"]
 
 [[stages]]
+id = "presentation"
+kind = "ai"
+slot = "presentation"
+numbers_from = "findings_store"
+human_approval = false
+feeds_deterministic = false
+needs = ["baseline", "report"]
+
+[[stages]]
 id = "package"
 kind = "package"
-needs = ["eda", "report", "readme"]
+needs = ["eda", "report", "readme", "presentation"]
 
 [deliverables]
-artifacts = ["eda_notebook", "narrative_report", "readme", "audit_log", "manifest"]
+artifacts = ["eda_notebook", "narrative_report", "readme", "delivery_package", "audit_log", "manifest"]

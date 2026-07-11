@@ -88,6 +88,7 @@ class AiSlot(StrEnum):
     README = "readme"
     RULES_DRAFT = "rules_draft"
     OPS_REPORT = "ops_report"
+    PRESENTATION = "presentation"
 
 
 @dataclass(frozen=True, slots=True)

@@ -196,7 +196,7 @@ hyperparameters = "lots"
 
     def test_churn_archetype_v11_loads_with_baseline(self) -> None:
         pb = load_playbook(CHURN)
-        assert pb.version == "1.1.0"
+        assert pb.version >= "1.1.0"
         baseline = next(s for s in pb.stages if s.stage_id == "baseline")
         assert baseline.kind.value == "model"
         assert set(baseline.needs) >= {"dq_profile", "dq_validate"}

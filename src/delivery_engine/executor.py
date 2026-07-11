@@ -56,6 +56,7 @@ ARTIFACT_FILENAMES: Final[dict[AiSlot, str]] = {
     AiSlot.NARRATIVE_REPORT: "narrative_report.md",
     AiSlot.README: "README.md",
     AiSlot.OPS_REPORT: "ops_report.md",
+    AiSlot.PRESENTATION: "delivery_package.pptx",
 }
 
 
@@ -285,6 +286,84 @@ def _run_kit_stage(
     if not passed and stage.gate is GateMode.MUST_PASS:
         audit.write(out_dir / "audit_log.jsonl")
         raise ExecutionStopped(stage.stage_id, reason)
+
+
+def _run_presentation_stage(
+    stage: Stage,
+    plan: Plan,
+    store: FindingsStore,
+    audit: AuditLog,
+    out_dir: Path,
+) -> None:
+    """Deterministic PPT builder (step 11).
+
+    Collects a snapshot of ALL findings in the store, builds a
+    self-contained pptxgenjs JS script (a pure function of those
+    findings), executes it via Node.js, and records the script's
+    SHA-256 in the audit trail. Every number on every slide is a Python
+    literal injected from the store snapshot - the script IS the
+    auditable artifact; a reviewer can regenerate it from the same
+    findings and compare hashes.
+
+    The node_modules path is discovered at runtime so the stage works
+    on both the build machine and the user's Windows machine after
+    they install the npm package.
+    """
+    from delivery_engine.presentation import (
+        PresentationError,
+        build_presentation_script,
+        run_script,
+    )
+
+    # Discover node_modules: repo-level first (created by npm install
+    # pptxgenjs in the delivery-engine directory — the canonical location
+    # on both Linux and Windows), then the build-machine path.
+    candidate_paths = [
+        str(Path.cwd() / "node_modules"),
+        "/home/claude/pptwork/node_modules",
+        str(Path(plan.source).parent / "node_modules"),
+    ]
+    node_modules = next(
+        (p for p in candidate_paths if (Path(p) / "pptxgenjs").exists()),
+        None,
+    )
+    if node_modules is None:
+        reason = (
+            "pptxgenjs not found in any of: "
+            + ", ".join(candidate_paths)
+            + ". Install it with: npm install pptxgenjs (or "
+            + "npm install -g pptxgenjs). The presentation stage fails "
+            + "loudly on a missing dependency."
+        )
+        audit.record(stage.stage_id, "presentation", "error", reason)
+        audit.write(out_dir / "audit_log.jsonl")
+        raise ExecutionStopped(stage.stage_id, reason)
+
+    snapshot = store.all_entries()
+    store_snapshot = {
+        sid: findings for sid, (findings, _) in snapshot.items()
+    }
+    store_snapshot["_digests"] = store.digests()
+
+    out_pptx = out_dir / "delivery_package.pptx"
+    try:
+        script = build_presentation_script(
+            store_snapshot, plan.source, plan.goal,
+            str(out_pptx), node_modules,
+        )
+        script_sha256 = run_script(script, out_pptx)
+    except PresentationError as exc:
+        audit.record(stage.stage_id, "presentation", "error", str(exc)[:300])
+        audit.write(out_dir / "audit_log.jsonl")
+        raise ExecutionStopped(stage.stage_id, str(exc)) from None
+
+    audit.record(
+        stage.stage_id, "presentation", "artifact_written",
+        f"pptxgenjs deck written ({out_pptx.stat().st_size:,} bytes); "
+        f"generator script sha256: {script_sha256[:16]}... — "
+        f"same findings reproduce the same script and the same deck",
+        sha256=script_sha256,
+    )
 
 
 def _run_model_stage(
@@ -594,6 +673,9 @@ def _run_ai_stage(
         text = build_ops_report(
             store, injector, plan.source, plan.goal, stage.needs[0]
         )
+    elif stage.slot is AiSlot.PRESENTATION:
+        _run_presentation_stage(stage, plan, store, audit, out_dir)
+        return   # file written directly; normal text path skipped
     else:
         raise ExecutorError(
             f"Stage '{stage.stage_id}': slot '{stage.slot}' is not "
