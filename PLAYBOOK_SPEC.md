@@ -24,6 +24,7 @@ constitution fails to load with a clean, numbered error. The rules:
 | V9 | Stage `needs` references only earlier stage ids (no forward/unknown refs) | executable ordering |
 | V10 | Stage ids and playbook names are snake_case ASCII (max 64 chars) | ids become audit references and filenames |
 | V11 | `tool = "opskit_run_playbook"` stages declare `ops_playbook` (lowercase/hyphen key, e.g. `"weekly-review"`); no other tool accepts the key | the engine never guesses which analysis to run |
+| V12 | `kind = "model"` stages declare a `gate` and non-empty `needs` — a baseline never trains before the deterministic profile gate | 4.2 gates before anything |
 
 ## Version choice, sourced
 
@@ -53,7 +54,7 @@ source_types = ["csv", "excel", "sqlite", "postgres", "mysql"]  # optional
 
 [[stages]]                            # ordered; executed top to bottom
 id = "dq_gate"                        # V1: unique
-kind = "kit"                          # V8: kit | ai | human_gate | package
+kind = "kit"                          # V8: kit | ai | model | human_gate | package
 tool = "analystkit_profile"           # kit stages: which MCP tool
 gate = "must_pass"                    # V8: must_pass | advisory
                                       # V2: first stage must be kit+must_pass
@@ -107,11 +108,14 @@ artifacts = ["eda_notebook", "readme", "workpaper", "audit_log", "manifest"]
 4. **The engine stays small.** The loader returns frozen dataclasses. The
    executor (build step 4) consumes them. New archetypes are new TOML files.
 
-## Schema evolution note (steps 7-8)
+## Schema evolution note (steps 7-10)
 
 Step 7 added the `opskit_run_playbook` tool and the `ops_playbook` stage key;
 step 8 added the `ops_report` AI slot (its `needs` first entry names the
-OpsKit findings stage it renders - declared inputs, never guessed). Both are
+OpsKit findings stage it renders - declared inputs, never guessed); step 10
+added the `model` stage kind (deterministic fixed-seed baseline; target and
+features come from the plan's classified columns; metric values never gate,
+training feasibility does). All are
 **backward-compatible extensions of schema v1**: every playbook valid
 before step 7 remains valid and means the same thing. New declared values
 and new optional-by-tool keys extend the constitution; they do not break it.

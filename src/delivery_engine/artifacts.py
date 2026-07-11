@@ -185,12 +185,33 @@ def build_narrative_report(
                 f"{inj.inject(r['failures'], '{:,}')} exception(s). "
                 f"Sample: {', '.join('`' + str(s) + '`' for s in r['sample'][:2])}"
             )
+    baseline = store.digests().get("baseline")
+    if baseline is not None:
+        m = store.get("baseline")["metrics"]
+        lines += [
+            "",
+            "## Baseline model (deterministic reference point)",
+            "",
+            f"A fixed-seed logistic regression baseline on target "
+            f"`{store.get('baseline')['target']}` "
+            f"(stratified {inj.inject(store.get('baseline')['n_train'], '{:,}')}/"
+            f"{inj.inject(store.get('baseline')['n_test'], '{:,}')} split): "
+            f"accuracy {inj.inject(m['accuracy'])}, "
+            f"precision {inj.inject(m['precision'])}, "
+            f"recall {inj.inject(m['recall'])}, "
+            f"f1 {inj.inject(m['f1'])}, "
+            f"roc_auc {inj.inject(m['roc_auc'])}. "
+            "This is a reference point for human modeling work, not a "
+            "delivered model.",
+        ]
     lines += [
         "",
         "## Evidence trail",
         "",
         f"- dq_profile findings: `{store.digest('dq_profile')}`",
         f"- dq_validate findings: `{store.digest('dq_validate')}`",
+        *([f"- baseline findings: `{store.digest('baseline')}`"]
+          if store.digests().get("baseline") else []),
         "",
         "Re-run the same commands on the same source: matching hashes "
         "prove the findings; a mismatch proves the data changed.",

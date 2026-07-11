@@ -206,6 +206,8 @@ def run(
                 stage, plan, store, injector, audit, out_dir, playbook,
                 approvals, ctx,
             )
+        elif stage.kind is StageKind.MODEL:
+            _run_model_stage(stage, plan, store, audit, out_dir)
         elif stage.kind is StageKind.PACKAGE:
             audit.record(
                 stage.stage_id, "package", "sealed",
@@ -283,6 +285,86 @@ def _run_kit_stage(
     if not passed and stage.gate is GateMode.MUST_PASS:
         audit.write(out_dir / "audit_log.jsonl")
         raise ExecutionStopped(stage.stage_id, reason)
+
+
+def _run_model_stage(
+    stage: Stage,
+    plan: Plan,
+    store: FindingsStore,
+    audit: AuditLog,
+    out_dir: Path,
+) -> None:
+    """The deterministic baseline model stage (step 10).
+
+    The stage decides nothing: target and features come from the plan's
+    classified column kinds - the same classification the human approved
+    at Human Gate 1. Training is fixed-seed and fully deterministic
+    (delivery_engine.model docstring cites the scikit-learn
+    controlling-randomness guidance). Metrics land in the Findings Store
+    hashed; AI stages may narrate them, never compute them.
+
+    Gate semantics: must_pass fails when a valid baseline CANNOT be
+    trained (missing dependency, wrong class count, plan/source drift,
+    too-small minority class). Metric VALUES never gate - the engine
+    holds no opinion on how good a baseline should be; that judgment is
+    explicitly the human's (charter section 5).
+    """
+    from delivery_engine.model import ModelError, train_baseline
+
+    kinds = list(plan.column_kinds)
+    targets = [c for c, k in kinds if k == "binary_target"]
+    if not targets:
+        reason = (
+            "plan carries no binary_target column - the baseline model "
+            "stage requires one (the playbook's requirements should have "
+            "demanded required_kinds = ['binary_target'])"
+        )
+        audit.record(stage.stage_id, "model:baseline", "fail", reason)
+        audit.write(out_dir / "audit_log.jsonl")
+        raise ExecutionStopped(stage.stage_id, reason)
+    # Disclosed deterministic selection: the first binary_target in plan
+    # column order - the same order the human saw and approved at Human
+    # Gate 1. All candidates and the rule are recorded in the hashed
+    # findings and the audit entry; the report names the target. Not a
+    # silent guess, not a refusal (a yes/no flag column is ordinary data,
+    # and refusing on it would make the archetype unusable).
+    target = targets[0]
+    id_cols = {c for c, k in kinds if k == "id_column"}
+    numeric = [c for c, k in kinds
+               if k == "numeric_column" and c != target and c not in id_cols]
+    categorical = [c for c, k in kinds
+                   if k == "categorical_column" and c != target
+                   and c not in id_cols]
+
+    try:
+        findings = train_baseline(plan.source, target, numeric, categorical)
+        findings["target_candidates"] = sorted(set(targets))
+        findings["target_selection"] = (
+            "first binary_target in plan column order (plan approved at "
+            "Human Gate 1); candidates listed under target_candidates"
+        )
+    except ModelError as exc:
+        outcome = "fail" if stage.gate is GateMode.MUST_PASS else "advisory_flag"
+        audit.record(stage.stage_id, "model:baseline", outcome, str(exc)[:300])
+        audit.write(out_dir / "audit_log.jsonl")
+        if stage.gate is GateMode.MUST_PASS:
+            raise ExecutionStopped(stage.stage_id, str(exc)) from None
+        return
+
+    digest = store.put(stage.stage_id, findings)
+    (out_dir / "findings" / f"{stage.stage_id}.json").write_text(
+        store.to_json(stage.stage_id), encoding="utf-8"
+    )
+    audit.record(
+        stage.stage_id, "model:baseline", "pass",
+        f"deterministic baseline trained on target '{target}' (selected "
+        f"as first binary candidate of {sorted(set(targets))}) "
+        f"(seed {findings['random_seed']}, stratified "
+        f"{findings['n_train']}/{findings['n_test']} split); metrics "
+        f"stored hashed - metric values never gate, training feasibility "
+        f"does (declared step 10 semantics)",
+        sha256=digest,
+    )
 
 
 def _run_opskit_stage(

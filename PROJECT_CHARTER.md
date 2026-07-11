@@ -1,7 +1,20 @@
 # PROJECT CHARTER — Delivery Engine
 
-**Version:** 0.5
-**Date:** 9 July 2026 (v0.1 founding) · amended 11 July 2026 (v0.2, v0.3, v0.4, v0.5)
+**Version:** 0.6
+**Date:** 9 July 2026 (v0.1 founding) · amended 11 July 2026 (v0.2 through v0.6)
+**Amendment record (v0.6):** Build-sequence step 10 recorded as built: the
+deterministic baseline model stage. CONSCIOUS AMENDMENT of the original
+architecture: the diagram placed "Baseline Model" under bounded AI slots
+("code generated, run deterministically"); v1 goes further - NO code is
+generated. Training a baseline over planner-classified columns is a
+deterministic problem wearing an AI costume (the 4.6 lesson, applied
+again), and the strongest sandbox is executing no generated code at all.
+Section 11's sandboxing question is answered by deferral: custom
+AI-authored training code, if ever needed, arrives behind Human Gate 2.
+Declared stage semantics: metric values never gate; training feasibility
+does. Target selection is disclosed deterministic (first binary candidate
+in the plan order approved at Human Gate 1, all candidates recorded in
+hashed findings).
 **Amendment record (v0.5):** Build-sequence step 9 recorded as built: the
 transaction_monitoring_review archetype, the first playbook composing the
 full system (both kits, Human Gate 2, dual narratives) with ZERO engine
@@ -277,8 +290,9 @@ playbook validation tooling remain deferred.)*
 
 | 9 | transaction_monitoring_review archetype: both kits + Human Gate 2 + dual narratives composed in one playbook, zero engine changes; lexical routing collision found during build, fixed in the archetype description, pinned with regression tests | 127/127, mypy strict, ruff |
 
-Step 10 candidates: the model-training stage (sandboxing question,
-section 11) or PPT generation.
+| 10 | Deterministic baseline model stage: StageKind.MODEL + V12, fixed-seed sklearn pipeline per official controlling-randomness guidance, metrics hashed into the store, optional report section, churn archetype v1.1.0, [ml] extra; three loopholes found (null crash, id leakage, silent target pick) - two fixed fail-closed, one fixed as disclosed deterministic selection after the refusal design was rejected as over-engineering | 145/145, mypy strict, ruff |
+
+Step 11 candidate: PPT generation (the last artifact box on the diagram).
 
 Standing archetype-authoring rule (from step 9): a new playbook's
 description is a routing surface. Before adding an archetype, check its

@@ -5,7 +5,7 @@ schema_version = 1
 
 [playbook]
 name = "churn_analysis"
-version = "1.0.0"
+version = "1.1.0"
 description = "Customer churn analysis: DQ-gated EDA, narrative, packaged as re-performable evidence"
 
 [requirements]
@@ -40,6 +40,15 @@ id = "plan_approval"
 kind = "human_gate"
 needs = ["dq_profile", "dq_validate"]
 
+# ── The deterministic baseline (v1.1, step 10): fixed-seed logistic
+# regression on the plan's classified target and features. Metric values
+# never gate; training feasibility does. ──
+[[stages]]
+id = "baseline"
+kind = "model"
+gate = "must_pass"
+needs = ["dq_profile", "dq_validate", "plan_approval"]
+
 # ── AI stages: prose and structure only; every number injected ──
 [[stages]]
 id = "eda"
@@ -57,7 +66,7 @@ slot = "narrative_report"
 numbers_from = "findings_store"
 human_approval = false
 feeds_deterministic = false
-needs = ["eda"]
+needs = ["eda", "baseline"]
 
 [[stages]]
 id = "readme"

@@ -13,6 +13,7 @@ dependencies = ["analystkit>=2.0"]
 [project.optional-dependencies]
 dev = ["pytest>=9.0", "mypy>=2.0", "ruff>=0.15"]
 ai = ["anthropic>=0.40"]
+ml = ["scikit-learn>=1.5"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

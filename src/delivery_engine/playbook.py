@@ -72,6 +72,7 @@ class PlaybookError(Exception):
 class StageKind(StrEnum):
     KIT = "kit"
     AI = "ai"
+    MODEL = "model"
     HUMAN_GATE = "human_gate"
     PACKAGE = "package"
 
@@ -206,6 +207,7 @@ _STAGE_KEYS: Final[dict[StageKind, frozenset[str]]] = {
     StageKind.KIT: _STAGE_KEYS_COMMON | {"tool", "gate", "ops_playbook"},
     StageKind.AI: _STAGE_KEYS_COMMON
     | {"slot", "numbers_from", "human_approval", "feeds_deterministic"},
+    StageKind.MODEL: _STAGE_KEYS_COMMON | {"gate"},
     StageKind.HUMAN_GATE: _STAGE_KEYS_COMMON,
     StageKind.PACKAGE: _STAGE_KEYS_COMMON,
 }
@@ -308,6 +310,23 @@ def _parse_stage(raw: dict[str, Any], index: int) -> Stage:
             numbers_from=numbers_from, human_approval=human_approval,
             feeds_deterministic=feeds_deterministic,
         )
+
+    if kind is StageKind.MODEL:
+        gate_raw = _require(raw, "gate", str, where)
+        try:
+            gate = GateMode(gate_raw)
+        except ValueError:
+            raise PlaybookError(
+                f"{where}: unknown gate '{gate_raw}'. "
+                f"Valid gates: {sorted(g.value for g in GateMode)}. (V8)"
+            ) from None
+        if not needs:
+            raise PlaybookError(
+                f"{where}: model stages must declare needs - a baseline "
+                f"never trains before at least the deterministic profile "
+                f"gate has passed. (V12)"
+            )
+        return Stage(stage_id=stage_id, kind=kind, needs=needs, gate=gate)
 
     return Stage(stage_id=stage_id, kind=kind, needs=needs)
 
