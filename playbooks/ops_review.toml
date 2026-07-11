@@ -1,17 +1,17 @@
-# ops_review - the third archetype (Delivery Engine v0.3, build step 7)
+# ops_review - the third archetype (Delivery Engine v0.3/v0.4, steps 7-8)
 # Operational review of time-series data: AnalystKit gates fitness,
 # OpsKit runs the weekly-review playbook through opskit-mcp, findings
 # land sealed in the store, packaged as re-performable evidence.
 #
-# Deliberately artifact-light: ops narrative artifacts (report/readme
-# built from opskit findings) are the next step's build, not this one's.
-# One stage at a time (charter section 9).
+# v1.1 (step 8): the ops_report AI stage renders the findings into a
+# narrative under the injected-numbers rule - finding texts injected
+# verbatim from the hashed store, provenance proven before emission.
 
 schema_version = 1
 
 [playbook]
 name = "ops_review"
-version = "1.0.0"
+version = "1.1.0"
 description = "Operational review of incidents, transactions, tickets, or any time-series extract: volume trends, drivers, drill-down evidence, packaged"
 
 [requirements]
@@ -34,9 +34,18 @@ gate = "must_pass"
 needs = ["dq_profile"]
 
 [[stages]]
-id = "package"
-kind = "package"
+id = "report"
+kind = "ai"
+slot = "ops_report"
+numbers_from = "findings_store"
+human_approval = false
+feeds_deterministic = false
 needs = ["ops_review"]
 
+[[stages]]
+id = "package"
+kind = "package"
+needs = ["ops_review", "report"]
+
 [deliverables]
-artifacts = ["ops_findings", "audit_log", "manifest"]
+artifacts = ["ops_findings", "ops_report", "audit_log", "manifest"]

@@ -1,7 +1,13 @@
 # PROJECT CHARTER — Delivery Engine
 
-**Version:** 0.3
-**Date:** 9 July 2026 (v0.1 founding) · amended 11 July 2026 (v0.2, v0.3)
+**Version:** 0.4
+**Date:** 9 July 2026 (v0.1 founding) · amended 11 July 2026 (v0.2, v0.3, v0.4)
+**Amendment record (v0.4):** Build-sequence step 8 recorded as built: the
+ops_report AI slot renders OpsKit findings into a narrative under the
+injected-numbers rule. The rule was extended, not weakened: the injector
+gained inject_from_findings, which proves a quoted string exists verbatim
+inside the stage's hashed findings before registering its numeric tokens -
+provenance by construction. Section 8's deferred list updated accordingly.
 **Amendment record (v0.3):** Build-sequence step 7 recorded as built:
 OpsKit wired into the engine as a kit stage (tool `opskit_run_playbook`,
 schema rule V11, archetype ops_review), with envelope seal verification
@@ -225,9 +231,11 @@ archetypes, user-authored playbook validation tooling.
 *(v0.2 status of this list: a second archetype and the rules_draft slot with
 Human Gate 2 landed in step 5. OpsKit integration began in step 6 with
 opskit-mcp, exposing OpsKit v4.1 as the second MCP server with hashed
-envelopes, and completed its engine wiring in step 7 (the ops_review
-archetype). Ops narrative artifacts built from OpsKit findings are the
-named remaining deferral of that track. Model training, PPT
+envelopes, completed its engine wiring in step 7 (the ops_review
+archetype), and gained narrative artifacts in step 8 (the ops_report
+slot). The OpsKit integration track is complete; opskit_drill engine
+wiring remains available as a future enhancement when an artifact
+consumes its structured output. Model training, PPT
 generation, feature-engineering agent, dashboard agent, and user-authored
 playbook validation tooling remain deferred.)*
 
@@ -257,9 +265,10 @@ playbook validation tooling remain deferred.)*
 
 | 7 | OpsKit engine wiring: `opskit_run_playbook` kit tool with schema rule V11 (`ops_playbook` key), the ops_review archetype, envelope seal verification (schema check, hash recomputation, post-seal shape validation), declared insight-vs-unfitness gate semantics; two loopholes found and fixed with regression tests | 69/69 runnable tests, mypy strict, ruff; full-suite certification on the private repo |
 
-Step 8 candidate: ops narrative artifacts (an AI slot rendering OpsKit
-findings into the report/readme under the injected-numbers rule), per the
-deferred list.
+| 8 | ops_report AI slot: OpsKit findings rendered under the injected-numbers rule via inject_from_findings (verbatim provenance proven before token registration); ops_review archetype to v1.1.0; two loopholes found and fixed with regression tests | 119/119, mypy strict, ruff |
+
+Step 9 candidates, in charter order: multiple-archetype expansion, the
+model-training stage (sandboxing question, section 11), or PPT generation.
 
 ## 10. Success criteria for v0.1
 

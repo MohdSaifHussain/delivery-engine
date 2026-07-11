@@ -112,9 +112,50 @@ class NumberInjector:
             return "n/a"
         return self.inject(round(ratio * 100, 1), "{}") + "%"
 
+    def inject_from_findings(self, stage_id: str, text: str) -> str:
+        """Verbatim injection of a string that lives INSIDE stored findings.
+
+        OpsKit-style findings carry numbers inside prose ('rose 140%
+        (35 -> 84)'). Those numbers come from the hashed Findings Store -
+        exactly what charter 4.1 demands - but inject() cannot emit them
+        one by one. This method registers a whole store-sourced string:
+        it first PROVES the exact text exists as a string value inside the
+        stage's stored findings, then records every numeric token in it.
+
+        Provenance is enforced by construction, not by builder
+        discipline: text that is not verbatim store content raises
+        StoreError, and any number a builder writes itself still fails
+        verify_artifact_numbers.
+        """
+        findings = self._store.get(stage_id)
+        if text not in _iter_strings(findings):
+            raise StoreError(
+                f"inject_from_findings: the text is not a verbatim string "
+                f"value inside the findings of stage '{stage_id}'. Only "
+                f"exact store content may be injected this way. "
+                f"(Charter 4.1)"
+            )
+        for token in _NUMBER_RE.findall(text):
+            self._emitted.add(token)
+        return text
+
     @property
     def emitted(self) -> frozenset[str]:
         return frozenset(self._emitted)
+
+
+def _iter_strings(obj: Any) -> set[str]:
+    """Every string value reachable inside a findings structure."""
+    out: set[str] = set()
+    if isinstance(obj, str):
+        out.add(obj)
+    elif isinstance(obj, dict):
+        for v in obj.values():
+            out |= _iter_strings(v)
+    elif isinstance(obj, (list, tuple)):
+        for v in obj:
+            out |= _iter_strings(v)
+    return out
 
 
 # Numeric tokens: integers, decimals, thousands-separated. Deliberately

@@ -79,7 +79,7 @@ needs = ["dq_gate"]
 id = "eda"
 kind = "ai"
 slot = "eda_notebook"                 # V8: eda_notebook | narrative_report |
-                                      #     readme | rules_draft
+                                      #     readme | rules_draft | ops_report
 numbers_from = "findings_store"       # V3: mandatory, only accepted value
 human_approval = false
 feeds_deterministic = false           # V4: if true, human_approval must be true
@@ -107,10 +107,12 @@ artifacts = ["eda_notebook", "readme", "workpaper", "audit_log", "manifest"]
 4. **The engine stays small.** The loader returns frozen dataclasses. The
    executor (build step 4) consumes them. New archetypes are new TOML files.
 
-## Schema evolution note (step 7)
+## Schema evolution note (steps 7-8)
 
-Step 7 added the `opskit_run_playbook` tool and the `ops_playbook` stage key
-as a **backward-compatible extension of schema v1**: every playbook valid
+Step 7 added the `opskit_run_playbook` tool and the `ops_playbook` stage key;
+step 8 added the `ops_report` AI slot (its `needs` first entry names the
+OpsKit findings stage it renders - declared inputs, never guessed). Both are
+**backward-compatible extensions of schema v1**: every playbook valid
 before step 7 remains valid and means the same thing. New declared values
 and new optional-by-tool keys extend the constitution; they do not break it.
 A change that altered the meaning of an existing playbook would require

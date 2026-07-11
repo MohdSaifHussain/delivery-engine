@@ -25,9 +25,9 @@ import json
 import uuid
 from typing import Any
 
-from delivery_engine.store import FindingsStore, NumberInjector
+from delivery_engine.store import FindingsStore, NumberInjector, StoreError
 
-__all__ = ["build_eda_notebook", "build_narrative_report", "build_readme"]
+__all__ = ["build_eda_notebook", "build_narrative_report", "build_ops_report", "build_readme"]
 
 
 def _md_cell(source: str) -> dict[str, Any]:
@@ -226,6 +226,107 @@ def _optional_llm_narrative(
         return narrate_findings(findings)
     except Exception:
         return None
+
+
+def build_ops_report(
+    store: FindingsStore, inj: NumberInjector, source: str, goal: str,
+    findings_stage: str,
+) -> str:
+    """The operational review report, markdown. Deterministic template;
+    OpsKit finding texts injected VERBATIM via inject_from_findings -
+    every number in them is store content, proven before emission.
+    Numbers the template itself derives (counts) go through inject().
+    Optional LLM paragraph appended LABELED when available."""
+    payload = store.get(findings_stage)
+    findings_raw = payload.get("findings")
+    if not isinstance(findings_raw, list) or not all(
+        isinstance(f, dict) and "severity" in f and "text" in f
+        for f in findings_raw
+    ):
+        raise StoreError(
+            f"build_ops_report: stage '{findings_stage}' does not hold "
+            f"OpsKit-shaped findings (a list of objects with severity and "
+            f"text). The report stage's needs must name the OpsKit stage "
+            f"it renders."
+        )
+    findings: list[dict[str, Any]] = findings_raw
+    by_sev: dict[str, list[dict[str, Any]]] = {"CRITICAL": [], "NOTABLE": [], "INFO": []}
+    for rec in findings:
+        sev = str(rec.get("severity"))
+        if sev not in by_sev:
+            raise StoreError(
+                f"build_ops_report: unknown severity '{sev}' in stage "
+                f"'{findings_stage}' findings. Known: CRITICAL, NOTABLE, "
+                f"INFO. Fail closed: a finding must never silently "
+                f"disappear from the narrative."
+            )
+        by_sev[sev].append(rec)
+
+    lines = [
+        "# Operational Review Report",
+        "",
+        f"**Goal:** {goal}",
+        f"**Source:** `{source}`",
+        f"**OpsKit playbook:** `{payload.get('playbook', 'unknown')}`",
+        f"**Gate verdict:** {payload.get('gate', 'unknown')}",
+        "",
+        "Every finding below was computed deterministically by OpsKit and "
+        "is quoted verbatim from the hashed Findings Store. The AI wrote "
+        "structure and prose only.",
+        "",
+        "## What the engine assumed about this source",
+        "",
+    ]
+    for a in payload.get("assumptions", []):
+        lines.append(f"- {inj.inject_from_findings(findings_stage, a)}")
+    lines += [
+        "",
+        "## Findings",
+        "",
+        f"{inj.inject(len(findings))} finding(s): "
+        f"{inj.inject(len(by_sev['CRITICAL']))} critical, "
+        f"{inj.inject(len(by_sev['NOTABLE']))} notable, "
+        f"{inj.inject(len(by_sev['INFO']))} informational. Operational "
+        "criticals are insights recorded as evidence; they did not stop "
+        "the pipeline (declared gate semantics).",
+        "",
+    ]
+    for sev in ("CRITICAL", "NOTABLE", "INFO"):
+        if not by_sev[sev]:
+            continue
+        lines.append(f"### {sev.title()}")
+        lines.append("")
+        for rec in by_sev[sev]:
+            text = str(rec.get("text", ""))
+            lines.append(
+                f"- **{rec.get('step', '?')}**: "
+                f"{inj.inject_from_findings(findings_stage, text)}"
+            )
+        lines.append("")
+    lines += [
+        "## Evidence trail",
+        "",
+        f"- {findings_stage} findings: `{store.digest(findings_stage)}`",
+        f"- source sha256: `{payload.get('source_sha256', 'unknown')}`",
+        "",
+        "Re-run the same OpsKit playbook on the same source: matching "
+        "hashes prove the findings; a mismatch proves the data changed.",
+    ]
+
+    llm_paragraph = _optional_llm_narrative(payload)
+    if llm_paragraph is not None:
+        narrative, digest = llm_paragraph
+        lines += [
+            "",
+            "---",
+            "",
+            "**AI-GENERATED NARRATIVE** - verify against the findings "
+            f"above (input sha256: `{digest[:16]}...`). The AI saw only "
+            "the findings JSON; it ran no queries and computed no numbers.",
+            "",
+            narrative,
+        ]
+    return "\n".join(lines) + "\n"
 
 
 def build_readme(

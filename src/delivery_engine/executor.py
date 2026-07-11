@@ -34,6 +34,7 @@ from typing import Any, Final
 from delivery_engine.artifacts import (
     build_eda_notebook,
     build_narrative_report,
+    build_ops_report,
     build_readme,
 )
 from delivery_engine.audit import AuditLog, write_manifest
@@ -54,6 +55,7 @@ ARTIFACT_FILENAMES: Final[dict[AiSlot, str]] = {
     AiSlot.EDA_NOTEBOOK: "eda_notebook.ipynb",
     AiSlot.NARRATIVE_REPORT: "narrative_report.md",
     AiSlot.README: "README.md",
+    AiSlot.OPS_REPORT: "ops_report.md",
 }
 
 
@@ -497,6 +499,18 @@ def _run_ai_stage(
     elif stage.slot is AiSlot.README:
         text = build_readme(
             store, injector, plan.source, plan.goal, playbook.artifacts
+        )
+    elif stage.slot is AiSlot.OPS_REPORT:
+        # Declared inputs (stage contract 4.7): the first entry in needs
+        # names the stage whose findings this report renders.
+        if not stage.needs:
+            raise ExecutorError(
+                f"Stage '{stage.stage_id}': slot 'ops_report' requires "
+                f"needs to name the OpsKit findings stage it renders - "
+                f"declared inputs, never guessed."
+            )
+        text = build_ops_report(
+            store, injector, plan.source, plan.goal, stage.needs[0]
         )
     else:
         raise ExecutorError(
