@@ -179,7 +179,13 @@ class TestInjectedNumbers:
         )
         import re
 
-        for token in re.findall(r"\d+\.\d+|\d{1,3}(?:,\d{3})+|\d+", report):
+        # Independent claims-surface: backticked spans are references
+        # (paths, ids, hashes), not claims - deliberately re-implemented
+        # here rather than importing the engine's extract_claims, so this
+        # check stays independent of the code it audits.
+        claims = re.sub(r"`[^`]*`", " ", report)
+
+        for token in re.findall(r"\d+\.\d+|\d{1,3}(?:,\d{3})+|\d+", claims):
             plain = token.replace(",", "")
             assert (
                 plain in findings_text.replace(",", "")

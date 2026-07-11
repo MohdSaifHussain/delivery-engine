@@ -1,0 +1,66 @@
+{
+  "findings": {
+    "results": [
+      {
+        "column": "invoice_id",
+        "detail": "value must not be null",
+        "failures": 0,
+        "rule": "not_null",
+        "rule_id": "R01",
+        "sample": []
+      },
+      {
+        "column": "invoice_id",
+        "detail": "value must be unique",
+        "failures": 0,
+        "rule": "unique",
+        "rule_id": "R02",
+        "sample": []
+      },
+      {
+        "column": "vendor",
+        "detail": "value must not be null",
+        "failures": 0,
+        "rule": "not_null",
+        "rule_id": "R03",
+        "sample": []
+      },
+      {
+        "column": "amount",
+        "detail": "value must not be null",
+        "failures": 0,
+        "rule": "not_null",
+        "rule_id": "R04",
+        "sample": []
+      },
+      {
+        "column": "amount",
+        "detail": "value must be unique",
+        "failures": 0,
+        "rule": "unique",
+        "rule_id": "R05",
+        "sample": []
+      },
+      {
+        "column": "issued_at",
+        "detail": "value must not be null",
+        "failures": 0,
+        "rule": "not_null",
+        "rule_id": "R06",
+        "sample": []
+      },
+      {
+        "column": "issued_at",
+        "detail": "timestamp is in the future",
+        "failures": 0,
+        "rule": "not_future",
+        "rule_id": "R07",
+        "sample": []
+      }
+    ],
+    "rules_evaluated": 7,
+    "total_exceptions": 0
+  },
+  "sha256": "212073bf5f6c5f3141c0d8d8c3582fc783034448b2424c77f0dd242422dbd015",
+  "stage": "dq_validate"
+}

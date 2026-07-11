@@ -39,6 +39,7 @@ from delivery_engine.artifacts import (
 from delivery_engine.audit import AuditLog, write_manifest
 from delivery_engine.planner import Plan
 from delivery_engine.playbook import AiSlot, GateMode, Playbook, Stage, StageKind
+from delivery_engine.rules_draft import draft_digest, draft_rules
 from delivery_engine.store import (
     FindingsStore,
     NumberInjector,
@@ -74,14 +75,19 @@ def run(
     playbook: Playbook,
     rules: list[dict[str, Any]],
     out_dir: Path,
-    approvals: dict[str, str] | None = None,
+    approvals: dict[str, str | dict[str, str]] | None = None,
     max_exception_rate: float = MAX_EXCEPTION_RATE,
 ) -> Path:
     """Executes an approved plan against its playbook. Returns out_dir.
 
-    approvals: {stage_id: approver_name} for human_gate stages. A
-    human_gate without an entry stops the pipeline - gates cannot be
-    bypassed by omission.
+    approvals:
+      - human_gate stages: {stage_id: approver_name}
+      - AI stages with human_approval=true (e.g. rules_draft):
+        {stage_id: {"approver": name, "sha256": draft_digest}} - the
+        approval is CONTENT-BOUND: it names the exact draft reviewed.
+        The two-phase flow: run once, the pipeline stops at the gate
+        and writes the draft with its hash; review; re-run supplying
+        the hash. A mismatched hash is a different draft and is refused.
     """
     audit = AuditLog()
     approvals = approvals or {}
@@ -99,7 +105,9 @@ def run(
             "approval. Re-approve via approve_plan. (Charter 4.4)"
         )
     valid_gates = {
-        s.stage_id for s in playbook.stages if s.kind is StageKind.HUMAN_GATE
+        s.stage_id for s in playbook.stages
+        if s.kind is StageKind.HUMAN_GATE
+        or (s.kind is StageKind.AI and s.human_approval)
     }
     stray = set(approvals) - valid_gates
     if stray:
@@ -127,10 +135,23 @@ def run(
             "changed after the plan was approved - re-plan and re-approve."
         )
     has_validate = any(s.tool == "analystkit_validate" for s in playbook.stages)
-    if has_validate and not rules:
+    has_rules_draft = any(
+        s.kind is StageKind.AI and s.slot is AiSlot.RULES_DRAFT
+        for s in playbook.stages
+    )
+    if has_validate and not rules and not has_rules_draft:
         raise ExecutorError(
             "This playbook includes analystkit_validate but no rules were "
-            "provided. Declare expectations before running."
+            "provided and it has no rules_draft stage. Declare expectations "
+            "before running."
+        )
+    if has_rules_draft and rules:
+        raise ExecutorError(
+            "Two sources of rules: this playbook drafts rules for Human "
+            "Gate 2 approval, AND explicit rules were supplied. Silent "
+            "precedence would make one of them decorative - refusing. "
+            "Either pass no rules (the approved draft runs) or use a "
+            "playbook without a rules_draft stage."
         )
 
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -160,7 +181,8 @@ def run(
                 max_exception_rate, ctx,
             )
         elif stage.kind is StageKind.HUMAN_GATE:
-            approver = approvals.get(stage.stage_id)
+            raw = approvals.get(stage.stage_id)
+            approver = raw if isinstance(raw, str) else None
             if not approver:
                 audit.record(
                     stage.stage_id, "human_gate", "stopped",
@@ -178,7 +200,10 @@ def run(
                 f"approved by {approver}",
             )
         elif stage.kind is StageKind.AI:
-            _run_ai_stage(stage, plan, store, injector, audit, out_dir, playbook)
+            _run_ai_stage(
+                stage, plan, store, injector, audit, out_dir, playbook,
+                approvals, ctx,
+            )
         elif stage.kind is StageKind.PACKAGE:
             audit.record(
                 stage.stage_id, "package", "sealed",
@@ -208,7 +233,15 @@ def _run_kit_stage(
         if stage.tool == "analystkit_profile":
             envelope = json.loads(kit.tool_profile(plan.source, None))
         elif stage.tool == "analystkit_validate":
-            envelope = json.loads(kit.tool_validate(plan.source, None, rules))
+            effective_rules = rules or ctx.get("approved_drafted_rules", [])
+            if not effective_rules:
+                raise ExecutorError(
+                    f"Stage '{stage.stage_id}': no rules available - the "
+                    f"rules_draft stage did not run or was not approved."
+                )
+            envelope = json.loads(
+                kit.tool_validate(plan.source, None, effective_rules)
+            )
         elif stage.tool == "analystkit_dedupe":
             envelope = json.loads(kit.tool_dedupe(plan.source, None, None))
         else:
@@ -313,8 +346,13 @@ def _run_ai_stage(
     audit: AuditLog,
     out_dir: Path,
     playbook: Playbook,
+    approvals: dict[str, str | dict[str, str]],
+    ctx: dict[str, Any],
 ) -> None:
     assert stage.slot is not None  # guaranteed by playbook validation (V8)
+    if stage.slot is AiSlot.RULES_DRAFT:
+        _run_rules_draft_stage(stage, store, audit, out_dir, approvals, ctx)
+        return
     if stage.slot is AiSlot.EDA_NOTEBOOK:
         text = build_eda_notebook(store, injector, plan.source)
     elif stage.slot is AiSlot.NARRATIVE_REPORT:
@@ -326,8 +364,7 @@ def _run_ai_stage(
     else:
         raise ExecutorError(
             f"Stage '{stage.stage_id}': slot '{stage.slot}' is not "
-            f"executable in v0.1 (rules_draft arrives with Human Gate 2 "
-            f"wiring in a later step)."
+            f"executable in this version."
         )
 
     # The injected-numbers rule, verified before the artifact may exist
@@ -345,4 +382,98 @@ def _run_ai_stage(
         f"{filename} built from findings store only; injected-numbers "
         f"rule verified against {len(injector.emitted)} emitted tokens",
         sha256=file_sha256(path),
+    )
+
+
+def _run_rules_draft_stage(
+    stage: Stage,
+    store: FindingsStore,
+    audit: AuditLog,
+    out_dir: Path,
+    approvals: dict[str, str | dict[str, str]],
+    ctx: dict[str, Any],
+) -> None:
+    """Human Gate 2, content-bound (charter 4.4).
+
+    Phase 1 (no approval): draft, write rules_draft.json with its hash,
+    stop the pipeline. Phase 2 (approval quoting the hash): verify the
+    hash matches THIS draft, record who approved what, hand the rules to
+    the deterministic layer via the run context.
+    """
+    profile_stage = stage.needs[0] if stage.needs else "dq_profile"
+    rules, rationales = draft_rules(store.get(profile_stage))
+    if not rules:
+        audit.write(out_dir / "audit_log.jsonl")
+        raise ExecutionStopped(
+            stage.stage_id,
+            "the profile justified no draftable rules - declare rules "
+            "explicitly instead of running the rules_draft archetype",
+        )
+    digest = draft_digest(rules)
+
+    draft_doc = {
+        "stage": stage.stage_id,
+        "drafted_from": profile_stage,
+        "rules": rules,
+        "rationales": rationales,
+        "sha256": digest,
+        "how_to_approve": (
+            "Review every rule and rationale. To approve, re-run with "
+            f'approvals={{"{stage.stage_id}": {{"approver": "<your name>", '
+            f'"sha256": "{digest}"}}}}. The hash binds the approval to '
+            "exactly this draft."
+        ),
+    }
+    (out_dir / "rules_draft.json").write_text(
+        json.dumps(draft_doc, indent=2, sort_keys=True), encoding="utf-8"
+    )
+
+    raw = approvals.get(stage.stage_id)
+    if raw is None:
+        audit.record(
+            stage.stage_id, "ai:rules_draft", "awaiting_human_gate_2",
+            f"{len(rules)} rule(s) drafted with rationales; draft written "
+            f"to rules_draft.json; approval must quote sha256 {digest[:16]}...",
+            sha256=digest,
+        )
+        audit.write(out_dir / "audit_log.jsonl")
+        raise ExecutionStopped(
+            stage.stage_id,
+            "Human Gate 2: engine-drafted rules await content-bound "
+            "approval. Review rules_draft.json and re-run quoting its "
+            "sha256. (Charter 4.4)",
+        )
+    if (
+        not isinstance(raw, dict)
+        or not str(raw.get("approver", "")).strip()
+        or "sha256" not in raw
+    ):
+        audit.write(out_dir / "audit_log.jsonl")
+        raise ExecutionStopped(
+            stage.stage_id,
+            "Human Gate 2 approval for a feeds_deterministic stage must be "
+            'content-bound: {"approver": name, "sha256": draft_hash}.',
+        )
+    if raw["sha256"] != digest:
+        audit.record(
+            stage.stage_id, "ai:rules_draft", "approval_hash_mismatch",
+            f"approval quotes {raw['sha256'][:16]}... but this draft is "
+            f"{digest[:16]}... - a different draft was reviewed",
+            sha256=digest,
+        )
+        audit.write(out_dir / "audit_log.jsonl")
+        raise ExecutionStopped(
+            stage.stage_id,
+            "Human Gate 2: approval hash does not match this draft. What "
+            "was reviewed is not what would run - refusing. Re-review "
+            "rules_draft.json and approve its current sha256.",
+        )
+
+    ctx["approved_drafted_rules"] = rules
+    audit.record(
+        stage.stage_id, "ai:rules_draft", "approved",
+        f"{len(rules)} drafted rule(s) approved by {raw['approver']} - "
+        f"content-bound to sha256 {digest[:16]}...; handed to the "
+        f"deterministic layer",
+        sha256=digest,
     )

@@ -1,0 +1,45 @@
+{
+  "drafted_from": "dq_profile",
+  "how_to_approve": "Review every rule and rationale. To approve, re-run with approvals={\"rules\": {\"approver\": \"<your name>\", \"sha256\": \"3bc2b42b5515f2a04e7df453c9462caa807d19264fa29fae79ecd8520a45da9a\"}}. The hash binds the approval to exactly this draft.",
+  "rationales": [
+    "'invoice_id' has zero nulls across 300 rows - the profile suggests completeness is an expectation, so future nulls should be exceptions.",
+    "'invoice_id' is distinct on 300 of 300 rows (ratio >= 0.999) - it behaves as an identifier, so duplicates should be exceptions.",
+    "'vendor' has zero nulls across 300 rows - the profile suggests completeness is an expectation, so future nulls should be exceptions.",
+    "'amount' has zero nulls across 300 rows - the profile suggests completeness is an expectation, so future nulls should be exceptions.",
+    "'amount' is distinct on 300 of 300 rows (ratio >= 0.999) - it behaves as an identifier, so duplicates should be exceptions.",
+    "'issued_at' has zero nulls across 300 rows - the profile suggests completeness is an expectation, so future nulls should be exceptions.",
+    "'issued_at' is a TIMESTAMP column - future-dated records are a validity finding in most operational data."
+  ],
+  "rules": [
+    {
+      "column": "invoice_id",
+      "rule": "not_null"
+    },
+    {
+      "column": "invoice_id",
+      "rule": "unique"
+    },
+    {
+      "column": "vendor",
+      "rule": "not_null"
+    },
+    {
+      "column": "amount",
+      "rule": "not_null"
+    },
+    {
+      "column": "amount",
+      "rule": "unique"
+    },
+    {
+      "column": "issued_at",
+      "rule": "not_null"
+    },
+    {
+      "column": "issued_at",
+      "rule": "not_future"
+    }
+  ],
+  "sha256": "3bc2b42b5515f2a04e7df453c9462caa807d19264fa29fae79ecd8520a45da9a",
+  "stage": "rules"
+}

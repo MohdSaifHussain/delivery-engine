@@ -1,0 +1,73 @@
+# data_quality_review - the second archetype (Delivery Engine v0.2)
+# General-purpose: works on ANY tabular source. The engine drafts the
+# validation rules itself; Human Gate 2 approves the exact draft (by hash)
+# before the deterministic layer consumes it. Charter 4.4 in action.
+
+schema_version = 1
+
+[playbook]
+name = "data_quality_review"
+version = "1.0.0"
+description = "Data quality review of any tabular source: profile, engine-drafted rules approved at Human Gate 2, validation, dedupe, packaged evidence"
+
+[requirements]
+min_rows = 1
+source_types = ["csv", "excel", "sqlite", "postgres", "mysql"]
+
+[[stages]]
+id = "dq_profile"
+kind = "kit"
+tool = "analystkit_profile"
+gate = "must_pass"
+
+# The highest-risk stage in the architecture: AI-side content that will
+# feed the deterministic layer. V4 (playbook constitution) forces
+# human_approval = true here - this playbook could not load otherwise.
+[[stages]]
+id = "rules"
+kind = "ai"
+slot = "rules_draft"
+numbers_from = "findings_store"
+feeds_deterministic = true
+human_approval = true
+needs = ["dq_profile"]
+
+[[stages]]
+id = "dq_validate"
+kind = "kit"
+tool = "analystkit_validate"
+gate = "must_pass"
+needs = ["dq_profile", "rules"]
+
+[[stages]]
+id = "dq_dedupe"
+kind = "kit"
+tool = "analystkit_dedupe"
+gate = "advisory"
+needs = ["dq_profile"]
+
+[[stages]]
+id = "report"
+kind = "ai"
+slot = "narrative_report"
+numbers_from = "findings_store"
+human_approval = false
+feeds_deterministic = false
+needs = ["dq_validate"]
+
+[[stages]]
+id = "readme"
+kind = "ai"
+slot = "readme"
+numbers_from = "findings_store"
+human_approval = false
+feeds_deterministic = false
+needs = ["report"]
+
+[[stages]]
+id = "package"
+kind = "package"
+needs = ["report", "readme"]
+
+[deliverables]
+artifacts = ["rules_draft", "narrative_report", "readme", "audit_log", "manifest"]

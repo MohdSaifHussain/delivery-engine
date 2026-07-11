@@ -153,10 +153,19 @@ class TestPlanning:
         assert plan.approved is False
 
     def test_no_qualified_raises_with_reasons(
-        self, no_target_profile: dict[str, Any]
+        self, no_target_profile: dict[str, Any], tmp_path: Path
     ) -> None:
+        # A churn-only library: the general data_quality_review archetype
+        # (added in step 5) legitimately accepts this profile, so the
+        # no-qualified path needs a library where requirements CAN fail.
+        lib = tmp_path / "lib"
+        lib.mkdir()
+        (lib / "churn_analysis.toml").write_text(
+            (PLAYBOOKS / "churn_analysis.toml").read_text(encoding="utf-8"),
+            encoding="utf-8",
+        )
         with pytest.raises(PlannerError, match="binary_target"):
-            make_plan("churn analysis", "data.csv", no_target_profile, PLAYBOOKS)
+            make_plan("churn analysis", "data.csv", no_target_profile, lib)
 
     def test_human_choice_recorded(self, churn_profile: dict[str, Any]) -> None:
         plan = make_plan(

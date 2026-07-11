@@ -1,0 +1,60 @@
+{
+  "approved": true,
+  "approved_at_ist": "2026-07-10T22:18:00+05:30",
+  "approved_by": "Saif",
+  "candidates_considered": [
+    "data_quality_review"
+  ],
+  "column_kinds": [
+    [
+      "amount",
+      "id_column"
+    ],
+    [
+      "amount",
+      "numeric_column"
+    ],
+    [
+      "invoice_id",
+      "id_column"
+    ],
+    [
+      "issued_at",
+      "timestamp_column"
+    ],
+    [
+      "vendor",
+      "categorical_column"
+    ]
+  ],
+  "created_at_ist": "2026-07-10T22:18:00+05:30",
+  "decision_rationale": "only playbook whose requirements the source satisfies",
+  "decision_source": "deterministic",
+  "goal": "data quality review of vendor extract",
+  "plan_sha256": "b5bb11b37f710af63b0ecb910e9ef9da7599f5ca2f8b612d8c349b490a269519",
+  "playbook_name": "data_quality_review",
+  "playbook_path": "playbooks/data_quality_review.toml",
+  "playbook_version": "1.0.0",
+  "requirement_results": [
+    [
+      "min_rows >= 1",
+      true,
+      "source has 300 rows"
+    ],
+    [
+      "source type 'csv' accepted",
+      true,
+      "playbook accepts: csv, excel, sqlite, postgres, mysql"
+    ]
+  ],
+  "source": "/tmp/vendor_extract.csv",
+  "stage_ids": [
+    "dq_profile",
+    "rules",
+    "dq_validate",
+    "dq_dedupe",
+    "report",
+    "readme",
+    "package"
+  ]
+}

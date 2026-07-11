@@ -1,0 +1,57 @@
+{
+  "findings": {
+    "accuracy_note": "Accuracy is never scored from the dataset alone \u2014 that would be fabrication. Use analystkit_reconcile against an authoritative source.",
+    "columns": [
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 300,
+        "dtype": "VARCHAR",
+        "name": "invoice_id",
+        "nulls": 0,
+        "total": 300,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 12,
+        "dtype": "VARCHAR",
+        "name": "vendor",
+        "nulls": 0,
+        "total": 300,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 300,
+        "dtype": "BIGINT",
+        "name": "amount",
+        "nulls": 0,
+        "total": 300,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 28,
+        "dtype": "TIMESTAMP",
+        "name": "issued_at",
+        "nulls": 0,
+        "total": 300,
+        "valid_ratio": 1.0
+      }
+    ],
+    "dama_scores": {
+      "accuracy": null,
+      "completeness": 1.0,
+      "consistency": 1.0,
+      "timeliness": 0.5222222222222221,
+      "uniqueness": 1.0,
+      "validity": 1.0
+    }
+  },
+  "sha256": "f17ac2082116b2ac587a1d62f652ee060fbd1874f77cca2b789055c9635d2c68",
+  "stage": "dq_profile"
+}
