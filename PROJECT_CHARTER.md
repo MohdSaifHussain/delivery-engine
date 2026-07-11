@@ -1,7 +1,15 @@
 # PROJECT CHARTER — Delivery Engine
 
-**Version:** 0.4
-**Date:** 9 July 2026 (v0.1 founding) · amended 11 July 2026 (v0.2, v0.3, v0.4)
+**Version:** 0.5
+**Date:** 9 July 2026 (v0.1 founding) · amended 11 July 2026 (v0.2, v0.3, v0.4, v0.5)
+**Amendment record (v0.5):** Build-sequence step 9 recorded as built: the
+transaction_monitoring_review archetype, the first playbook composing the
+full system (both kits, Human Gate 2, dual narratives) with ZERO engine
+changes - the playbooks-not-code principle (4.5) demonstrated at full
+scale. Design lesson recorded: the planner's tie-break is lexical, so
+archetype descriptions are part of the routing contract; descriptions
+must be lexically differentiated, and routing regression tests pin the
+contract.
 **Amendment record (v0.4):** Build-sequence step 8 recorded as built: the
 ops_report AI slot renders OpsKit findings into a narrative under the
 injected-numbers rule. The rule was extended, not weakened: the injector
@@ -267,8 +275,16 @@ playbook validation tooling remain deferred.)*
 
 | 8 | ops_report AI slot: OpsKit findings rendered under the injected-numbers rule via inject_from_findings (verbatim provenance proven before token registration); ops_review archetype to v1.1.0; two loopholes found and fixed with regression tests | 119/119, mypy strict, ruff |
 
-Step 9 candidates, in charter order: multiple-archetype expansion, the
-model-training stage (sandboxing question, section 11), or PPT generation.
+| 9 | transaction_monitoring_review archetype: both kits + Human Gate 2 + dual narratives composed in one playbook, zero engine changes; lexical routing collision found during build, fixed in the archetype description, pinned with regression tests | 127/127, mypy strict, ruff |
+
+Step 10 candidates: the model-training stage (sandboxing question,
+section 11) or PPT generation.
+
+Standing archetype-authoring rule (from step 9): a new playbook's
+description is a routing surface. Before adding an archetype, check its
+description tokens against the library for collisions, and land it with
+routing regression tests for its own goal AND the goals of its nearest
+lexical neighbors.
 
 ## 10. Success criteria for v0.1
 

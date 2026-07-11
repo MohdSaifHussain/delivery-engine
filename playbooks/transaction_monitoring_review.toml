@@ -1,0 +1,103 @@
+# transaction_monitoring_review - the fourth archetype (Delivery Engine
+# v0.5, build step 9)
+#
+# The completeness question, made executable: does this transaction feed
+# contain what it should, and did its volume behave? A silent volume drop
+# in a monitoring feed is the classic completeness failure (a misconfigured
+# feed can exclude millions of transactions from monitoring, and nothing
+# looks wrong until someone checks the trend).
+#
+# First archetype to compose the full system: AnalystKit gates fitness,
+# the engine drafts validation rules (Human Gate 2 approves the exact
+# draft by hash), AnalystKit validates, OpsKit reads the volume story,
+# and both narratives ship under the injected-numbers rule.
+#
+# Zero engine changes. This file IS the step.
+
+schema_version = 1
+
+[playbook]
+name = "transaction_monitoring_review"
+version = "1.0.0"
+description = "Transaction monitoring feed review: completeness gated, engine-drafted rules approved at Human Gate 2, volume trends and drivers from OpsKit, dual narratives packaged as re-performable evidence"
+
+[requirements]
+min_rows = 100
+required_kinds = ["id_column", "timestamp_column"]
+source_types = ["csv", "excel", "sqlite"]
+
+# ── Deterministic gate first, always (V2) ──
+[[stages]]
+id = "dq_profile"
+kind = "kit"
+tool = "analystkit_profile"
+gate = "must_pass"
+
+# ── The engine drafts the rules; a human approves the exact draft (V4) ──
+[[stages]]
+id = "rules"
+kind = "ai"
+slot = "rules_draft"
+numbers_from = "findings_store"
+feeds_deterministic = true
+human_approval = true
+needs = ["dq_profile"]
+
+[[stages]]
+id = "dq_validate"
+kind = "kit"
+tool = "analystkit_validate"
+gate = "must_pass"
+needs = ["dq_profile", "rules"]
+
+[[stages]]
+id = "dq_dedupe"
+kind = "kit"
+tool = "analystkit_dedupe"
+gate = "advisory"
+needs = ["dq_profile"]
+
+# ── The volume story: OpsKit weekly-review over the same feed ──
+[[stages]]
+id = "ops_review"
+kind = "kit"
+tool = "opskit_run_playbook"
+ops_playbook = "weekly-review"
+gate = "must_pass"
+needs = ["dq_profile"]
+
+# ── Dual narratives: the DQ story and the volume story ──
+[[stages]]
+id = "report"
+kind = "ai"
+slot = "narrative_report"
+numbers_from = "findings_store"
+human_approval = false
+feeds_deterministic = false
+needs = ["dq_validate"]
+
+[[stages]]
+id = "ops_report"
+kind = "ai"
+slot = "ops_report"
+numbers_from = "findings_store"
+human_approval = false
+feeds_deterministic = false
+needs = ["ops_review"]
+
+[[stages]]
+id = "readme"
+kind = "ai"
+slot = "readme"
+numbers_from = "findings_store"
+human_approval = false
+feeds_deterministic = false
+needs = ["report", "ops_report"]
+
+[[stages]]
+id = "package"
+kind = "package"
+needs = ["report", "ops_report", "readme"]
+
+[deliverables]
+artifacts = ["rules_draft", "narrative_report", "ops_report", "readme", "audit_log", "manifest"]
