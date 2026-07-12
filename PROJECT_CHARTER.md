@@ -1,7 +1,16 @@
 # PROJECT CHARTER — Delivery Engine
 
-**Version:** 0.7
-**Date:** 9 July 2026 (v0.1 founding) · amended 11 July 2026 (v0.2 through v0.7)
+**Version:** 0.8
+**Date:** 9 July 2026 (v0.1 founding) · amended 11 July 2026 (v0.2 through v0.8)
+**Amendment record (v0.8):** Build-sequence step 12 recorded as built:
+GitHub Actions CI (ruff + mypy strict + pytest) mirroring the local gates
+exactly, plus a root README with CI badge. This closes the LAST open item
+in Section 10's definition of done — the v0.1 thin slice is now complete
+by its own stated criteria. CI does MORE than the local run, not less:
+markitdown is installed so the one PPT content-scan test executes instead
+of skipping (156 passed, 0 skipped from a clean checkout). The workflow
+was validated in a fresh-venv clean-checkout simulation before being
+committed, not merely written.
 **Amendment record (v0.7):** Build-sequence step 11 recorded as built:
 the deterministic PPT builder. CONSCIOUS DESIGN DECISION: the slot is
 named PRESENTATION under the AI stage kind, but it generates NO AI
@@ -304,8 +313,13 @@ playbook validation tooling remain deferred.)*
 
 | 11 | Deterministic PPT builder: PRESENTATION slot, pptxgenjs 4.0.1, 7-slide deck (title, overview, profile, validation, ops, baseline, evidence trail), path-normalised script hash as integrity seal; three loopholes found — unused import (ruff fix), f-string leak into JS (clean rewrite), output-path in hash (content-hash sentinel); plus the byte-reproducibility finding recorded honestly as a tool limitation | 156/156, mypy strict, ruff |
 
-Step 12 candidate: resume context is now available (stop and discuss next
-direction with Saif).
+| 12 | GitHub Actions CI (ruff + mypy strict + pytest) mirroring local gates; root README with CI badge; validated in a clean-checkout fresh-venv simulation before commit — 156 passed 0 skipped (markitdown enabled in CI) | 156/156, mypy strict, ruff, CI green |
+
+**v0.1 thin slice: COMPLETE by Section 10's definition of done (v0.8).**
+Every original box on the architecture diagram has real, tested,
+re-performable code behind it, and CI proves it from a clean checkout.
+Further work is expansion (new archetypes = new TOML, no engine change),
+not foundational build.
 
 Standing archetype-authoring rule (from step 9): a new playbook's
 description is a routing surface. Before adding an archetype, check its
@@ -323,6 +337,9 @@ lexical neighbors.
 - A failed AnalystKit gate stops the pipeline (verified by planted bad data).
 - Human Gates 1 and 2 cannot be bypassed by any input (verified by test).
 - All three quality gates green (ruff, mypy strict, pytest) with CI.
+  ✅ SATISFIED (v0.8, step 12): GitHub Actions runs all three on every
+  push and pull request, mirroring the local gates and validated from a
+  clean checkout.
 - The audit log alone is sufficient to reconstruct what happened and why.
 
 ## 11. Open questions (decided later, consciously)
