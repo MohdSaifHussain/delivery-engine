@@ -8,7 +8,9 @@ version = "0.1.0"
 description = "Project patterns as governed, executable workflows"
 requires-python = ">=3.12"
 authors = [{ name = "Mohd Saif Hussain" }]
-dependencies = ["analystkit>=2.0"]
+dependencies = [
+    "analystkit @ git+https://github.com/MohdSaifHussain/analystkit.git",
+]
 
 [project.optional-dependencies]
 dev = ["pytest>=9.0", "mypy>=2.0", "ruff>=0.15"]
