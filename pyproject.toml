@@ -8,14 +8,13 @@ version = "0.1.0"
 description = "Project patterns as governed, executable workflows"
 requires-python = ">=3.12"
 authors = [{ name = "Mohd Saif Hussain" }]
-dependencies = [
-    "analystkit @ git+https://github.com/MohdSaifHussain/analystkit.git",
-]
+dependencies = ["analystkit>=2.0"]
 
 [project.optional-dependencies]
 dev = ["pytest>=9.0", "mypy>=2.0", "ruff>=0.15"]
 ai = ["anthropic>=0.40"]
 ml = ["scikit-learn>=1.5"]
+docs = ["python-pptx>=1.0", "markitdown>=0.1", "openpyxl>=3.1"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

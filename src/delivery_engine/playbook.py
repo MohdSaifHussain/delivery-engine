@@ -129,6 +129,7 @@ class Playbook:
     requirements: Requirements
     stages: tuple[Stage, ...]
     artifacts: tuple[str, ...]
+    output_formats: tuple[str, ...]
     source_path: Path
 
     def stage_ids(self) -> tuple[str, ...]:
@@ -421,7 +422,8 @@ def load_playbook(path: Path) -> Playbook:
 
     # V7: mandatory deliverables
     deliverables = _require(doc, "deliverables", dict, path.name)
-    _only_keys(deliverables, frozenset({"artifacts"}), "[deliverables]")
+    _only_keys(deliverables, frozenset({"artifacts", "formats"}),
+               "[deliverables]")
     artifacts = _str_list(
         _require(deliverables, "artifacts", list, "[deliverables]"),
         "[deliverables]", "artifacts",
@@ -435,6 +437,28 @@ def load_playbook(path: Path) -> Playbook:
             f"charter 4.8.)"
         )
 
+    # V13: optional output formats (Step 13). Backward-compatible — a
+    # playbook with no formats key defaults to markdown, so every
+    # pre-Step-13 playbook keeps its exact meaning.
+    valid_formats = {"markdown", "docx", "pptx", "xlsx", "pdf"}
+    if "formats" in deliverables:
+        output_formats = tuple(_str_list(
+            deliverables["formats"], "[deliverables]", "formats",
+        ))
+        unknown = set(output_formats) - valid_formats
+        if unknown:
+            raise PlaybookError(
+                f"[deliverables]: unknown output format(s) "
+                f"{sorted(unknown)}. Valid: {sorted(valid_formats)}. (V13)"
+            )
+        if not output_formats:
+            raise PlaybookError(
+                "[deliverables]: formats, if present, must list at least "
+                "one format. Omit the key entirely for markdown-only. (V13)"
+            )
+    else:
+        output_formats = ("markdown",)
+
     return Playbook(
         name=name,
         version=version,
@@ -443,5 +467,6 @@ def load_playbook(path: Path) -> Playbook:
         requirements=requirements,
         stages=stages,
         artifacts=artifacts,
+        output_formats=output_formats,
         source_path=path,
     )

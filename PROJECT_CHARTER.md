@@ -1,7 +1,23 @@
 # PROJECT CHARTER — Delivery Engine
 
-**Version:** 0.8
-**Date:** 9 July 2026 (v0.1 founding) · amended 11 July 2026 (v0.2 through v0.8)
+**Version:** 0.9
+**Date:** 9 July 2026 (v0.1 founding) · amended 11-13 July 2026 (v0.2 through v0.9)
+**Amendment record (v0.9):** Build-sequence step 13 recorded as built:
+deterministic multi-format deliverables (Word, PowerPoint, Excel, PDF)
+declared per-playbook via [deliverables] formats (schema rule V13,
+backward-compatible — absent key defaults to markdown). CRITICAL DESIGN
+DECISION documented: the Anthropic document skills are used as
+best-practice recipes for their underlying deterministic libraries
+(pptxgenjs, docx-js, openpyxl, LibreOffice), NOT via the Claude API's
+authoring mode — because API authoring would let AI write numbers,
+violating charter 4.1. Every figure in every format remains injected from
+the hashed Findings Store. New content-verification stage: a HARD gate
+re-reads each produced document and stops the pipeline if any
+store-sourced number is missing; a SOFT check warns on absent prose
+sections. Format-aware verification: detail formats (docx/xlsx/pdf) carry
+full column detail; decks (pptx) carry summary numbers — a correct
+professional distinction. The .json/.md evidence layer is preserved
+underneath; documents are additive.
 **Amendment record (v0.8):** Build-sequence step 12 recorded as built:
 GitHub Actions CI (ruff + mypy strict + pytest) mirroring the local gates
 exactly, plus a root README with CI badge. This closes the LAST open item

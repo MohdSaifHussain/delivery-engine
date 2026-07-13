@@ -24,6 +24,7 @@ constitution fails to load with a clean, numbered error. The rules:
 | V9 | Stage `needs` references only earlier stage ids (no forward/unknown refs) | executable ordering |
 | V10 | Stage ids and playbook names are snake_case ASCII (max 64 chars) | ids become audit references and filenames |
 | V11 | `tool = "opskit_run_playbook"` stages declare `ops_playbook` (lowercase/hyphen key, e.g. `"weekly-review"`); no other tool accepts the key | the engine never guesses which analysis to run |
+| V13 | `[deliverables] formats` (optional) lists output formats from markdown/docx/pptx/xlsx/pdf; absent = markdown-only | per-playbook deliverable format, backward-compatible |
 | V12 | `kind = "model"` stages declare a `gate` and non-empty `needs` — a baseline never trains before the deterministic profile gate | 4.2 gates before anything |
 
 ## Version choice, sourced

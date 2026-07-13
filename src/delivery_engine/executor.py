@@ -210,6 +210,9 @@ def run(
         elif stage.kind is StageKind.MODEL:
             _run_model_stage(stage, plan, store, audit, out_dir)
         elif stage.kind is StageKind.PACKAGE:
+            _build_deliverable_documents(
+                playbook, plan, store, audit, out_dir
+            )
             audit.record(
                 stage.stage_id, "package", "sealed",
                 "audit log sealed; the manifest is written next and hashes "
@@ -220,6 +223,74 @@ def run(
             write_manifest(out_dir, store.digests(), plan.plan_digest())
 
     return out_dir
+
+
+def _build_deliverable_documents(
+    playbook: Playbook,
+    plan: Plan,
+    store: FindingsStore,
+    audit: AuditLog,
+    out_dir: Path,
+) -> None:
+    """Step 13: build the playbook's declared output formats and verify
+    each one. markdown is produced by the AI artifact stages and needs no
+    work here. For docx/pptx/xlsx/pdf, every number is injected from the
+    store snapshot; the produced file is then verified — a HARD gate on
+    store-sourced numbers (a missing number stops the pipeline), a SOFT
+    check on prose sections (logged, non-fatal)."""
+    formats = [f for f in playbook.output_formats if f != "markdown"]
+    if not formats:
+        return
+
+    from delivery_engine.documents import (
+        DocumentError,
+        build_documents,
+        verify_document_numbers,
+    )
+
+    snap = {
+        sid: findings for sid, (findings, _) in store.all_entries().items()
+    }
+    snap["_digests"] = store.digests()
+
+    try:
+        results = build_documents(
+            formats, snap, plan.source, plan.goal, out_dir
+        )
+    except DocumentError as exc:
+        audit.record(
+            "documents", "document_build", "error", str(exc)[:300]
+        )
+        audit.write(out_dir / "audit_log.jsonl")
+        raise ExecutionStopped("documents", str(exc)) from None
+
+    for fmt, info in results.items():
+        verdict = verify_document_numbers(
+            out_dir / info["file"], fmt, snap
+        )
+        if not verdict["ok"]:
+            reason = (
+                f"{fmt} deliverable is missing store-sourced number(s) "
+                f"{verdict['missing_numbers'][:8]} — a finding was dropped "
+                f"from the document. Hard gate: the pipeline stops rather "
+                f"than ship a deliverable that omits a computed figure."
+            )
+            audit.record(
+                "documents", f"document:{fmt}", "verification_failed", reason
+            )
+            audit.write(out_dir / "audit_log.jsonl")
+            raise ExecutionStopped("documents", reason)
+        soft = (
+            f"; soft check: {len(verdict['missing_sections'])} prose "
+            f"section(s) absent" if verdict["missing_sections"] else ""
+        )
+        audit.record(
+            "documents", f"document:{fmt}", "verified",
+            f"{fmt} deliverable built and verified — "
+            f"{verdict['numbers_checked']} store-sourced number(s) present "
+            f"(script sha256: {info['script_sha256'][:16]}...){soft}",
+            sha256=info["script_sha256"],
+        )
 
 
 def _run_kit_stage(
