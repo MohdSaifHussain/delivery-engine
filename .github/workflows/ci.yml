@@ -1,18 +1,11 @@
 name: CI
 
-# The charter's definition of done (Section 10) requires CI: green
-# locally is not the bar, green on push is. This workflow mirrors the
-# exact three gates run before every commit — pytest, ruff, mypy strict —
-# on the same Python the project targets, plus the Node packages and
-# Python libs the document-output stages need.
-
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
 
-# Cancel superseded runs on the same ref — the latest push is what matters.
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
@@ -28,7 +21,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
@@ -37,16 +30,9 @@ jobs:
         with:
           node-version: "24"
 
-      # Node packages: pptxgenjs (presentation stage) + docx (Word builder).
-      # Installed at the repo root so the executor's node_modules discovery
-      # finds them — the same location a developer uses locally.
       - name: Install Node packages
         run: npm install pptxgenjs docx
 
-      # analystkit is a separate public package (git source); the two MCP
-      # servers and the engine install editable from the repo. Order:
-      # analystkit first (engine depends on it), then the servers, then
-      # the engine with its dev + ml + docs extras.
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
@@ -55,9 +41,6 @@ jobs:
           pip install -e ./opskit-mcp
           pip install -e ".[dev,ml,docs]"
 
-      # markitdown enables the PPT content-scan test and the document
-      # verification stage on CI. pandoc is pre-installed on ubuntu-latest
-      # and is used for docx text extraction in verification.
       - name: Install document verification tools
         run: pip install "markitdown[pptx]"
 
