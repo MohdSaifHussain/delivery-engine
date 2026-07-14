@@ -1,7 +1,27 @@
 # PROJECT CHARTER — Delivery Engine
 
-**Version:** 0.9
-**Date:** 9 July 2026 (v0.1 founding) · amended 11-13 July 2026 (v0.2 through v0.9)
+**Version:** 0.10
+**Date:** 9 July 2026 (v0.1 founding) · amended 11-14 July 2026 (v0.2 through v0.10)
+**Amendment record (v0.10):** Build-sequence step 14 recorded as built:
+the developer-experience layer, positioned from a real-world job
+description (Senior Analyst, GBM Audit COO, Scotiabank). Three parts:
+(1) the Playbook Compatibility Report — a deterministic pre-flight
+module (delivery_engine.compatibility) that REUSES the planner's own
+classify_columns and check_requirements, so the report can never
+disagree with the planner; it informs, never gates. (2) /examples/ —
+three complete end-to-end runs with committed real output, one per
+audience: transaction monitoring (compliance), churn with baseline
+(business analytics; planted signal reproduces roc_auc 1.0), audit
+data quality (internal audit — the workpaper-discipline story).
+transaction_monitoring_review bumped to v1.1.0 declaring formats
+(pdf deliberately excluded from defaults: it hard-requires LibreOffice
+and a must-produce format stops the pipeline when its tool is absent).
+(3) QUICKSTART.md — the SOP for engineers and non-engineers: install,
+first run, your-own-data, write-your-own-playbook, and the explicit
+AI-level contract (zero-AI is a first-class mode; narrative-AI never
+writes numbers; no third level by design). POSITIONING made explicit in
+the docs: a first-level accelerator and cognitive assistant with
+workpaper discipline — not a replacement for enterprise tooling.
 **Amendment record (v0.9):** Build-sequence step 13 recorded as built:
 deterministic multi-format deliverables (Word, PowerPoint, Excel, PDF)
 declared per-playbook via [deliverables] formats (schema rule V13,

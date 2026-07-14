@@ -1,0 +1,70 @@
+{
+  "drafted_from": "dq_profile",
+  "how_to_approve": "Review every rule and rationale. To approve, re-run with approvals={\"rules\": {\"approver\": \"<your name>\", \"sha256\": \"7a6b6c3cb955862d3254b94f2931f6eba600a05ed397710d0bd362145e687df8\"}}. The hash binds the approval to exactly this draft.",
+  "rationales": [
+    "'id' has zero nulls across 2,000 rows - the profile suggests completeness is an expectation, so future nulls should be exceptions.",
+    "'id' is distinct on 2,000 of 2,000 rows (ratio >= 0.999) - it behaves as an identifier, so duplicates should be exceptions.",
+    "'date' has zero nulls across 2,000 rows - the profile suggests completeness is an expectation, so future nulls should be exceptions.",
+    "'date' is distinct on 2,000 of 2,000 rows (ratio >= 0.999) - it behaves as an identifier, so duplicates should be exceptions.",
+    "'date' is a TIMESTAMP column - future-dated records are a validity finding in most operational data.",
+    "'client_id' has zero nulls across 2,000 rows - the profile suggests completeness is an expectation, so future nulls should be exceptions.",
+    "'card_id' has zero nulls across 2,000 rows - the profile suggests completeness is an expectation, so future nulls should be exceptions.",
+    "'amount' has zero nulls across 2,000 rows - the profile suggests completeness is an expectation, so future nulls should be exceptions.",
+    "'use_chip' has zero nulls across 2,000 rows - the profile suggests completeness is an expectation, so future nulls should be exceptions.",
+    "'merchant_id' has zero nulls across 2,000 rows - the profile suggests completeness is an expectation, so future nulls should be exceptions.",
+    "'merchant_city' has zero nulls across 2,000 rows - the profile suggests completeness is an expectation, so future nulls should be exceptions.",
+    "'mcc' has zero nulls across 2,000 rows - the profile suggests completeness is an expectation, so future nulls should be exceptions."
+  ],
+  "rules": [
+    {
+      "column": "id",
+      "rule": "not_null"
+    },
+    {
+      "column": "id",
+      "rule": "unique"
+    },
+    {
+      "column": "date",
+      "rule": "not_null"
+    },
+    {
+      "column": "date",
+      "rule": "unique"
+    },
+    {
+      "column": "date",
+      "rule": "not_future"
+    },
+    {
+      "column": "client_id",
+      "rule": "not_null"
+    },
+    {
+      "column": "card_id",
+      "rule": "not_null"
+    },
+    {
+      "column": "amount",
+      "rule": "not_null"
+    },
+    {
+      "column": "use_chip",
+      "rule": "not_null"
+    },
+    {
+      "column": "merchant_id",
+      "rule": "not_null"
+    },
+    {
+      "column": "merchant_city",
+      "rule": "not_null"
+    },
+    {
+      "column": "mcc",
+      "rule": "not_null"
+    }
+  ],
+  "sha256": "7a6b6c3cb955862d3254b94f2931f6eba600a05ed397710d0bd362145e687df8",
+  "stage": "rules"
+}

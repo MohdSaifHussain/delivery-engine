@@ -1,0 +1,794 @@
+issue_id,raised_at,business_line,severity,status,days_open,owner_team
+ISS-00001,2025-06-30 00:00:00,Corporate Banking,Medium,Closed,180,Team-2
+ISS-00002,2025-06-30 00:00:00,Derivatives,High,Closed,180,Team-3
+ISS-00003,2025-07-01 00:00:00,Derivatives,High,Closed,180,Team-4
+ISS-00004,2025-07-01 00:00:00,Fixed Income,Low,Closed,180,Team-5
+ISS-00005,2025-07-02 00:00:00,Fixed Income,Low,Closed,180,Team-6
+ISS-00006,2025-07-02 00:00:00,Corporate Banking,Medium,Closed,180,Team-7
+ISS-00007,2025-07-03 00:00:00,Corporate Banking,Medium,Closed,180,Team-8
+ISS-00008,2025-07-03 00:00:00,Derivatives,High,Closed,180,Team-9
+ISS-00009,2025-07-04 00:00:00,Derivatives,High,Closed,180,Team-1
+ISS-00010,2025-07-04 00:00:00,Fixed Income,Low,Closed,180,Team-2
+ISS-00011,2025-07-05 00:00:00,Fixed Income,Low,Closed,180,Team-3
+ISS-00012,2025-07-05 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00013,2025-07-06 00:00:00,Corporate Banking,Medium,Closed,180,Team-5
+ISS-00014,2025-07-06 00:00:00,Derivatives,High,Closed,180,Team-6
+ISS-00015,2025-07-07 00:00:00,Derivatives,High,Closed,180,Team-7
+ISS-00016,2025-07-07 00:00:00,Fixed Income,Low,Closed,180,Team-8
+ISS-00017,2025-07-08 00:00:00,Fixed Income,Low,Closed,180,Team-9
+ISS-00018,2025-07-08 00:00:00,Corporate Banking,Medium,Closed,180,Team-1
+ISS-00019,2025-07-09 00:00:00,Corporate Banking,Medium,Closed,180,Team-2
+ISS-00020,2025-07-09 00:00:00,Derivatives,High,Closed,180,Team-3
+ISS-00021,2025-07-10 00:00:00,Derivatives,High,Closed,180,Team-4
+ISS-00022,2025-07-10 00:00:00,Fixed Income,Low,Closed,180,Team-5
+ISS-00023,2025-07-11 00:00:00,Fixed Income,Low,Closed,180,Team-6
+ISS-00024,2025-07-11 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00025,2025-07-12 00:00:00,Corporate Banking,Medium,Closed,180,Team-8
+ISS-00026,2025-07-12 00:00:00,Derivatives,High,Closed,180,Team-9
+ISS-00027,2025-07-13 00:00:00,Derivatives,High,Closed,180,Team-1
+ISS-00028,2025-07-13 00:00:00,Fixed Income,Low,Closed,180,Team-2
+ISS-00029,2025-07-14 00:00:00,Fixed Income,Low,Closed,180,Team-3
+ISS-00030,2025-07-14 00:00:00,Corporate Banking,Medium,Closed,180,Team-4
+ISS-00031,2025-07-15 00:00:00,Corporate Banking,Medium,Closed,180,Team-5
+ISS-00032,2025-07-15 00:00:00,Derivatives,High,Closed,180,Team-6
+ISS-00033,2025-07-16 00:00:00,Derivatives,High,Closed,180,Team-7
+ISS-00034,2025-07-16 00:00:00,Fixed Income,Low,Closed,180,Team-8
+ISS-00035,2025-07-17 00:00:00,Fixed Income,Low,Closed,180,Team-9
+ISS-00036,2025-07-17 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00037,2025-07-18 00:00:00,Corporate Banking,Medium,Closed,180,Team-2
+ISS-00038,2025-07-18 00:00:00,Derivatives,High,Closed,180,Team-3
+ISS-00039,2025-07-19 00:00:00,Derivatives,High,Closed,180,Team-4
+ISS-00040,2025-07-19 00:00:00,Fixed Income,Low,Closed,180,Team-5
+ISS-00041,2025-07-20 00:00:00,Fixed Income,Low,Closed,180,Team-6
+ISS-00042,2025-07-20 00:00:00,Corporate Banking,Medium,Closed,180,Team-7
+ISS-00043,2025-07-21 00:00:00,Corporate Banking,Medium,Closed,180,Team-8
+ISS-00044,2025-07-21 00:00:00,Derivatives,High,Closed,180,Team-9
+ISS-00045,2025-07-22 00:00:00,Derivatives,High,Closed,180,Team-1
+ISS-00046,2025-07-22 00:00:00,Fixed Income,Low,Closed,180,Team-2
+ISS-00047,2025-07-23 00:00:00,Fixed Income,Low,Closed,180,Team-3
+ISS-00048,2025-07-23 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00049,2025-07-24 00:00:00,Corporate Banking,Medium,Closed,180,Team-5
+ISS-00050,2025-07-24 00:00:00,Derivatives,High,Closed,180,Team-6
+ISS-00051,2025-07-25 00:00:00,Derivatives,High,Closed,180,Team-7
+ISS-00052,2025-07-25 00:00:00,Fixed Income,Low,Closed,180,Team-8
+ISS-00053,2025-07-26 00:00:00,Fixed Income,Low,Closed,180,Team-9
+ISS-00054,2025-07-26 00:00:00,Corporate Banking,Medium,Closed,180,Team-1
+ISS-00055,2025-07-27 00:00:00,Corporate Banking,Medium,Closed,180,Team-2
+ISS-00056,2025-07-27 00:00:00,Derivatives,High,Closed,180,Team-3
+ISS-00057,2025-07-28 00:00:00,Derivatives,High,Closed,180,Team-4
+ISS-00058,2025-07-28 00:00:00,Fixed Income,Low,Closed,180,Team-5
+ISS-00059,2025-07-29 00:00:00,Fixed Income,Low,Closed,180,Team-6
+ISS-00060,2025-07-29 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00061,2025-07-30 00:00:00,Corporate Banking,Medium,Closed,180,Team-8
+ISS-00062,2025-07-30 00:00:00,Derivatives,High,Closed,180,Team-9
+ISS-00063,2025-07-31 00:00:00,Derivatives,High,Closed,180,Team-1
+ISS-00064,2025-07-31 00:00:00,Fixed Income,Low,Closed,180,Team-2
+ISS-00065,2025-08-01 00:00:00,Fixed Income,Low,Closed,180,Team-3
+ISS-00066,2025-08-01 00:00:00,Corporate Banking,Medium,Closed,180,Team-4
+ISS-00067,2025-08-02 00:00:00,Corporate Banking,Medium,Closed,180,Team-5
+ISS-00068,2025-08-02 00:00:00,Derivatives,High,Closed,180,Team-6
+ISS-00069,2025-08-03 00:00:00,Derivatives,High,Closed,180,Team-7
+ISS-00070,2025-08-03 00:00:00,Fixed Income,Low,Closed,180,Team-8
+ISS-00071,2025-08-04 00:00:00,Fixed Income,Low,Closed,180,Team-9
+ISS-00072,2025-08-04 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00073,2025-08-05 00:00:00,Corporate Banking,Medium,Closed,180,Team-2
+ISS-00074,2025-08-05 00:00:00,Derivatives,High,Closed,180,Team-3
+ISS-00075,2025-08-06 00:00:00,Derivatives,High,Closed,180,Team-4
+ISS-00076,2025-08-06 00:00:00,Fixed Income,Low,Closed,180,Team-5
+ISS-00077,2025-08-07 00:00:00,Fixed Income,Low,Closed,180,Team-6
+ISS-00078,2025-08-07 00:00:00,Corporate Banking,Medium,Closed,180,Team-7
+ISS-00079,2025-08-08 00:00:00,Corporate Banking,Medium,Closed,180,Team-8
+ISS-00080,2025-08-08 00:00:00,Derivatives,High,Closed,180,Team-9
+ISS-00081,2025-08-09 00:00:00,Derivatives,High,Closed,180,Team-1
+ISS-00082,2025-08-09 00:00:00,Fixed Income,Low,Closed,180,Team-2
+ISS-00083,2025-08-10 00:00:00,Fixed Income,Low,Closed,180,Team-3
+ISS-00084,2025-08-10 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00085,2025-08-11 00:00:00,Corporate Banking,Medium,Closed,180,Team-5
+ISS-00086,2025-08-11 00:00:00,Derivatives,High,Closed,180,Team-6
+ISS-00087,2025-08-12 00:00:00,Derivatives,High,Closed,180,Team-7
+ISS-00088,2025-08-12 00:00:00,Fixed Income,Low,Closed,180,Team-8
+ISS-00089,2025-08-13 00:00:00,Fixed Income,Low,Closed,180,Team-9
+ISS-00090,2025-08-13 00:00:00,Corporate Banking,Medium,Closed,180,Team-1
+ISS-00091,2025-08-14 00:00:00,Corporate Banking,Medium,Closed,180,Team-2
+ISS-00092,2025-08-14 00:00:00,Derivatives,High,Closed,180,Team-3
+ISS-00093,2025-08-15 00:00:00,Derivatives,High,Closed,180,Team-4
+ISS-00094,2025-08-15 00:00:00,Fixed Income,Low,Closed,180,Team-5
+ISS-00095,2025-08-16 00:00:00,Fixed Income,Low,Closed,180,Team-6
+ISS-00096,2025-08-16 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00097,2025-08-17 00:00:00,Corporate Banking,Medium,Closed,180,Team-8
+ISS-00098,2025-08-17 00:00:00,Derivatives,High,Closed,180,Team-9
+ISS-00099,2025-08-18 00:00:00,Derivatives,High,Closed,180,Team-1
+ISS-00100,2025-08-18 00:00:00,Fixed Income,Low,Closed,180,Team-2
+ISS-00101,2025-08-19 00:00:00,Fixed Income,Low,Closed,180,Team-3
+ISS-00102,2025-08-19 00:00:00,Corporate Banking,Medium,Closed,180,Team-4
+ISS-00103,2025-08-20 00:00:00,Corporate Banking,Medium,Closed,180,Team-5
+ISS-00104,2025-08-20 00:00:00,Derivatives,High,Closed,180,Team-6
+ISS-00105,2025-08-21 00:00:00,Derivatives,High,Closed,180,Team-7
+ISS-00106,2025-08-21 00:00:00,Fixed Income,Low,Closed,180,Team-8
+ISS-00107,2025-08-22 00:00:00,Fixed Income,Low,Closed,180,Team-9
+ISS-00108,2025-08-22 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00109,2025-08-23 00:00:00,Corporate Banking,Medium,Closed,180,Team-2
+ISS-00110,2025-08-23 00:00:00,Derivatives,High,Closed,180,Team-3
+ISS-00111,2025-08-24 00:00:00,Derivatives,High,Closed,180,Team-4
+ISS-00112,2025-08-24 00:00:00,Fixed Income,Low,Closed,180,Team-5
+ISS-00113,2025-08-25 00:00:00,Fixed Income,Low,Closed,180,Team-6
+ISS-00114,2025-08-25 00:00:00,Corporate Banking,Medium,Closed,180,Team-7
+ISS-00115,2025-08-26 00:00:00,Corporate Banking,Medium,Closed,180,Team-8
+ISS-00116,2025-08-26 00:00:00,Derivatives,High,Closed,180,Team-9
+ISS-00117,2025-08-27 00:00:00,Derivatives,High,Closed,180,Team-1
+ISS-00118,2025-08-27 00:00:00,Fixed Income,Low,Closed,180,Team-2
+ISS-00119,2025-08-28 00:00:00,Fixed Income,Low,Closed,180,Team-3
+ISS-00120,2025-08-28 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00121,2025-08-29 00:00:00,Corporate Banking,Medium,Closed,180,Team-5
+ISS-00122,2025-08-29 00:00:00,Derivatives,High,Closed,180,Team-6
+ISS-00123,2025-08-30 00:00:00,Derivatives,High,Closed,180,Team-7
+ISS-00124,2025-08-30 00:00:00,Fixed Income,Low,Closed,180,Team-8
+ISS-00125,2025-08-31 00:00:00,Fixed Income,Low,Closed,180,Team-9
+ISS-00126,2025-08-31 00:00:00,Corporate Banking,Medium,Closed,180,Team-1
+ISS-00127,2025-09-01 00:00:00,Corporate Banking,Medium,Closed,180,Team-2
+ISS-00128,2025-09-01 00:00:00,Derivatives,High,Closed,180,Team-3
+ISS-00129,2025-09-02 00:00:00,Derivatives,High,Closed,180,Team-4
+ISS-00130,2025-09-02 00:00:00,Fixed Income,Low,Closed,180,Team-5
+ISS-00131,2025-09-03 00:00:00,Fixed Income,Low,Closed,180,Team-6
+ISS-00132,2025-09-03 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00133,2025-09-04 00:00:00,Corporate Banking,Medium,Closed,180,Team-8
+ISS-00134,2025-09-04 00:00:00,Derivatives,High,Closed,180,Team-9
+ISS-00135,2025-09-05 00:00:00,Derivatives,High,Closed,180,Team-1
+ISS-00136,2025-09-05 00:00:00,Fixed Income,Low,Closed,180,Team-2
+ISS-00137,2025-09-06 00:00:00,Fixed Income,Low,Closed,180,Team-3
+ISS-00138,2025-09-06 00:00:00,Corporate Banking,Medium,Closed,180,Team-4
+ISS-00139,2025-09-07 00:00:00,Corporate Banking,Medium,Closed,180,Team-5
+ISS-00140,2025-09-07 00:00:00,Derivatives,High,Closed,180,Team-6
+ISS-00141,2025-09-08 00:00:00,Derivatives,High,Closed,180,Team-7
+ISS-00142,2025-09-08 00:00:00,Fixed Income,Low,Closed,180,Team-8
+ISS-00143,2025-09-09 00:00:00,Fixed Income,Low,Closed,180,Team-9
+ISS-00144,2025-09-09 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00145,2025-09-10 00:00:00,Corporate Banking,Medium,Closed,180,Team-2
+ISS-00146,2025-09-10 00:00:00,Derivatives,High,Closed,180,Team-3
+ISS-00147,2025-09-11 00:00:00,Derivatives,High,Closed,180,Team-4
+ISS-00148,2025-09-11 00:00:00,Fixed Income,Low,Closed,180,Team-5
+ISS-00149,2025-09-12 00:00:00,Fixed Income,Low,Closed,180,Team-6
+ISS-00150,2025-09-12 00:00:00,Corporate Banking,Medium,Closed,180,Team-7
+ISS-00151,2025-09-13 00:00:00,Corporate Banking,Medium,Closed,180,Team-8
+ISS-00152,2025-09-13 00:00:00,Derivatives,High,Closed,180,Team-9
+ISS-00153,2025-09-14 00:00:00,Derivatives,High,Closed,180,Team-1
+ISS-00154,2025-09-14 00:00:00,Fixed Income,Low,Closed,180,Team-2
+ISS-00155,2025-09-15 00:00:00,Fixed Income,Low,Closed,180,Team-3
+ISS-00156,2025-09-15 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00157,2025-09-16 00:00:00,Corporate Banking,Medium,Closed,180,Team-5
+ISS-00158,2025-09-16 00:00:00,Derivatives,High,Closed,180,Team-6
+ISS-00159,2025-09-17 00:00:00,Derivatives,High,Closed,180,Team-7
+ISS-00160,2025-09-17 00:00:00,Fixed Income,Low,Closed,180,Team-8
+ISS-00161,2025-09-18 00:00:00,Fixed Income,Low,Closed,180,Team-9
+ISS-00162,2025-09-18 00:00:00,Corporate Banking,Medium,Closed,180,Team-1
+ISS-00163,2025-09-19 00:00:00,Corporate Banking,Medium,Closed,180,Team-2
+ISS-00164,2025-09-19 00:00:00,Derivatives,High,Closed,180,Team-3
+ISS-00165,2025-09-20 00:00:00,Derivatives,High,Closed,180,Team-4
+ISS-00166,2025-09-20 00:00:00,Fixed Income,Low,Closed,180,Team-5
+ISS-00167,2025-09-21 00:00:00,Fixed Income,Low,Closed,180,Team-6
+ISS-00168,2025-09-21 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00169,2025-09-22 00:00:00,Corporate Banking,Medium,Closed,180,Team-8
+ISS-00170,2025-09-22 00:00:00,Derivatives,High,Closed,180,Team-9
+ISS-00171,2025-09-23 00:00:00,Derivatives,High,Closed,180,Team-1
+ISS-00172,2025-09-23 00:00:00,Fixed Income,Low,Closed,180,Team-2
+ISS-00173,2025-09-24 00:00:00,Fixed Income,Low,Closed,180,Team-3
+ISS-00174,2025-09-24 00:00:00,Corporate Banking,Medium,Closed,180,Team-4
+ISS-00175,2025-09-25 00:00:00,Corporate Banking,Medium,Closed,180,Team-5
+ISS-00176,2025-09-25 00:00:00,Derivatives,High,Closed,180,Team-6
+ISS-00177,2025-09-26 00:00:00,Derivatives,High,Closed,180,Team-7
+ISS-00178,2025-09-26 00:00:00,Fixed Income,Low,Closed,180,Team-8
+ISS-00179,2025-09-27 00:00:00,Fixed Income,Low,Closed,180,Team-9
+ISS-00180,2025-09-27 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00181,2025-09-28 00:00:00,Corporate Banking,Medium,Closed,180,Team-2
+ISS-00182,2025-09-28 00:00:00,Derivatives,High,Closed,180,Team-3
+ISS-00183,2025-09-29 00:00:00,Derivatives,High,Closed,180,Team-4
+ISS-00184,2025-09-29 00:00:00,Fixed Income,Low,Closed,180,Team-5
+ISS-00185,2025-09-30 00:00:00,Fixed Income,Low,Closed,180,Team-6
+ISS-00186,2025-09-30 00:00:00,Corporate Banking,Medium,Closed,180,Team-7
+ISS-00187,2025-10-01 00:00:00,Corporate Banking,Medium,Closed,180,Team-8
+ISS-00188,2025-10-01 00:00:00,Derivatives,High,Closed,180,Team-9
+ISS-00189,2025-10-02 00:00:00,Derivatives,High,Closed,180,Team-1
+ISS-00190,2025-10-02 00:00:00,Fixed Income,Low,Closed,180,Team-2
+ISS-00191,2025-10-03 00:00:00,Fixed Income,Low,Closed,180,Team-3
+ISS-00192,2025-10-03 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00193,2025-10-04 00:00:00,Corporate Banking,Medium,Closed,180,Team-5
+ISS-00194,2025-10-04 00:00:00,Derivatives,High,Closed,180,Team-6
+ISS-00195,2025-10-05 00:00:00,Derivatives,High,Closed,180,Team-7
+ISS-00196,2025-10-05 00:00:00,Fixed Income,Low,Closed,180,Team-8
+ISS-00197,2025-10-06 00:00:00,Fixed Income,Low,Closed,180,Team-9
+ISS-00198,2025-10-06 00:00:00,Corporate Banking,Medium,Closed,180,Team-1
+ISS-00199,2025-10-07 00:00:00,Corporate Banking,Medium,Closed,180,Team-2
+ISS-00200,2025-10-07 00:00:00,Derivatives,High,Closed,180,Team-3
+ISS-00201,2025-10-08 00:00:00,Derivatives,High,Closed,180,Team-4
+ISS-00202,2025-10-08 00:00:00,Fixed Income,Low,Closed,180,Team-5
+ISS-00203,2025-10-09 00:00:00,Fixed Income,Low,Closed,180,Team-6
+ISS-00204,2025-10-09 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00205,2025-10-10 00:00:00,Corporate Banking,Medium,Closed,180,Team-8
+ISS-00206,2025-10-10 00:00:00,Derivatives,High,Closed,180,Team-9
+ISS-00207,2025-10-11 00:00:00,Derivatives,High,Closed,180,Team-1
+ISS-00208,2025-10-11 00:00:00,Fixed Income,Low,Closed,180,Team-2
+ISS-00209,2025-10-12 00:00:00,Fixed Income,Low,Closed,180,Team-3
+ISS-00210,2025-10-12 00:00:00,Corporate Banking,Medium,Closed,180,Team-4
+ISS-00211,2025-10-13 00:00:00,Corporate Banking,Medium,Closed,180,Team-5
+ISS-00212,2025-10-13 00:00:00,Derivatives,High,Closed,180,Team-6
+ISS-00213,2025-10-14 00:00:00,Derivatives,High,Closed,180,Team-7
+ISS-00214,2025-10-14 00:00:00,Fixed Income,Low,Closed,180,Team-8
+ISS-00215,2025-10-15 00:00:00,Fixed Income,Low,Closed,180,Team-9
+ISS-00216,2025-10-15 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00217,2025-10-16 00:00:00,Corporate Banking,Medium,Closed,180,Team-2
+ISS-00218,2025-10-16 00:00:00,Derivatives,High,Closed,180,Team-3
+ISS-00219,2025-10-17 00:00:00,Derivatives,High,Closed,180,Team-4
+ISS-00220,2025-10-17 00:00:00,Fixed Income,Low,Closed,180,Team-5
+ISS-00221,2025-10-18 00:00:00,Fixed Income,Low,Closed,180,Team-6
+ISS-00222,2025-10-18 00:00:00,Corporate Banking,Medium,Closed,180,Team-7
+ISS-00223,2025-10-19 00:00:00,Corporate Banking,Medium,Closed,180,Team-8
+ISS-00224,2025-10-19 00:00:00,Derivatives,High,Closed,180,Team-9
+ISS-00225,2025-10-20 00:00:00,Derivatives,High,Closed,180,Team-1
+ISS-00226,2025-10-20 00:00:00,Fixed Income,Low,Closed,180,Team-2
+ISS-00227,2025-10-21 00:00:00,Fixed Income,Low,Closed,180,Team-3
+ISS-00228,2025-10-21 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00229,2025-10-22 00:00:00,Corporate Banking,Medium,Closed,180,Team-5
+ISS-00230,2025-10-22 00:00:00,Derivatives,High,Closed,180,Team-6
+ISS-00231,2025-10-23 00:00:00,Derivatives,High,Closed,180,Team-7
+ISS-00232,2025-10-23 00:00:00,Fixed Income,Low,Closed,180,Team-8
+ISS-00233,2025-10-24 00:00:00,Fixed Income,Low,Closed,180,Team-9
+ISS-00234,2025-10-24 00:00:00,Corporate Banking,Medium,Closed,180,Team-1
+ISS-00235,2025-10-25 00:00:00,Corporate Banking,Medium,Closed,180,Team-2
+ISS-00236,2025-10-25 00:00:00,Derivatives,High,Closed,180,Team-3
+ISS-00237,2025-10-26 00:00:00,Derivatives,High,Closed,180,Team-4
+ISS-00238,2025-10-26 00:00:00,Fixed Income,Low,Closed,180,Team-5
+ISS-00239,2025-10-27 00:00:00,Fixed Income,Low,Closed,180,Team-6
+ISS-00240,2025-10-27 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00241,2025-10-28 00:00:00,Corporate Banking,Medium,Closed,180,Team-8
+ISS-00242,2025-10-28 00:00:00,Derivatives,High,Closed,180,Team-9
+ISS-00243,2025-10-29 00:00:00,Derivatives,High,Closed,180,Team-1
+ISS-00244,2025-10-29 00:00:00,Fixed Income,Low,Closed,180,Team-2
+ISS-00245,2025-10-30 00:00:00,Fixed Income,Low,Closed,180,Team-3
+ISS-00246,2025-10-30 00:00:00,Corporate Banking,Medium,Closed,180,Team-4
+ISS-00247,2025-10-31 00:00:00,Corporate Banking,Medium,Closed,180,Team-5
+ISS-00248,2025-10-31 00:00:00,Derivatives,High,Closed,180,Team-6
+ISS-00249,2025-11-01 00:00:00,Derivatives,High,Closed,180,Team-7
+ISS-00250,2025-11-01 00:00:00,Fixed Income,Low,Closed,180,Team-8
+ISS-00251,2025-11-02 00:00:00,Fixed Income,Low,Closed,180,Team-9
+ISS-00252,2025-11-02 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00253,2025-11-03 00:00:00,Corporate Banking,Medium,Closed,180,Team-2
+ISS-00254,2025-11-03 00:00:00,Derivatives,High,Closed,180,Team-3
+ISS-00255,2025-11-04 00:00:00,Derivatives,High,Closed,180,Team-4
+ISS-00256,2025-11-04 00:00:00,Fixed Income,Low,Closed,180,Team-5
+ISS-00257,2025-11-05 00:00:00,Fixed Income,Low,Closed,180,Team-6
+ISS-00258,2025-11-05 00:00:00,Corporate Banking,Medium,Closed,180,Team-7
+ISS-00259,2025-11-06 00:00:00,Corporate Banking,Medium,Closed,180,Team-8
+ISS-00260,2025-11-06 00:00:00,Derivatives,High,Closed,180,Team-9
+ISS-00261,2025-11-07 00:00:00,Derivatives,High,Closed,180,Team-1
+ISS-00262,2025-11-07 00:00:00,Fixed Income,Low,Closed,180,Team-2
+ISS-00263,2025-11-08 00:00:00,Fixed Income,Low,Closed,180,Team-3
+ISS-00264,2025-11-08 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00265,2025-11-09 00:00:00,Corporate Banking,Medium,Closed,180,Team-5
+ISS-00266,2025-11-09 00:00:00,Derivatives,High,Closed,180,Team-6
+ISS-00267,2025-11-10 00:00:00,Derivatives,High,Closed,180,Team-7
+ISS-00268,2025-11-10 00:00:00,Fixed Income,Low,Closed,180,Team-8
+ISS-00269,2025-11-11 00:00:00,Fixed Income,Low,Closed,180,Team-9
+ISS-00270,2025-11-11 00:00:00,Corporate Banking,Medium,Closed,180,Team-1
+ISS-00271,2025-11-12 00:00:00,Corporate Banking,Medium,Closed,180,Team-2
+ISS-00272,2025-11-12 00:00:00,Derivatives,High,Closed,180,Team-3
+ISS-00273,2025-11-13 00:00:00,Derivatives,High,Closed,180,Team-4
+ISS-00274,2025-11-13 00:00:00,Fixed Income,Low,Closed,180,Team-5
+ISS-00275,2025-11-14 00:00:00,Fixed Income,Low,Closed,180,Team-6
+ISS-00276,2025-11-14 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00277,2025-11-15 00:00:00,Corporate Banking,Medium,Closed,180,Team-8
+ISS-00278,2025-11-15 00:00:00,Derivatives,High,Closed,180,Team-9
+ISS-00279,2025-11-16 00:00:00,Derivatives,High,Closed,180,Team-1
+ISS-00280,2025-11-16 00:00:00,Fixed Income,Low,Closed,180,Team-2
+ISS-00281,2025-11-17 00:00:00,Fixed Income,Low,Closed,180,Team-3
+ISS-00282,2025-11-17 00:00:00,Corporate Banking,Medium,Closed,180,Team-4
+ISS-00283,2025-11-18 00:00:00,Corporate Banking,Medium,Closed,180,Team-5
+ISS-00284,2025-11-18 00:00:00,Derivatives,High,Closed,180,Team-6
+ISS-00285,2025-11-19 00:00:00,Derivatives,High,Closed,180,Team-7
+ISS-00286,2025-11-19 00:00:00,Fixed Income,Low,Closed,180,Team-8
+ISS-00287,2025-11-20 00:00:00,Fixed Income,Low,Closed,180,Team-9
+ISS-00288,2025-11-20 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00289,2025-11-21 00:00:00,Corporate Banking,Medium,Closed,180,Team-2
+ISS-00290,2025-11-21 00:00:00,Derivatives,High,Closed,180,Team-3
+ISS-00291,2025-11-22 00:00:00,Derivatives,High,Closed,180,Team-4
+ISS-00292,2025-11-22 00:00:00,Fixed Income,Low,Closed,180,Team-5
+ISS-00293,2025-11-23 00:00:00,Fixed Income,Low,Closed,180,Team-6
+ISS-00294,2025-11-23 00:00:00,Corporate Banking,Medium,Closed,180,Team-7
+ISS-00295,2025-11-24 00:00:00,Corporate Banking,Medium,Closed,180,Team-8
+ISS-00296,2025-11-24 00:00:00,Derivatives,High,Closed,180,Team-9
+ISS-00297,2025-11-25 00:00:00,Derivatives,High,Closed,180,Team-1
+ISS-00298,2025-11-25 00:00:00,Fixed Income,Low,Closed,180,Team-2
+ISS-00299,2025-11-26 00:00:00,Fixed Income,Low,Closed,180,Team-3
+ISS-00300,2025-11-26 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00301,2025-11-27 00:00:00,Corporate Banking,Medium,Closed,180,Team-5
+ISS-00302,2025-11-27 00:00:00,Derivatives,High,Closed,180,Team-6
+ISS-00303,2025-11-28 00:00:00,Derivatives,High,Closed,180,Team-7
+ISS-00304,2025-11-28 00:00:00,Fixed Income,Low,Closed,180,Team-8
+ISS-00305,2025-11-29 00:00:00,Fixed Income,Low,Closed,180,Team-9
+ISS-00306,2025-11-29 00:00:00,Corporate Banking,Medium,Closed,180,Team-1
+ISS-00307,2025-11-30 00:00:00,Corporate Banking,Medium,Closed,180,Team-2
+ISS-00308,2025-11-30 00:00:00,Derivatives,High,Closed,180,Team-3
+ISS-00309,2025-12-01 00:00:00,Derivatives,High,Closed,180,Team-4
+ISS-00310,2025-12-01 00:00:00,Fixed Income,Low,Closed,180,Team-5
+ISS-00311,2025-12-02 00:00:00,Fixed Income,Low,Closed,180,Team-6
+ISS-00312,2025-12-02 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00313,2025-12-03 00:00:00,Corporate Banking,Medium,Closed,180,Team-8
+ISS-00314,2025-12-03 00:00:00,Derivatives,High,Closed,180,Team-9
+ISS-00315,2025-12-04 00:00:00,Derivatives,High,Closed,180,Team-1
+ISS-00316,2025-12-04 00:00:00,Fixed Income,Low,Closed,180,Team-2
+ISS-00317,2025-12-05 00:00:00,Fixed Income,Low,Closed,180,Team-3
+ISS-00318,2025-12-05 00:00:00,Corporate Banking,Medium,Closed,180,Team-4
+ISS-00319,2025-12-06 00:00:00,Corporate Banking,Medium,Closed,180,Team-5
+ISS-00320,2025-12-06 00:00:00,Derivatives,High,Closed,180,Team-6
+ISS-00321,2025-12-07 00:00:00,Derivatives,High,Closed,180,Team-7
+ISS-00322,2025-12-07 00:00:00,Fixed Income,Low,Closed,180,Team-8
+ISS-00323,2025-12-08 00:00:00,Fixed Income,Low,Closed,180,Team-9
+ISS-00324,2025-12-08 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00325,2025-12-09 00:00:00,Corporate Banking,Medium,Closed,180,Team-2
+ISS-00326,2025-12-09 00:00:00,Derivatives,High,Closed,180,Team-3
+ISS-00327,2025-12-10 00:00:00,Derivatives,High,Closed,180,Team-4
+ISS-00328,2025-12-10 00:00:00,Fixed Income,Low,Closed,180,Team-5
+ISS-00329,2025-12-11 00:00:00,Fixed Income,Low,Closed,180,Team-6
+ISS-00330,2025-12-11 00:00:00,Corporate Banking,Medium,Closed,180,Team-7
+ISS-00331,2025-12-12 00:00:00,Corporate Banking,Medium,Closed,180,Team-8
+ISS-00332,2025-12-12 00:00:00,Derivatives,High,Closed,180,Team-9
+ISS-00333,2025-12-13 00:00:00,Derivatives,High,Closed,180,Team-1
+ISS-00334,2025-12-13 00:00:00,Fixed Income,Low,Closed,180,Team-2
+ISS-00335,2025-12-14 00:00:00,Fixed Income,Low,Closed,180,Team-3
+ISS-00336,2025-12-14 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00337,2025-12-15 00:00:00,Corporate Banking,Medium,Closed,180,Team-5
+ISS-00338,2025-12-15 00:00:00,Derivatives,High,Closed,180,Team-6
+ISS-00339,2025-12-16 00:00:00,Derivatives,High,Closed,180,Team-7
+ISS-00340,2025-12-16 00:00:00,Fixed Income,Low,Closed,180,Team-8
+ISS-00341,2025-12-17 00:00:00,Fixed Income,Low,Closed,180,Team-9
+ISS-00342,2025-12-17 00:00:00,Corporate Banking,Medium,Closed,180,Team-1
+ISS-00343,2025-12-18 00:00:00,Corporate Banking,Medium,Closed,180,Team-2
+ISS-00344,2025-12-18 00:00:00,Derivatives,High,Closed,180,Team-3
+ISS-00345,2025-12-19 00:00:00,Derivatives,High,Closed,180,Team-4
+ISS-00346,2025-12-19 00:00:00,Fixed Income,Low,Closed,180,Team-5
+ISS-00347,2025-12-20 00:00:00,Fixed Income,Low,Closed,180,Team-6
+ISS-00348,2025-12-20 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00349,2025-12-21 00:00:00,Corporate Banking,Medium,Closed,180,Team-8
+ISS-00350,2025-12-21 00:00:00,Derivatives,High,Closed,180,Team-9
+ISS-00351,2025-12-22 00:00:00,Derivatives,High,Closed,180,Team-1
+ISS-00352,2025-12-22 00:00:00,Fixed Income,Low,Closed,180,Team-2
+ISS-00353,2025-12-23 00:00:00,Fixed Income,Low,Closed,180,Team-3
+ISS-00354,2025-12-23 00:00:00,Corporate Banking,Medium,Closed,180,Team-4
+ISS-00355,2025-12-24 00:00:00,Corporate Banking,Medium,Closed,180,Team-5
+ISS-00356,2025-12-24 00:00:00,Derivatives,High,Closed,180,Team-6
+ISS-00357,2025-12-25 00:00:00,Derivatives,High,Closed,180,Team-7
+ISS-00358,2025-12-25 00:00:00,Fixed Income,Low,Closed,180,Team-8
+ISS-00359,2025-12-26 00:00:00,Fixed Income,Low,Closed,180,Team-9
+ISS-00360,2025-12-26 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00361,2025-12-27 00:00:00,Corporate Banking,Medium,Closed,180,Team-2
+ISS-00362,2025-12-27 00:00:00,Derivatives,High,Closed,180,Team-3
+ISS-00363,2025-12-28 00:00:00,Derivatives,High,Closed,180,Team-4
+ISS-00364,2025-12-28 00:00:00,Fixed Income,Low,Closed,180,Team-5
+ISS-00365,2025-12-29 00:00:00,Fixed Income,Low,Closed,180,Team-6
+ISS-00366,2025-12-29 00:00:00,Corporate Banking,Medium,Closed,180,Team-7
+ISS-00367,2025-12-30 00:00:00,Corporate Banking,Medium,Closed,180,Team-8
+ISS-00368,2025-12-30 00:00:00,Derivatives,High,Closed,180,Team-9
+ISS-00369,2025-12-31 00:00:00,Derivatives,High,Closed,180,Team-1
+ISS-00370,2025-12-31 00:00:00,Fixed Income,Low,Closed,180,Team-2
+ISS-00371,2026-01-01 00:00:00,Fixed Income,Low,Closed,180,Team-3
+ISS-00372,2026-01-01 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00373,2026-01-02 00:00:00,Corporate Banking,Medium,Closed,180,Team-5
+ISS-00374,2026-01-02 00:00:00,Derivatives,High,Closed,180,Team-6
+ISS-00375,2026-01-03 00:00:00,Derivatives,High,Closed,180,Team-7
+ISS-00376,2026-01-03 00:00:00,Fixed Income,Low,Closed,180,Team-8
+ISS-00377,2026-01-04 00:00:00,Fixed Income,Low,Closed,180,Team-9
+ISS-00378,2026-01-04 00:00:00,Corporate Banking,Medium,Closed,180,Team-1
+ISS-00379,2026-01-05 00:00:00,Corporate Banking,Medium,Closed,180,Team-2
+ISS-00380,2026-01-05 00:00:00,Derivatives,High,Closed,180,Team-3
+ISS-00381,2026-01-06 00:00:00,Derivatives,High,Closed,180,Team-4
+ISS-00382,2026-01-06 00:00:00,Fixed Income,Low,Closed,180,Team-5
+ISS-00383,2026-01-07 00:00:00,Fixed Income,Low,Closed,180,Team-6
+ISS-00384,2026-01-07 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00385,2026-01-08 00:00:00,Corporate Banking,Medium,Closed,180,Team-8
+ISS-00386,2026-01-08 00:00:00,Derivatives,High,Closed,180,Team-9
+ISS-00387,2026-01-09 00:00:00,Derivatives,High,Closed,180,Team-1
+ISS-00388,2026-01-09 00:00:00,Fixed Income,Low,Closed,180,Team-2
+ISS-00389,2026-01-10 00:00:00,Fixed Income,Low,Closed,180,Team-3
+ISS-00390,2026-01-10 00:00:00,Corporate Banking,Medium,Closed,180,Team-4
+ISS-00391,2026-01-11 00:00:00,Corporate Banking,Medium,Closed,180,Team-5
+ISS-00392,2026-01-11 00:00:00,Derivatives,High,Closed,180,Team-6
+ISS-00393,2026-01-12 00:00:00,Derivatives,High,Closed,180,Team-7
+ISS-00394,2026-01-12 00:00:00,Fixed Income,Low,Closed,180,Team-8
+ISS-00395,2026-01-13 00:00:00,Fixed Income,Low,Closed,180,Team-9
+ISS-00396,2026-01-13 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00397,2026-01-14 00:00:00,Corporate Banking,Medium,Closed,180,Team-2
+ISS-00398,2026-01-14 00:00:00,Derivatives,High,Closed,180,Team-3
+ISS-00399,2026-01-15 00:00:00,Derivatives,High,Closed,180,Team-4
+ISS-00400,2026-01-15 00:00:00,Fixed Income,Low,Closed,180,Team-5
+ISS-00401,2026-01-16 00:00:00,Fixed Income,Low,Closed,180,Team-6
+ISS-00402,2026-01-16 00:00:00,Corporate Banking,Medium,Closed,180,Team-7
+ISS-00403,2026-01-17 00:00:00,Corporate Banking,Medium,Closed,180,Team-8
+ISS-00404,2026-01-17 00:00:00,Derivatives,High,Closed,180,Team-9
+ISS-00405,2026-01-18 00:00:00,Derivatives,High,Closed,163,Team-1
+ISS-00406,2026-01-18 00:00:00,Fixed Income,Low,Closed,164,Team-2
+ISS-00407,2026-01-19 00:00:00,Fixed Income,Low,Closed,164,Team-3
+ISS-00408,2026-01-19 00:00:00,Corporate Banking,Medium,Closed,165,
+ISS-00409,2026-01-20 00:00:00,Corporate Banking,Medium,Closed,165,Team-5
+ISS-00410,2026-01-20 00:00:00,Derivatives,High,Closed,166,Team-6
+ISS-00411,2026-01-21 00:00:00,Derivatives,High,Closed,166,Team-7
+ISS-00412,2026-01-21 00:00:00,Fixed Income,Low,Closed,167,Team-8
+ISS-00413,2026-01-22 00:00:00,Fixed Income,Low,Closed,167,Team-9
+ISS-00414,2026-01-22 00:00:00,Corporate Banking,Medium,Closed,168,Team-1
+ISS-00415,2026-01-23 00:00:00,Corporate Banking,Medium,Closed,168,Team-2
+ISS-00416,2026-01-23 00:00:00,Derivatives,High,Closed,169,Team-3
+ISS-00417,2026-01-24 00:00:00,Derivatives,High,Closed,169,Team-4
+ISS-00418,2026-01-24 00:00:00,Fixed Income,Low,Closed,170,Team-5
+ISS-00419,2026-01-25 00:00:00,Fixed Income,Low,Closed,170,Team-6
+ISS-00420,2026-01-25 00:00:00,Corporate Banking,Medium,Closed,171,
+ISS-00421,2026-01-26 00:00:00,Corporate Banking,Medium,Closed,171,Team-8
+ISS-00422,2026-01-26 00:00:00,Derivatives,High,Closed,172,Team-9
+ISS-00423,2026-01-27 00:00:00,Derivatives,High,Closed,172,Team-1
+ISS-00424,2026-01-27 00:00:00,Fixed Income,Low,Closed,173,Team-2
+ISS-00425,2026-01-28 00:00:00,Fixed Income,Low,Closed,173,Team-3
+ISS-00426,2026-01-28 00:00:00,Corporate Banking,Medium,Closed,174,Team-4
+ISS-00427,2026-01-29 00:00:00,Corporate Banking,Medium,Closed,174,Team-5
+ISS-00428,2026-01-29 00:00:00,Derivatives,High,Closed,175,Team-6
+ISS-00429,2026-01-30 00:00:00,Derivatives,High,Closed,175,Team-7
+ISS-00430,2026-01-30 00:00:00,Fixed Income,Low,Closed,176,Team-8
+ISS-00431,2026-01-31 00:00:00,Fixed Income,Low,Closed,176,Team-9
+ISS-00432,2026-01-31 00:00:00,Corporate Banking,Medium,Closed,177,
+ISS-00433,2026-02-01 00:00:00,Corporate Banking,Medium,Closed,177,Team-2
+ISS-00434,2026-02-01 00:00:00,Derivatives,High,Closed,178,Team-3
+ISS-00435,2026-02-02 00:00:00,Derivatives,High,Closed,178,Team-4
+ISS-00436,2026-02-02 00:00:00,Fixed Income,Low,Closed,179,Team-5
+ISS-00437,2026-02-03 00:00:00,Fixed Income,Low,Closed,179,Team-6
+ISS-00438,2026-02-03 00:00:00,Corporate Banking,Medium,Closed,180,Team-7
+ISS-00439,2026-02-04 00:00:00,Corporate Banking,Medium,Closed,180,Team-8
+ISS-00440,2026-02-04 00:00:00,Derivatives,High,Closed,180,Team-9
+ISS-00441,2026-02-05 00:00:00,Derivatives,High,Closed,180,Team-1
+ISS-00442,2026-02-05 00:00:00,Fixed Income,Low,Closed,180,Team-2
+ISS-00443,2026-02-06 00:00:00,Fixed Income,Low,Closed,180,Team-3
+ISS-00444,2026-02-06 00:00:00,Corporate Banking,Medium,Closed,180,
+ISS-00445,2026-02-07 00:00:00,Corporate Banking,Medium,Closed,180,Team-5
+ISS-00446,2026-02-07 00:00:00,Derivatives,High,Closed,180,Team-6
+ISS-00447,2026-02-08 00:00:00,Derivatives,High,Closed,180,Team-7
+ISS-00448,2026-02-08 00:00:00,Fixed Income,Low,Closed,180,Team-8
+ISS-00449,2026-02-09 00:00:00,Fixed Income,Low,Closed,180,Team-9
+ISS-00450,2026-02-09 00:00:00,Corporate Banking,Medium,Closed,141,Team-1
+ISS-00451,2026-02-10 00:00:00,Corporate Banking,Medium,Closed,141,Team-2
+ISS-00452,2026-02-10 00:00:00,Derivatives,High,Closed,142,Team-3
+ISS-00453,2026-02-11 00:00:00,Derivatives,High,Closed,142,Team-4
+ISS-00454,2026-02-11 00:00:00,Fixed Income,Low,Closed,143,Team-5
+ISS-00455,2026-02-12 00:00:00,Fixed Income,Low,Closed,143,Team-6
+ISS-00456,2026-02-12 00:00:00,Corporate Banking,Medium,Closed,144,
+ISS-00457,2026-02-13 00:00:00,Corporate Banking,Medium,Closed,144,Team-8
+ISS-00458,2026-02-13 00:00:00,Derivatives,High,Closed,145,Team-9
+ISS-00459,2026-02-14 00:00:00,Derivatives,High,Closed,145,Team-1
+ISS-00460,2026-02-14 00:00:00,Fixed Income,Low,Closed,146,Team-2
+ISS-00461,2026-02-15 00:00:00,Fixed Income,Low,Closed,146,Team-3
+ISS-00462,2026-02-15 00:00:00,Corporate Banking,Medium,Closed,147,Team-4
+ISS-00463,2026-02-16 00:00:00,Corporate Banking,Medium,Closed,147,Team-5
+ISS-00464,2026-02-16 00:00:00,Derivatives,High,Closed,148,Team-6
+ISS-00465,2026-02-17 00:00:00,Derivatives,High,Closed,148,Team-7
+ISS-00466,2026-02-17 00:00:00,Fixed Income,Low,Closed,149,Team-8
+ISS-00467,2026-02-18 00:00:00,Fixed Income,Low,Closed,149,Team-9
+ISS-00468,2026-02-18 00:00:00,Corporate Banking,Medium,Closed,150,
+ISS-00469,2026-02-19 00:00:00,Corporate Banking,Medium,Closed,150,Team-2
+ISS-00470,2026-02-19 00:00:00,Derivatives,High,Closed,151,Team-3
+ISS-00471,2026-02-20 00:00:00,Derivatives,High,Closed,151,Team-4
+ISS-00472,2026-02-20 00:00:00,Fixed Income,Low,Closed,152,Team-5
+ISS-00473,2026-02-21 00:00:00,Fixed Income,Low,Closed,152,Team-6
+ISS-00474,2026-02-21 00:00:00,Corporate Banking,Medium,Closed,153,Team-7
+ISS-00475,2026-02-22 00:00:00,Corporate Banking,Medium,Closed,153,Team-8
+ISS-00476,2026-02-22 00:00:00,Derivatives,High,Closed,154,Team-9
+ISS-00477,2026-02-23 00:00:00,Derivatives,High,Closed,154,Team-1
+ISS-00478,2026-02-23 00:00:00,Fixed Income,Low,Closed,155,Team-2
+ISS-00479,2026-02-24 00:00:00,Fixed Income,Low,Closed,155,Team-3
+ISS-00480,2026-02-24 00:00:00,Corporate Banking,Medium,Closed,156,
+ISS-00481,2026-02-25 00:00:00,Corporate Banking,Medium,Closed,156,Team-5
+ISS-00482,2026-02-25 00:00:00,Derivatives,High,Closed,157,Team-6
+ISS-00483,2026-02-26 00:00:00,Derivatives,High,Closed,157,Team-7
+ISS-00484,2026-02-26 00:00:00,Fixed Income,Low,Closed,158,Team-8
+ISS-00485,2026-02-27 00:00:00,Fixed Income,Low,Closed,158,Team-9
+ISS-00486,2026-02-27 00:00:00,Corporate Banking,Medium,Closed,159,Team-1
+ISS-00487,2026-02-28 00:00:00,Corporate Banking,Medium,Closed,159,Team-2
+ISS-00488,2026-02-28 00:00:00,Derivatives,High,Closed,160,Team-3
+ISS-00489,2026-03-01 00:00:00,Derivatives,High,Closed,160,Team-4
+ISS-00490,2026-03-01 00:00:00,Fixed Income,Low,Closed,161,Team-5
+ISS-00491,2026-03-02 00:00:00,Fixed Income,Low,Closed,161,Team-6
+ISS-00492,2026-03-02 00:00:00,Corporate Banking,Medium,Closed,162,
+ISS-00493,2026-03-03 00:00:00,Corporate Banking,Medium,Closed,162,Team-8
+ISS-00494,2026-03-03 00:00:00,Derivatives,High,Closed,163,Team-9
+ISS-00495,2026-03-04 00:00:00,Derivatives,High,Closed,118,Team-1
+ISS-00496,2026-03-04 00:00:00,Fixed Income,Low,Closed,119,Team-2
+ISS-00497,2026-03-05 00:00:00,Fixed Income,Low,Closed,119,Team-3
+ISS-00498,2026-03-05 00:00:00,Corporate Banking,Medium,Closed,120,Team-4
+ISS-00499,2026-03-06 00:00:00,Corporate Banking,Medium,Closed,120,Team-5
+ISS-00500,2026-03-06 00:00:00,Derivatives,High,Closed,121,Team-6
+ISS-00501,2026-03-07 00:00:00,Derivatives,High,Closed,121,Team-7
+ISS-00502,2026-03-07 00:00:00,Fixed Income,Low,Closed,122,Team-8
+ISS-00503,2026-03-08 00:00:00,Fixed Income,Low,Closed,122,Team-9
+ISS-00504,2026-03-08 00:00:00,Corporate Banking,Medium,Closed,123,
+ISS-00505,2026-03-09 00:00:00,Corporate Banking,Medium,Closed,123,Team-2
+ISS-00506,2026-03-09 00:00:00,Derivatives,High,Closed,124,Team-3
+ISS-00507,2026-03-10 00:00:00,Derivatives,High,Closed,124,Team-4
+ISS-00508,2026-03-10 00:00:00,Fixed Income,Low,Closed,125,Team-5
+ISS-00509,2026-03-11 00:00:00,Fixed Income,Low,Closed,125,Team-6
+ISS-00510,2026-03-11 00:00:00,Corporate Banking,Medium,Closed,126,Team-7
+ISS-00511,2026-03-12 00:00:00,Corporate Banking,Medium,Closed,126,Team-8
+ISS-00512,2026-03-12 00:00:00,Derivatives,High,Closed,127,Team-9
+ISS-00513,2026-03-13 00:00:00,Derivatives,High,Closed,127,Team-1
+ISS-00514,2026-03-13 00:00:00,Fixed Income,Low,Closed,128,Team-2
+ISS-00515,2026-03-14 00:00:00,Fixed Income,Low,Closed,128,Team-3
+ISS-00516,2026-03-14 00:00:00,Corporate Banking,Medium,Closed,129,
+ISS-00517,2026-03-15 00:00:00,Corporate Banking,Medium,Closed,129,Team-5
+ISS-00518,2026-03-15 00:00:00,Derivatives,High,Closed,130,Team-6
+ISS-00519,2026-03-16 00:00:00,Derivatives,High,Closed,130,Team-7
+ISS-00520,2026-03-16 00:00:00,Fixed Income,Low,Closed,131,Team-8
+ISS-00521,2026-03-17 00:00:00,Fixed Income,Low,Closed,131,Team-9
+ISS-00522,2026-03-17 00:00:00,Corporate Banking,Medium,Closed,132,Team-1
+ISS-00523,2026-03-18 00:00:00,Corporate Banking,Medium,Closed,132,Team-2
+ISS-00524,2026-03-18 00:00:00,Derivatives,High,Closed,133,Team-3
+ISS-00525,2026-03-19 00:00:00,Derivatives,High,Closed,133,Team-4
+ISS-00526,2026-03-19 00:00:00,Fixed Income,Low,Closed,134,Team-5
+ISS-00527,2026-03-20 00:00:00,Fixed Income,Low,Closed,134,Team-6
+ISS-00528,2026-03-20 00:00:00,Corporate Banking,Medium,Closed,135,
+ISS-00529,2026-03-21 00:00:00,Corporate Banking,Medium,Closed,135,Team-8
+ISS-00530,2026-03-21 00:00:00,Derivatives,High,Closed,136,Team-9
+ISS-00531,2026-03-22 00:00:00,Derivatives,High,Closed,136,Team-1
+ISS-00532,2026-03-22 00:00:00,Fixed Income,Low,Closed,137,Team-2
+ISS-00533,2026-03-23 00:00:00,Fixed Income,Low,Closed,137,Team-3
+ISS-00534,2026-03-23 00:00:00,Corporate Banking,Medium,Closed,138,Team-4
+ISS-00535,2026-03-24 00:00:00,Corporate Banking,Medium,Closed,138,Team-5
+ISS-00536,2026-03-24 00:00:00,Derivatives,High,Closed,139,Team-6
+ISS-00537,2026-03-25 00:00:00,Derivatives,High,Closed,139,Team-7
+ISS-00538,2026-03-25 00:00:00,Fixed Income,Low,Closed,140,Team-8
+ISS-00539,2026-03-26 00:00:00,Fixed Income,Low,Closed,140,Team-9
+ISS-00540,2026-03-26 00:00:00,Corporate Banking,Medium,Closed,96,
+ISS-00541,2026-03-27 00:00:00,Corporate Banking,Medium,Closed,96,Team-2
+ISS-00542,2026-03-27 00:00:00,Derivatives,High,Closed,97,Team-3
+ISS-00543,2026-03-28 00:00:00,Derivatives,High,Closed,97,Team-4
+ISS-00544,2026-03-28 00:00:00,Fixed Income,Low,Closed,98,Team-5
+ISS-00545,2026-03-29 00:00:00,Fixed Income,Low,Closed,98,Team-6
+ISS-00546,2026-03-29 00:00:00,Corporate Banking,Medium,Closed,99,Team-7
+ISS-00547,2026-03-30 00:00:00,Corporate Banking,Medium,Closed,99,Team-8
+ISS-00548,2026-03-30 00:00:00,Derivatives,High,Closed,100,Team-9
+ISS-00549,2026-03-31 00:00:00,Derivatives,High,Closed,100,Team-1
+ISS-00550,2026-03-31 00:00:00,Fixed Income,Low,Closed,101,Team-2
+ISS-00551,2026-04-01 00:00:00,Fixed Income,Low,Closed,101,Team-3
+ISS-00552,2026-04-01 00:00:00,Corporate Banking,Medium,Open,102,
+ISS-00553,2026-04-02 00:00:00,Corporate Banking,Medium,Closed,102,Team-5
+ISS-00554,2026-04-02 00:00:00,Derivatives,High,Open,103,Team-6
+ISS-00555,2026-04-03 00:00:00,Derivatives,High,Closed,103,Team-7
+ISS-00556,2026-04-03 00:00:00,Fixed Income,Low,Open,104,Team-8
+ISS-00557,2026-04-04 00:00:00,Fixed Income,Low,Closed,104,Team-9
+ISS-00558,2026-04-04 00:00:00,Corporate Banking,Medium,Open,105,Team-1
+ISS-00559,2026-04-05 00:00:00,Corporate Banking,Medium,Closed,105,Team-2
+ISS-00560,2026-04-05 00:00:00,Derivatives,High,Open,106,Team-3
+ISS-00561,2026-04-06 00:00:00,Derivatives,High,Closed,106,Team-4
+ISS-00562,2026-04-06 00:00:00,Fixed Income,Low,Open,107,Team-5
+ISS-00563,2026-04-07 00:00:00,Fixed Income,Low,Closed,107,Team-6
+ISS-00564,2026-04-07 00:00:00,Corporate Banking,Medium,Open,108,
+ISS-00565,2026-04-08 00:00:00,Corporate Banking,Medium,Closed,108,Team-8
+ISS-00566,2026-04-08 00:00:00,Derivatives,High,Open,109,Team-9
+ISS-00567,2026-04-09 00:00:00,Derivatives,High,Closed,109,Team-1
+ISS-00568,2026-04-09 00:00:00,Fixed Income,Low,Open,110,Team-2
+ISS-00569,2026-04-10 00:00:00,Fixed Income,Low,Closed,110,Team-3
+ISS-00570,2026-04-10 00:00:00,Corporate Banking,Medium,Open,111,Team-4
+ISS-00571,2026-04-11 00:00:00,Corporate Banking,Medium,Closed,111,Team-5
+ISS-00572,2026-04-11 00:00:00,Derivatives,High,Open,112,Team-6
+ISS-00573,2026-04-12 00:00:00,Derivatives,High,Closed,112,Team-7
+ISS-00574,2026-04-12 00:00:00,Fixed Income,Low,Open,113,Team-8
+ISS-00575,2026-04-13 00:00:00,Fixed Income,Low,Closed,113,Team-9
+ISS-00576,2026-04-13 00:00:00,Corporate Banking,Medium,Open,114,
+ISS-00577,2026-04-14 00:00:00,Corporate Banking,Medium,Closed,114,Team-2
+ISS-00578,2026-04-14 00:00:00,Derivatives,High,Open,115,Team-3
+ISS-00579,2026-04-15 00:00:00,Derivatives,High,Closed,115,Team-4
+ISS-00580,2026-04-15 00:00:00,Fixed Income,Low,Open,116,Team-5
+ISS-00581,2026-04-16 00:00:00,Fixed Income,Low,Closed,116,Team-6
+ISS-00582,2026-04-16 00:00:00,Corporate Banking,Medium,Open,117,Team-7
+ISS-00583,2026-04-17 00:00:00,Corporate Banking,Medium,Closed,117,Team-8
+ISS-00584,2026-04-17 00:00:00,Derivatives,High,Open,118,Team-9
+ISS-00585,2026-04-18 00:00:00,Derivatives,High,Closed,73,Team-1
+ISS-00586,2026-04-18 00:00:00,Fixed Income,Low,Open,74,Team-2
+ISS-00587,2026-04-19 00:00:00,Fixed Income,Low,Closed,74,Team-3
+ISS-00588,2026-04-19 00:00:00,Corporate Banking,Medium,Open,75,
+ISS-00589,2026-04-20 00:00:00,Corporate Banking,Medium,Closed,75,Team-5
+ISS-00590,2026-04-20 00:00:00,Derivatives,High,Open,76,Team-6
+ISS-00591,2026-04-21 00:00:00,Derivatives,High,Closed,76,Team-7
+ISS-00592,2026-04-21 00:00:00,Fixed Income,Low,Open,77,Team-8
+ISS-00593,2026-04-22 00:00:00,Fixed Income,Low,Closed,77,Team-9
+ISS-00594,2026-04-22 00:00:00,Corporate Banking,Medium,Open,78,Team-1
+ISS-00595,2026-04-23 00:00:00,Corporate Banking,Medium,Closed,78,Team-2
+ISS-00596,2026-04-23 00:00:00,Derivatives,High,Open,79,Team-3
+ISS-00597,2026-04-24 00:00:00,Derivatives,High,Closed,79,Team-4
+ISS-00598,2026-04-24 00:00:00,Fixed Income,Low,Open,80,Team-5
+ISS-00599,2026-04-25 00:00:00,Fixed Income,Low,Closed,80,Team-6
+ISS-00600,2026-04-25 00:00:00,Corporate Banking,Medium,Open,81,
+ISS-00601,2026-04-26 00:00:00,Corporate Banking,Medium,Closed,81,Team-8
+ISS-00602,2026-04-26 00:00:00,Derivatives,High,Open,82,Team-9
+ISS-00603,2026-04-27 00:00:00,Derivatives,High,Closed,82,Team-1
+ISS-00604,2026-04-27 00:00:00,Fixed Income,Low,Open,83,Team-2
+ISS-00605,2026-04-28 00:00:00,Fixed Income,Low,Closed,83,Team-3
+ISS-00606,2026-04-28 00:00:00,Corporate Banking,Medium,Open,84,Team-4
+ISS-00607,2026-04-29 00:00:00,Corporate Banking,Medium,Closed,84,Team-5
+ISS-00608,2026-04-29 00:00:00,Derivatives,High,Open,85,Team-6
+ISS-00609,2026-04-30 00:00:00,Derivatives,High,Closed,85,Team-7
+ISS-00610,2026-04-30 00:00:00,Fixed Income,Low,Open,86,Team-8
+ISS-00611,2026-05-01 00:00:00,Fixed Income,Low,Closed,86,Team-9
+ISS-00612,2026-05-01 00:00:00,Corporate Banking,Medium,Open,87,
+ISS-00613,2026-05-01 00:00:00,Derivatives,High,Closed,88,Team-2
+ISS-00614,2026-05-02 00:00:00,FX,Low,Closed,88,Team-3
+ISS-00615,2026-05-02 00:00:00,Equity Research,Medium,Open,89,Team-4
+ISS-00616,2026-05-02 00:00:00,Capital Markets,High,Closed,90,Team-5
+ISS-00617,2026-05-03 00:00:00,Fixed Income,Low,Closed,90,Team-6
+ISS-00618,2026-05-03 00:00:00,Corporate Banking,Medium,Open,91,Team-7
+ISS-00619,2026-05-03 00:00:00,Derivatives,High,Closed,92,Team-8
+ISS-00620,2026-05-04 00:00:00,FX,Low,Closed,92,Team-9
+ISS-00621,2026-05-04 00:00:00,Equity Research,Medium,Open,93,Team-1
+ISS-00622,2026-05-04 00:00:00,Capital Markets,High,Closed,94,Team-2
+ISS-00623,2026-05-05 00:00:00,Fixed Income,Low,Closed,94,Team-3
+ISS-00624,2026-05-05 00:00:00,Corporate Banking,Medium,Open,95,
+ISS-00625,2026-05-05 00:00:00,Derivatives,High,Closed,96,Team-5
+ISS-00626,2026-05-06 00:00:00,FX,Low,Closed,96,Team-6
+ISS-00627,2026-05-06 00:00:00,Equity Research,Medium,Open,97,Team-7
+ISS-00628,2026-05-06 00:00:00,Capital Markets,High,Closed,98,Team-8
+ISS-00629,2026-05-07 00:00:00,Fixed Income,Low,Closed,98,Team-9
+ISS-00630,2026-05-07 00:00:00,Corporate Banking,Medium,Open,54,Team-1
+ISS-00631,2026-05-07 00:00:00,Derivatives,High,Closed,55,Team-2
+ISS-00632,2026-05-08 00:00:00,FX,Low,Closed,55,Team-3
+ISS-00633,2026-05-08 00:00:00,Equity Research,Medium,Open,56,Team-4
+ISS-00634,2026-05-08 00:00:00,Capital Markets,High,Closed,57,Team-5
+ISS-00635,2026-05-09 00:00:00,Fixed Income,Low,Closed,57,Team-6
+ISS-00636,2026-05-09 00:00:00,Corporate Banking,Medium,Open,58,
+ISS-00637,2026-05-09 00:00:00,Derivatives,High,Closed,59,Team-8
+ISS-00638,2026-05-10 00:00:00,FX,Low,Closed,59,Team-9
+ISS-00639,2026-05-10 00:00:00,Equity Research,Medium,Open,60,Team-1
+ISS-00640,2026-05-10 00:00:00,Capital Markets,High,Closed,61,Team-2
+ISS-00641,2026-05-11 00:00:00,Fixed Income,Low,Closed,61,Team-3
+ISS-00642,2026-05-11 00:00:00,Corporate Banking,Medium,Open,62,Team-4
+ISS-00643,2026-05-11 00:00:00,Derivatives,High,Closed,63,Team-5
+ISS-00644,2026-05-12 00:00:00,FX,Low,Closed,63,Team-6
+ISS-00645,2026-05-12 00:00:00,Equity Research,Medium,Open,64,Team-7
+ISS-00646,2026-05-12 00:00:00,Capital Markets,High,Closed,65,Team-8
+ISS-00647,2026-05-13 00:00:00,Fixed Income,Low,Closed,65,Team-9
+ISS-00648,2026-05-13 00:00:00,Corporate Banking,Medium,Open,66,
+ISS-00649,2026-05-13 00:00:00,Derivatives,High,Closed,67,Team-2
+ISS-00650,2026-05-14 00:00:00,FX,Low,Closed,67,Team-3
+ISS-00651,2026-05-14 00:00:00,Equity Research,Medium,Open,68,Team-4
+ISS-00652,2026-05-14 00:00:00,Capital Markets,High,Closed,69,Team-5
+ISS-00653,2026-05-15 00:00:00,Fixed Income,Low,Closed,69,Team-6
+ISS-00654,2026-05-15 00:00:00,Corporate Banking,Medium,Open,70,Team-7
+ISS-00655,2026-05-15 00:00:00,Derivatives,High,Closed,71,Team-8
+ISS-00656,2026-05-16 00:00:00,FX,Low,Closed,71,Team-9
+ISS-00657,2026-05-16 00:00:00,Equity Research,Medium,Open,72,Team-1
+ISS-00658,2026-05-16 00:00:00,Capital Markets,High,Closed,73,Team-2
+ISS-00659,2026-05-17 00:00:00,Fixed Income,Low,Closed,73,Team-3
+ISS-00660,2026-05-17 00:00:00,Corporate Banking,Medium,Open,74,
+ISS-00661,2026-05-17 00:00:00,Derivatives,High,Closed,75,Team-5
+ISS-00662,2026-05-18 00:00:00,FX,Low,Closed,75,Team-6
+ISS-00663,2026-05-18 00:00:00,Equity Research,Medium,Open,76,Team-7
+ISS-00664,2026-05-18 00:00:00,Capital Markets,High,Closed,77,Team-8
+ISS-00665,2026-05-19 00:00:00,Fixed Income,Low,Closed,77,Team-9
+ISS-00666,2026-05-19 00:00:00,Corporate Banking,Medium,Open,78,Team-1
+ISS-00667,2026-05-19 00:00:00,Derivatives,High,Closed,79,Team-2
+ISS-00668,2026-05-20 00:00:00,FX,Low,Closed,79,Team-3
+ISS-00669,2026-05-20 00:00:00,Equity Research,Medium,Open,80,Team-4
+ISS-00670,2026-05-20 00:00:00,Capital Markets,High,Closed,81,Team-5
+ISS-00671,2026-05-21 00:00:00,Fixed Income,Low,Closed,81,Team-6
+ISS-00672,2026-05-21 00:00:00,Corporate Banking,Medium,Open,82,
+ISS-00673,2026-05-21 00:00:00,Derivatives,High,Closed,83,Team-8
+ISS-00674,2026-05-22 00:00:00,FX,Low,Closed,83,Team-9
+ISS-00675,2026-05-22 00:00:00,Equity Research,Medium,Open,39,Team-1
+ISS-00676,2026-05-22 00:00:00,Capital Markets,High,Closed,40,Team-2
+ISS-00677,2026-05-23 00:00:00,Fixed Income,Low,Closed,40,Team-3
+ISS-00678,2026-05-23 00:00:00,Corporate Banking,Medium,Open,41,Team-4
+ISS-00679,2026-05-23 00:00:00,Derivatives,High,Closed,42,Team-5
+ISS-00680,2026-05-24 00:00:00,FX,Low,Closed,42,Team-6
+ISS-00681,2026-05-24 00:00:00,Equity Research,Medium,Open,43,Team-7
+ISS-00682,2026-05-24 00:00:00,Capital Markets,High,Closed,44,Team-8
+ISS-00683,2026-05-25 00:00:00,Fixed Income,Low,Closed,44,Team-9
+ISS-00684,2026-05-25 00:00:00,Corporate Banking,Medium,Open,45,
+ISS-00685,2026-05-25 00:00:00,Derivatives,High,Closed,46,Team-2
+ISS-00686,2026-05-26 00:00:00,FX,Low,Closed,46,Team-3
+ISS-00687,2026-05-26 00:00:00,Equity Research,Medium,Open,47,Team-4
+ISS-00688,2026-05-26 00:00:00,Capital Markets,High,Closed,48,Team-5
+ISS-00689,2026-05-27 00:00:00,Fixed Income,Low,Closed,48,Team-6
+ISS-00690,2026-05-27 00:00:00,Corporate Banking,Medium,Open,49,Team-7
+ISS-00691,2026-05-27 00:00:00,Derivatives,High,Closed,50,Team-8
+ISS-00692,2026-05-28 00:00:00,FX,Low,Closed,50,Team-9
+ISS-00693,2026-05-28 00:00:00,Equity Research,Medium,Open,51,Team-1
+ISS-00694,2026-05-28 00:00:00,Capital Markets,High,Closed,52,Team-2
+ISS-00695,2026-05-29 00:00:00,Fixed Income,Low,Closed,52,Team-3
+ISS-00696,2026-05-29 00:00:00,Corporate Banking,Medium,Open,53,
+ISS-00697,2026-05-29 00:00:00,Derivatives,High,Closed,54,Team-5
+ISS-00698,2026-05-30 00:00:00,FX,Low,Closed,54,Team-6
+ISS-00699,2026-05-30 00:00:00,Equity Research,Medium,Open,55,Team-7
+ISS-00700,2026-05-30 00:00:00,Capital Markets,High,Closed,56,Team-8
+ISS-00701,2026-05-31 00:00:00,Fixed Income,Low,Closed,56,Team-9
+ISS-00702,2026-05-31 00:00:00,Corporate Banking,Medium,Open,57,Team-1
+ISS-00703,2026-05-31 00:00:00,Derivatives,High,Closed,58,Team-2
+ISS-00704,2026-06-01 00:00:00,FX,Low,Closed,58,Team-3
+ISS-00705,2026-06-01 00:00:00,Equity Research,Medium,Open,59,Team-4
+ISS-00706,2026-06-01 00:00:00,Capital Markets,High,Closed,60,Team-5
+ISS-00707,2026-06-02 00:00:00,Fixed Income,Low,Closed,60,Team-6
+ISS-00708,2026-06-02 00:00:00,Corporate Banking,Medium,Open,61,
+ISS-00709,2026-06-02 00:00:00,Derivatives,High,Closed,62,Team-8
+ISS-00710,2026-06-03 00:00:00,FX,Low,Closed,62,Team-9
+ISS-00711,2026-06-03 00:00:00,Equity Research,Medium,Open,63,Team-1
+ISS-00712,2026-06-03 00:00:00,Capital Markets,High,Closed,64,Team-2
+ISS-00713,2026-06-04 00:00:00,Fixed Income,Low,Closed,64,Team-3
+ISS-00714,2026-06-04 00:00:00,Corporate Banking,Medium,Open,65,Team-4
+ISS-00715,2026-06-04 00:00:00,Derivatives,High,Closed,66,Team-5
+ISS-00716,2026-06-05 00:00:00,FX,Low,Closed,66,Team-6
+ISS-00717,2026-06-05 00:00:00,Equity Research,Medium,Open,67,Team-7
+ISS-00718,2026-06-05 00:00:00,Capital Markets,High,Closed,68,Team-8
+ISS-00719,2026-06-06 00:00:00,Fixed Income,Low,Closed,68,Team-9
+ISS-00720,2026-06-06 00:00:00,Corporate Banking,Medium,Open,24,
+ISS-00721,2026-06-06 00:00:00,Derivatives,High,Closed,25,Team-2
+ISS-00722,2026-06-07 00:00:00,FX,Low,Closed,25,Team-3
+ISS-00723,2026-06-07 00:00:00,Equity Research,Medium,Open,26,Team-4
+ISS-00724,2026-06-07 00:00:00,Capital Markets,High,Closed,27,Team-5
+ISS-00725,2026-06-08 00:00:00,Fixed Income,Low,Closed,27,Team-6
+ISS-00726,2026-06-08 00:00:00,Corporate Banking,Medium,Open,28,Team-7
+ISS-00727,2026-06-08 00:00:00,Derivatives,High,Closed,29,Team-8
+ISS-00728,2026-06-09 00:00:00,FX,Low,Closed,29,Team-9
+ISS-00729,2026-06-09 00:00:00,Equity Research,Medium,Open,30,Team-1
+ISS-00730,2026-06-09 00:00:00,Capital Markets,High,Closed,31,Team-2
+ISS-00731,2026-06-10 00:00:00,Fixed Income,Low,Closed,31,Team-3
+ISS-00732,2026-06-10 00:00:00,Corporate Banking,Medium,Open,32,
+ISS-00733,2026-06-10 00:00:00,Derivatives,High,Closed,33,Team-5
+ISS-00734,2026-06-11 00:00:00,FX,Low,Closed,33,Team-6
+ISS-00735,2026-06-11 00:00:00,Equity Research,Medium,Open,34,Team-7
+ISS-00736,2026-06-11 00:00:00,Capital Markets,High,Closed,35,Team-8
+ISS-00737,2026-06-12 00:00:00,Fixed Income,Low,Closed,35,Team-9
+ISS-00738,2026-06-12 00:00:00,Corporate Banking,Medium,Open,36,Team-1
+ISS-00739,2026-06-12 00:00:00,Derivatives,High,Closed,37,Team-2
+ISS-00740,2026-06-13 00:00:00,FX,Low,Closed,37,Team-3
+ISS-00741,2026-06-13 00:00:00,Equity Research,Medium,Open,38,Team-4
+ISS-00742,2026-06-13 00:00:00,Capital Markets,High,Closed,39,Team-5
+ISS-00743,2026-06-14 00:00:00,Fixed Income,Low,Closed,39,Team-6
+ISS-00744,2026-06-14 00:00:00,Corporate Banking,Medium,Open,40,
+ISS-00745,2026-06-14 00:00:00,Derivatives,High,Closed,41,Team-8
+ISS-00746,2026-06-15 00:00:00,FX,Low,Closed,41,Team-9
+ISS-00747,2026-06-15 00:00:00,Equity Research,Medium,Open,42,Team-1
+ISS-00748,2026-06-15 00:00:00,Capital Markets,High,Closed,43,Team-2
+ISS-00749,2026-06-16 00:00:00,Fixed Income,Low,Closed,43,Team-3
+ISS-00750,2026-06-16 00:00:00,Corporate Banking,Medium,Open,44,Team-4
+ISS-00751,2026-06-16 00:00:00,Derivatives,High,Closed,45,Team-5
+ISS-00752,2026-06-17 00:00:00,FX,Low,Closed,45,Team-6
+ISS-00753,2026-06-17 00:00:00,Equity Research,Medium,Open,46,Team-7
+ISS-00754,2026-06-17 00:00:00,Capital Markets,High,Closed,47,Team-8
+ISS-00755,2026-06-18 00:00:00,Fixed Income,Low,Closed,47,Team-9
+ISS-00756,2026-06-18 00:00:00,Corporate Banking,Medium,Open,48,
+ISS-00757,2026-06-18 00:00:00,Derivatives,High,Closed,49,Team-2
+ISS-00758,2026-06-19 00:00:00,FX,Low,Closed,49,Team-3
+ISS-00759,2026-06-19 00:00:00,Equity Research,Medium,Open,50,Team-4
+ISS-00760,2026-06-19 00:00:00,Capital Markets,High,Closed,51,Team-5
+ISS-00761,2026-06-20 00:00:00,Fixed Income,Low,Closed,51,Team-6
+ISS-00762,2026-06-20 00:00:00,Corporate Banking,Medium,Open,52,Team-7
+ISS-00763,2026-06-20 00:00:00,Derivatives,High,Closed,53,Team-8
+ISS-00764,2026-06-21 00:00:00,FX,Low,Closed,53,Team-9
+ISS-00765,2026-06-21 00:00:00,Equity Research,Medium,Open,9,Team-1
+ISS-00766,2026-06-21 00:00:00,Capital Markets,High,Closed,10,Team-2
+ISS-00767,2026-06-22 00:00:00,Fixed Income,Low,Closed,10,Team-3
+ISS-00768,2026-06-22 00:00:00,Corporate Banking,Medium,Open,11,
+ISS-00769,2026-06-22 00:00:00,Derivatives,High,Closed,12,Team-5
+ISS-00770,2026-06-23 00:00:00,FX,Low,Closed,12,Team-6
+ISS-00771,2026-06-23 00:00:00,Equity Research,Medium,Open,13,Team-7
+ISS-00772,2026-06-23 00:00:00,Capital Markets,High,Closed,14,Team-8
+ISS-00773,2026-06-24 00:00:00,Fixed Income,Low,Closed,14,Team-9
+ISS-00774,2026-06-24 00:00:00,Corporate Banking,Medium,Open,15,Team-1
+ISS-00775,2026-06-24 00:00:00,Derivatives,High,Closed,16,Team-2
+ISS-00776,2026-06-25 00:00:00,FX,Low,Closed,16,Team-3
+ISS-00777,2026-06-25 00:00:00,Equity Research,Medium,Open,17,Team-4
+ISS-00778,2026-06-25 00:00:00,Capital Markets,High,Closed,18,Team-5
+ISS-00779,2026-06-26 00:00:00,Fixed Income,Low,Closed,18,Team-6
+ISS-00780,2026-06-26 00:00:00,Corporate Banking,Medium,Open,19,
+ISS-00781,2026-06-26 00:00:00,Derivatives,High,Closed,20,Team-8
+ISS-00782,2026-06-27 00:00:00,FX,Low,Closed,20,Team-9
+ISS-00783,2026-06-27 00:00:00,Equity Research,Medium,Open,21,Team-1
+ISS-00784,2026-06-27 00:00:00,Capital Markets,High,Closed,22,Team-2
+ISS-00785,2026-06-28 00:00:00,Fixed Income,Low,Closed,22,Team-3
+ISS-00786,2026-06-28 00:00:00,Corporate Banking,Medium,Open,23,Team-4
+ISS-00787,2026-06-28 00:00:00,Derivatives,High,Closed,24,Team-5
+ISS-00788,2026-06-29 00:00:00,FX,Low,Closed,24,Team-6
+ISS-00789,2026-06-29 00:00:00,Equity Research,Medium,Open,25,Team-7
+ISS-00790,2026-06-29 00:00:00,Capital Markets,High,Closed,26,Team-8
+ISS-00791,2026-06-30 00:00:00,Fixed Income,Low,Closed,26,Team-9
+ISS-00792,2026-06-30 00:00:00,Corporate Banking,Medium,Open,27,
+ISS-00793,2026-06-30 00:00:00,Derivatives,High,Closed,28,Team-2

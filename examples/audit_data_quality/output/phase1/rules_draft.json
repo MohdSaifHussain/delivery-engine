@@ -1,0 +1,50 @@
+{
+  "drafted_from": "dq_profile",
+  "how_to_approve": "Review every rule and rationale. To approve, re-run with approvals={\"rules\": {\"approver\": \"<your name>\", \"sha256\": \"8864cc9aa193523c6adacd0631a648ab267aab7ff44d92a10cbe44f26aa7245c\"}}. The hash binds the approval to exactly this draft.",
+  "rationales": [
+    "'issue_id' has zero nulls across 793 rows - the profile suggests completeness is an expectation, so future nulls should be exceptions.",
+    "'issue_id' is distinct on 793 of 793 rows (ratio >= 0.999) - it behaves as an identifier, so duplicates should be exceptions.",
+    "'raised_at' has zero nulls across 793 rows - the profile suggests completeness is an expectation, so future nulls should be exceptions.",
+    "'raised_at' is a TIMESTAMP column - future-dated records are a validity finding in most operational data.",
+    "'business_line' has zero nulls across 793 rows - the profile suggests completeness is an expectation, so future nulls should be exceptions.",
+    "'severity' has zero nulls across 793 rows - the profile suggests completeness is an expectation, so future nulls should be exceptions.",
+    "'status' has zero nulls across 793 rows - the profile suggests completeness is an expectation, so future nulls should be exceptions.",
+    "'days_open' has zero nulls across 793 rows - the profile suggests completeness is an expectation, so future nulls should be exceptions."
+  ],
+  "rules": [
+    {
+      "column": "issue_id",
+      "rule": "not_null"
+    },
+    {
+      "column": "issue_id",
+      "rule": "unique"
+    },
+    {
+      "column": "raised_at",
+      "rule": "not_null"
+    },
+    {
+      "column": "raised_at",
+      "rule": "not_future"
+    },
+    {
+      "column": "business_line",
+      "rule": "not_null"
+    },
+    {
+      "column": "severity",
+      "rule": "not_null"
+    },
+    {
+      "column": "status",
+      "rule": "not_null"
+    },
+    {
+      "column": "days_open",
+      "rule": "not_null"
+    }
+  ],
+  "sha256": "8864cc9aa193523c6adacd0631a648ab267aab7ff44d92a10cbe44f26aa7245c",
+  "stage": "rules"
+}

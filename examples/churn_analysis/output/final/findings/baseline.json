@@ -1,0 +1,37 @@
+{
+  "findings": {
+    "categorical_features": [
+      "plan_type"
+    ],
+    "class_balance_positive": 0.185,
+    "library": "scikit-learn",
+    "metrics": {
+      "accuracy": 1.0,
+      "f1": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "roc_auc": 1.0
+    },
+    "model": "LogisticRegression(max_iter=1000)",
+    "n_rows_dropped_nulls": 0,
+    "n_test": 100,
+    "n_train": 300,
+    "negative_class": "no",
+    "note": "Deterministic baseline: fixed integer seeds on splitter and estimator per scikit-learn's controlling-randomness guidance; metrics rounded to 6 decimals as a declared contract. This is a reference point for human modeling work, not a delivered model.",
+    "numeric_features": [
+      "monthly_spend",
+      "tenure_months"
+    ],
+    "positive_class": "yes",
+    "random_seed": 42,
+    "split": "stratified",
+    "target": "churned",
+    "target_candidates": [
+      "churned"
+    ],
+    "target_selection": "first binary_target in plan column order (plan approved at Human Gate 1); candidates listed under target_candidates",
+    "test_size": 0.25
+  },
+  "sha256": "2e7a710a26705b3b75b04bc5ab96636830a4c7e08ca127db88e824598dd6b67b",
+  "stage": "baseline"
+}

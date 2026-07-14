@@ -1,0 +1,137 @@
+{
+  "findings": {
+    "accuracy_note": "Accuracy is never scored from the dataset alone \u2014 that would be fabrication. Use analystkit_reconcile against an authoritative source.",
+    "columns": [
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 2000,
+        "dtype": "BIGINT",
+        "name": "id",
+        "nulls": 0,
+        "total": 2000,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 2000,
+        "dtype": "TIMESTAMP",
+        "name": "date",
+        "nulls": 0,
+        "total": 2000,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 892,
+        "dtype": "BIGINT",
+        "name": "client_id",
+        "nulls": 0,
+        "total": 2000,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 1322,
+        "dtype": "BIGINT",
+        "name": "card_id",
+        "nulls": 0,
+        "total": 2000,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 1621,
+        "dtype": "DOUBLE",
+        "name": "amount",
+        "nulls": 0,
+        "total": 2000,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 2,
+        "dtype": "VARCHAR",
+        "name": "use_chip",
+        "nulls": 0,
+        "total": 2000,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 692,
+        "dtype": "BIGINT",
+        "name": "merchant_id",
+        "nulls": 0,
+        "total": 2000,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 904,
+        "dtype": "VARCHAR",
+        "name": "merchant_city",
+        "nulls": 0,
+        "total": 2000,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 0.875,
+        "distinct": 56,
+        "dtype": "VARCHAR",
+        "name": "merchant_state",
+        "nulls": 250,
+        "total": 2000,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 0.8694999999999999,
+        "distinct": 1218,
+        "dtype": "DOUBLE",
+        "name": "zip",
+        "nulls": 261,
+        "total": 2000,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 77,
+        "dtype": "BIGINT",
+        "name": "mcc",
+        "nulls": 0,
+        "total": 2000,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 0.01649999999999996,
+        "distinct": 6,
+        "dtype": "VARCHAR",
+        "name": "errors",
+        "nulls": 1967,
+        "total": 2000,
+        "valid_ratio": 1.0
+      }
+    ],
+    "dama_scores": {
+      "accuracy": null,
+      "completeness": 0.8967499999999999,
+      "consistency": 1.0,
+      "timeliness": 0.0,
+      "uniqueness": 1.0,
+      "validity": 1.0
+    }
+  },
+  "sha256": "a4102b3062665b939af807b981c999201fae4fe25eb4cb0db3256cf726881d1e",
+  "stage": "dq_profile"
+}

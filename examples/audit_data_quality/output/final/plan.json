@@ -1,0 +1,75 @@
+{
+  "approved": true,
+  "approved_at_ist": "2026-07-14T14:07:16+05:30",
+  "approved_by": "Example Analyst",
+  "candidates_considered": [
+    "churn_analysis",
+    "data_quality_review",
+    "ops_review",
+    "transaction_monitoring_review"
+  ],
+  "column_kinds": [
+    [
+      "business_line",
+      "categorical_column"
+    ],
+    [
+      "days_open",
+      "numeric_column"
+    ],
+    [
+      "issue_id",
+      "id_column"
+    ],
+    [
+      "owner_team",
+      "categorical_column"
+    ],
+    [
+      "raised_at",
+      "timestamp_column"
+    ],
+    [
+      "severity",
+      "categorical_column"
+    ],
+    [
+      "status",
+      "binary_target"
+    ],
+    [
+      "status",
+      "categorical_column"
+    ]
+  ],
+  "created_at_ist": "2026-07-14T14:07:16+05:30",
+  "decision_rationale": "highest goal-keyword overlap (score 3) among 4 qualified playbooks",
+  "decision_source": "deterministic",
+  "goal": "data quality review of this extract",
+  "plan_sha256": "bedcd21b6da39418be5b4699098b7f28124c9682adb35820784769145181574f",
+  "playbook_name": "data_quality_review",
+  "playbook_path": "/home/claude/repo/delivery-engine/playbooks/data_quality_review.toml",
+  "playbook_version": "1.0.0",
+  "requirement_results": [
+    [
+      "min_rows >= 1",
+      true,
+      "source has 793 rows"
+    ],
+    [
+      "source type 'csv' accepted",
+      true,
+      "playbook accepts: csv, excel, sqlite, postgres, mysql"
+    ]
+  ],
+  "source": "/home/claude/repo/delivery-engine/examples/audit_data_quality/audit_issues.csv",
+  "stage_ids": [
+    "dq_profile",
+    "rules",
+    "dq_validate",
+    "dq_dedupe",
+    "report",
+    "readme",
+    "package"
+  ]
+}

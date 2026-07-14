@@ -18,7 +18,7 @@ schema_version = 1
 
 [playbook]
 name = "transaction_monitoring_review"
-version = "1.0.0"
+version = "1.1.0"
 description = "Transaction monitoring feed review: completeness gated, engine-drafted rules approved at Human Gate 2, volume trends and drivers from OpsKit, dual narratives packaged as re-performable evidence"
 
 [requirements]
@@ -100,4 +100,8 @@ kind = "package"
 needs = ["report", "ops_report", "readme"]
 
 [deliverables]
+# Step 13 formats: pdf intentionally NOT defaulted - it hard-requires
+# LibreOffice and a must-produce format stops the pipeline when its tool
+# is absent. Add "pdf" locally if LibreOffice is installed.
+formats = ["markdown", "docx", "pptx", "xlsx"]
 artifacts = ["rules_draft", "narrative_report", "ops_report", "readme", "audit_log", "manifest"]

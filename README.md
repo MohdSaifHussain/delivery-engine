@@ -13,6 +13,15 @@ append-only audit log. A reviewer who was never in the room can re-perform any
 stage from the delivery package alone and get the same hashes. If they can, it
 is evidence. If they cannot, it is just output.
 
+## Start here
+
+- **[QUICKSTART.md](QUICKSTART.md)** — install, run an example in 60
+  seconds, run it on your data, write your own playbook, choose your AI
+  level. For engineers and non-engineers alike.
+- **[examples/](examples/)** — three complete end-to-end runs with real
+  committed output: transaction monitoring (compliance), churn analysis
+  (business analytics), audit data quality (internal audit).
+
 ## The architecture
 
 ```

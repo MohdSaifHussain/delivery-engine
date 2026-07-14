@@ -1,0 +1,25 @@
+{
+  "files": {
+    "README.md": "cd1db573eef16509898bd7cc0d8da515eba42c931fe549a5ee7b84ab7c50de65",
+    "audit_log.jsonl": "98edc6e3ba77c14636b1180216ce630509b224808c369a0d14e2b4ce9cbe0656",
+    "delivery_package.docx": "84ff5bb104cd1ef76af4add425eb2a9fc6c1cdcc71390bb07214965d63024db4",
+    "delivery_package.pptx": "83f960953d082476ad6e990e08c17aaf11b1b34721f1f856844bd268cb47f269",
+    "delivery_package.xlsx": "84ac8c9dd41605f1bc9add1ec028a83ac796272e78ff288368940a951845f11e",
+    "findings/dq_dedupe.json": "bfcbaa66577547bc38235011e1b8c2af144ce67e934aca8eab78e4bde39d661a",
+    "findings/dq_profile.json": "f843f2b5724b950e16d3807a4df0ca74d1490ec4330617a9e3afeba56efed075",
+    "findings/dq_validate.json": "fbeeee1b44baebbd81f1d235e5f83bedb69c2b15042e0dab0c6a211d372281e2",
+    "findings/ops_review.json": "6ea35f7ecb755c5c49f294a5785c3c7f01da4b9d99d3ce111578bd5f80745912",
+    "narrative_report.md": "cfb295d159ec62a765e0254a42bc254e74d47937ec7c0dfa678c43922d975cc7",
+    "ops_report.md": "d94475fabbe5ab71f6658a3b96ba907a5c29c14bce41d467ef0acabfd0129651",
+    "plan.json": "55cd513399a32b134b95c57910a8971413e49e00bb0e9833fbdfcc6a9d7f4116",
+    "rules_draft.json": "671e79952007104346a7c11dcc763bd42e2250bf74aaf758dabec20a83744a1e"
+  },
+  "findings": {
+    "dq_dedupe": "c304c11a27d5fb7382e933d1a3fbbd8c35889137dc46ba87d42c3c953f426953",
+    "dq_profile": "a4102b3062665b939af807b981c999201fae4fe25eb4cb0db3256cf726881d1e",
+    "dq_validate": "04f02808a4e7231e6a6412424c8058a176c8f2ea0210ffa64154d599524f7cf5",
+    "ops_review": "aa5d2eb5f24f42767e9ac2d54e736d47b35d1a9267cfc45cfd62d179cc7bd2e5"
+  },
+  "note": "Verify each file's SHA-256 against this manifest. Matching hashes = unaltered evidence. The audit log records when and why each entry came to exist.",
+  "plan_sha256": "6de1ee63989031157e6c159342929dc1fcdc031cc29a46427d960fcd1474a9bc"
+}
