@@ -1,0 +1,54 @@
+{
+  "findings": {
+    "results": [
+      {
+        "column": "Order Id",
+        "detail": "value must not be null",
+        "failures": 0,
+        "rule": "not_null",
+        "rule_id": "R01",
+        "sample": []
+      },
+      {
+        "column": "Sales",
+        "detail": "value outside [-5000, 5000]",
+        "failures": 0,
+        "rule": "range",
+        "rule_id": "R02",
+        "sample": []
+      },
+      {
+        "column": "Order Profit Per Order",
+        "detail": "value outside [-10000, 50000]",
+        "failures": 0,
+        "rule": "range",
+        "rule_id": "R03",
+        "sample": []
+      },
+      {
+        "column": "Order Status",
+        "detail": "value not in the allowed set (9 values)",
+        "failures": 15759,
+        "rule": "allowed",
+        "rule_id": "R04",
+        "sample": [
+          "SUSPECTED_FRAUD",
+          "SUSPECTED_FRAUD",
+          "ON_HOLD"
+        ]
+      },
+      {
+        "column": "Delivery Status",
+        "detail": "value not in the allowed set (4 values)",
+        "failures": 0,
+        "rule": "allowed",
+        "rule_id": "R05",
+        "sample": []
+      }
+    ],
+    "rules_evaluated": 5,
+    "total_exceptions": 15759
+  },
+  "sha256": "01e2f211f5264bd59c6d536451f6765d4da61e63d6cdcf741291140ecbae891d",
+  "stage": "dq_validate"
+}

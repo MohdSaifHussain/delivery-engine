@@ -1,0 +1,78 @@
+# segment_comparison — statistical inference archetype (step 15)
+# Is the difference between segments REAL, or noise? DQ-gated, then a
+# deterministic inference suite: Wilson intervals, Fisher/chi-square
+# independence, Mann-Whitney — Benjamini-Hochberg corrected, alpha
+# pre-registered below and approved at Human Gate 1.
+# Schema: PLAYBOOK_SPEC.md v1 · TOML 1.0.0 (stdlib tomllib)
+
+schema_version = 1
+
+[playbook]
+name = "segment_comparison"
+version = "1.0.0"
+description = "Segment comparison with statistical significance inference: rates, group differences, effect sizes, FDR-corrected evidence"
+
+[requirements]
+min_rows = 100
+required_kinds = ["binary_target", "id_column"]
+source_types = ["csv"]
+
+# V14: the pre-registered significance level. Part of what the human
+# approves at Human Gate 1 — fixed before any p-value is computed.
+[stats]
+alpha = 0.05
+
+# ── Stage 1: the deterministic gate. Nothing runs before this passes. ──
+[[stages]]
+id = "dq_profile"
+kind = "kit"
+tool = "analystkit_profile"
+gate = "must_pass"
+
+[[stages]]
+id = "dq_validate"
+kind = "kit"
+tool = "analystkit_validate"
+gate = "must_pass"
+needs = ["dq_profile"]
+
+[[stages]]
+id = "plan_approval"
+kind = "human_gate"
+needs = ["dq_profile", "dq_validate"]
+
+# ── The inference stage (step 15): fixed, sourced procedures over the
+# plan's classified columns. Significance never gates; feasibility does.
+[[stages]]
+id = "stats"
+kind = "stats"
+stat_test = "full_inference"
+gate = "must_pass"
+needs = ["dq_profile", "dq_validate", "plan_approval"]
+
+# ── AI stages: prose and structure only; every number injected ──
+[[stages]]
+id = "report"
+kind = "ai"
+slot = "narrative_report"
+numbers_from = "findings_store"
+human_approval = false
+feeds_deterministic = false
+needs = ["stats"]
+
+[[stages]]
+id = "readme"
+kind = "ai"
+slot = "readme"
+numbers_from = "findings_store"
+human_approval = false
+feeds_deterministic = false
+needs = ["report"]
+
+[[stages]]
+id = "package"
+kind = "package"
+needs = ["report", "readme"]
+
+[deliverables]
+artifacts = ["narrative_report", "readme", "delivery_package", "audit_log", "manifest"]

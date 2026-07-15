@@ -209,6 +209,8 @@ def run(
             )
         elif stage.kind is StageKind.MODEL:
             _run_model_stage(stage, plan, store, audit, out_dir)
+        elif stage.kind is StageKind.STATS:
+            _run_stats_stage(stage, plan, playbook, store, audit, out_dir)
         elif stage.kind is StageKind.PACKAGE:
             _build_deliverable_documents(
                 playbook, plan, store, audit, out_dir
@@ -513,6 +515,93 @@ def _run_model_stage(
         f"{findings['n_train']}/{findings['n_test']} split); metrics "
         f"stored hashed - metric values never gate, training feasibility "
         f"does (declared step 10 semantics)",
+        sha256=digest,
+    )
+
+
+def _run_stats_stage(
+    stage: Stage,
+    plan: Plan,
+    playbook: Playbook,
+    store: FindingsStore,
+    audit: AuditLog,
+    out_dir: Path,
+) -> None:
+    """The deterministic statistical inference stage (step 15).
+
+    The stage decides nothing: target and feature columns come from the
+    plan's classified kinds - the classification the human approved at
+    Human Gate 1 - and alpha comes pre-registered from the playbook's
+    [stats] table, approved with the same plan, before any p-value
+    existed. The suite of tests is the playbook's declared stat_test
+    (V14); every method is fixed and traced to primary sources in
+    delivery_engine.stats.
+
+    Gate semantics, the step-10 principle extended: must_pass fails when
+    inference CANNOT be produced (missing dependency, plan/source drift,
+    degenerate target, nothing testable). SIGNIFICANCE NEVER GATES - a
+    pipeline that stops or proceeds on p-values is p-hacking machinery.
+    That judgment is explicitly the human's (charter section 5).
+    """
+    from delivery_engine.stats import StatsError, run_inference
+
+    kinds = list(plan.column_kinds)
+    targets = [c for c, k in kinds if k == "binary_target"]
+    if not targets:
+        reason = (
+            "plan carries no binary_target column - the inference stage "
+            "requires one (the playbook's requirements should have "
+            "demanded required_kinds = ['binary_target'])"
+        )
+        audit.record(stage.stage_id, "stats:inference", "fail", reason)
+        audit.write(out_dir / "audit_log.jsonl")
+        raise ExecutionStopped(stage.stage_id, reason)
+    # Disclosed deterministic selection - the same rule, wording, and
+    # disclosure the model stage uses (step 10): first binary_target in
+    # the plan column order the human approved at Human Gate 1.
+    target = targets[0]
+    id_cols = {c for c, k in kinds if k == "id_column"}
+    numeric = [c for c, k in kinds
+               if k == "numeric_column" and c != target and c not in id_cols]
+    categorical = [c for c, k in kinds
+                   if k == "categorical_column" and c != target
+                   and c not in id_cols]
+
+    stat_test = stage.stat_test or "full_inference"
+    try:
+        findings = run_inference(
+            plan.source, stat_test, target, categorical, numeric,
+            playbook.alpha,
+        )
+        findings["target_candidates"] = sorted(set(targets))
+        findings["target_selection"] = (
+            "first binary_target in plan column order (plan approved at "
+            "Human Gate 1); candidates listed under target_candidates"
+        )
+    except StatsError as exc:
+        outcome = "fail" if stage.gate is GateMode.MUST_PASS else "advisory_flag"
+        audit.record(stage.stage_id, "stats:inference", outcome, str(exc)[:300])
+        audit.write(out_dir / "audit_log.jsonl")
+        if stage.gate is GateMode.MUST_PASS:
+            raise ExecutionStopped(stage.stage_id, str(exc)) from None
+        return
+
+    digest = store.put(stage.stage_id, findings)
+    (out_dir / "findings" / f"{stage.stage_id}.json").write_text(
+        store.to_json(stage.stage_id), encoding="utf-8"
+    )
+    n_tests = len(findings.get("tests", []))
+    n_props = len(findings.get("proportions", []))
+    n_skips = len(findings.get("skipped", []))
+    audit.record(
+        stage.stage_id, "stats:inference", "pass",
+        f"deterministic inference on target '{target}' "
+        f"(suite '{stat_test}', pre-registered alpha "
+        f"{findings['alpha']}): {n_tests} hypothesis test(s) with "
+        f"Benjamini-Hochberg FDR control, {n_props} Wilson interval(s), "
+        f"{n_skips} skip(s) recorded with reasons; findings stored "
+        f"hashed - significance never gates, feasibility does (declared "
+        f"step 15 semantics)",
         sha256=digest,
     )
 

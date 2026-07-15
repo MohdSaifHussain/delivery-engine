@@ -1,7 +1,40 @@
 # PROJECT CHARTER — Delivery Engine
 
-**Version:** 0.10
-**Date:** 9 July 2026 (v0.1 founding) · amended 11-14 July 2026 (v0.2 through v0.10)
+**Version:** 0.11
+**Date:** 9 July 2026 (v0.1 founding) · amended 11-15 July 2026 (v0.2 through v0.11)
+**Amendment record (v0.11):** Build-sequence step 15 recorded as built:
+the statistical evidence layer. A new stage kind `stats`
+(delivery_engine.stats) upgrades the engine's findings from DESCRIPTIVE
+(counts, rates) to INFERENTIAL (is a difference real; how uncertain is
+a rate) - deterministically, hashed, narrated-never-computed by AI.
+Methods fixed and traced to primary sources: Wilson score intervals
+(Brown, Cai & DasGupta 2001; NIST/SEMATECH e-Handbook 7.2.4.1;
+statsmodels), Fisher exact for 2x2 tables (scipy), Pearson chi-square
+correction=False for r x c with Cochran's-rule validity flags
+(NIST/SEMATECH), Mann-Whitney U for numeric two-group comparison with
+the parametric t-test REFUSED in v1 (normality is an assumption the
+engine cannot certify - the OpsKit Simpson's-paradox refusal posture),
+effect sizes ALWAYS alongside p-values (ASA Statement on p-values 2016,
+principle 5: Cramer's V, rank-biserial r), and Benjamini-Hochberg FDR
+control across every test a stage runs (Benjamini & Hochberg 1995).
+CONSTITUTIONAL POSITIONS (new rule V14): stat_test is declared from a
+fixed list - the engine never improvises a method; alpha is
+PRE-REGISTERED in the playbook's [stats] table, approved at Human Gate
+1 before any p-value exists, range-checked, and refused when declared
+with no stats stage to apply it to. SIGNIFICANCE NEVER GATES - the
+step-10 principle extended: feasibility failures stop a must_pass
+stage; p-values never do, because a pipeline that stops or proceeds on
+significance is p-hacking machinery. Skips are recorded with reasons,
+never silent; an all-skipped stage is a feasibility failure. Findings
+rounded to 6 decimals (the step-10 contract). New archetype
+segment_comparison; narrative report gains a Statistical evidence
+section (injected numbers only). Step-15 loophole hunt closed L4
+(target-as-its-own-feature crashed deep in pandas - now a clean
+refusal, with duplicate-feature refusal alongside), and verified: alpha
+is live not decorative, NaN drops are counted, Wilson bounds hold in
+[0,1] at k=0 extremes where Wald fails, findings are row-order
+invariant, significance flags mirror BH-adjusted values at the
+boundary. 212 tests.
 **Amendment record (v0.10):** Build-sequence step 14 recorded as built:
 the developer-experience layer, positioned from a real-world job
 description (Senior Analyst, GBM Audit COO, Scotiabank). Three parts:

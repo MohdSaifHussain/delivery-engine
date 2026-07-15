@@ -12,6 +12,7 @@ dependencies = ["analystkit>=2.0"]
 
 [project.optional-dependencies]
 dev = ["pytest>=9.0", "mypy>=2.0", "ruff>=0.15"]
+stats = ["scipy>=1.14", "statsmodels>=0.14"]
 ai = ["anthropic>=0.40"]
 ml = ["scikit-learn>=1.5"]
 docs = ["python-pptx>=1.0", "markitdown>=0.1", "openpyxl>=3.1"]

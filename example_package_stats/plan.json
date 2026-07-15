@@ -1,0 +1,68 @@
+{
+  "approved": true,
+  "approved_at_ist": "2026-07-15T23:23:31+05:30",
+  "approved_by": "Saif",
+  "candidates_considered": [
+    "churn_analysis",
+    "data_quality_review",
+    "segment_comparison"
+  ],
+  "column_kinds": [
+    [
+      "channel",
+      "categorical_column"
+    ],
+    [
+      "converted",
+      "binary_target"
+    ],
+    [
+      "customer_id",
+      "id_column"
+    ],
+    [
+      "days_active",
+      "numeric_column"
+    ]
+  ],
+  "created_at_ist": "2026-07-15T23:23:31+05:30",
+  "decision_rationale": "highest goal-keyword overlap (score 5) among 3 qualified playbooks",
+  "decision_source": "deterministic",
+  "goal": "segment comparison with statistical significance for the growth team",
+  "plan_sha256": "1a1beab09fa286d926ad8105e262fddf49eddc8e8da78968dc1251369331a811",
+  "playbook_name": "segment_comparison",
+  "playbook_path": "playbooks/segment_comparison.toml",
+  "playbook_version": "1.0.0",
+  "requirement_results": [
+    [
+      "min_rows >= 100",
+      true,
+      "source has 300 rows"
+    ],
+    [
+      "required kind 'binary_target'",
+      true,
+      "found in: converted"
+    ],
+    [
+      "required kind 'id_column'",
+      true,
+      "found in: customer_id"
+    ],
+    [
+      "source type 'csv' accepted",
+      true,
+      "playbook accepts: csv"
+    ]
+  ],
+  "source": "examples/segment_comparison/signup_conversion.csv",
+  "stage_ids": [
+    "dq_profile",
+    "dq_validate",
+    "plan_approval",
+    "stats",
+    "report",
+    "readme",
+    "package"
+  ]
+}

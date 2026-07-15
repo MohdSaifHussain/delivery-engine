@@ -42,6 +42,16 @@ KNOWN_KIT_TOOLS: Final[frozenset[str]] = frozenset({
     "opskit_run_playbook",
 })
 
+# V14: stats stages must declare WHICH sourced inference suite to run.
+# The engine never improvises a statistical method; each key maps to a
+# fixed procedure traced to primary sources in delivery_engine.stats.
+KNOWN_STAT_TESTS: Final[frozenset[str]] = frozenset({
+    "proportion_ci",
+    "chi2_independence",
+    "mann_whitney",
+    "full_inference",
+})
+
 # V11: opskit stages must name which OpsKit playbook to run. OpsKit
 # playbook keys are lowercase with hyphens (e.g. "weekly-review"),
 # distinct from V10's snake_case engine identifiers.
@@ -73,6 +83,7 @@ class StageKind(StrEnum):
     KIT = "kit"
     AI = "ai"
     MODEL = "model"
+    STATS = "stats"
     HUMAN_GATE = "human_gate"
     PACKAGE = "package"
 
@@ -111,6 +122,8 @@ class Stage:
     tool: str | None = None
     gate: GateMode | None = None
     ops_playbook: str | None = None    # opskit_run_playbook stages only (V11)
+    # stats
+    stat_test: str | None = None       # stats stages only (V14)
     # ai
     slot: AiSlot | None = None
     numbers_from: str | None = None
@@ -131,6 +144,7 @@ class Playbook:
     artifacts: tuple[str, ...]
     output_formats: tuple[str, ...]
     source_path: Path
+    alpha: float = 0.05  # V14: pre-registered significance level ([stats])
 
     def stage_ids(self) -> tuple[str, ...]:
         return tuple(s.stage_id for s in self.stages)
@@ -210,6 +224,7 @@ _STAGE_KEYS: Final[dict[StageKind, frozenset[str]]] = {
     StageKind.AI: _STAGE_KEYS_COMMON
     | {"slot", "numbers_from", "human_approval", "feeds_deterministic"},
     StageKind.MODEL: _STAGE_KEYS_COMMON | {"gate"},
+    StageKind.STATS: _STAGE_KEYS_COMMON | {"gate", "stat_test"},
     StageKind.HUMAN_GATE: _STAGE_KEYS_COMMON,
     StageKind.PACKAGE: _STAGE_KEYS_COMMON,
 }
@@ -313,6 +328,32 @@ def _parse_stage(raw: dict[str, Any], index: int) -> Stage:
             feeds_deterministic=feeds_deterministic,
         )
 
+    if kind is StageKind.STATS:
+        gate_raw = _require(raw, "gate", str, where)
+        try:
+            gate = GateMode(gate_raw)
+        except ValueError:
+            raise PlaybookError(
+                f"{where}: unknown gate '{gate_raw}'. "
+                f"Valid gates: {sorted(g.value for g in GateMode)}. (V8)"
+            ) from None
+        stat_test = _require(raw, "stat_test", str, where)
+        if stat_test not in KNOWN_STAT_TESTS:
+            raise PlaybookError(
+                f"{where}: unknown stat_test '{stat_test}'. "
+                f"Valid tests: {sorted(KNOWN_STAT_TESTS)}. The engine "
+                f"never improvises a statistical method - each key maps "
+                f"to a fixed, sourced procedure. (V14)"
+            )
+        if not needs:
+            raise PlaybookError(
+                f"{where}: stats stages must declare needs - inference "
+                f"never runs before at least the deterministic profile "
+                f"gate has passed. (V14)"
+            )
+        return Stage(stage_id=stage_id, kind=kind, needs=needs, gate=gate,
+                     stat_test=stat_test)
+
     if kind is StageKind.MODEL:
         gate_raw = _require(raw, "gate", str, where)
         try:
@@ -355,7 +396,7 @@ def load_playbook(path: Path) -> Playbook:
     _only_keys(
         doc,
         frozenset({"schema_version", "playbook", "requirements", "stages",
-                   "deliverables"}),
+                   "deliverables", "stats"}),
         path.name,
     )
 
@@ -459,6 +500,39 @@ def load_playbook(path: Path) -> Playbook:
     else:
         output_formats = ("markdown",)
 
+    # V14: optional [stats] table - the PRE-REGISTERED significance
+    # level. It is part of the playbook the human approves at Human
+    # Gate 1, fixed before any p-value exists. Absent = 0.05 (the
+    # conventional default), declared here rather than hidden in code
+    # paths. Any stats stage uses exactly this alpha.
+    alpha = 0.05
+    if "stats" in doc:
+        stats_tbl = _require(doc, "stats", dict, path.name)
+        _only_keys(stats_tbl, frozenset({"alpha"}), "[stats]")
+        raw_alpha = stats_tbl.get("alpha", 0.05)
+        if isinstance(raw_alpha, bool) or not isinstance(
+            raw_alpha, (int, float)
+        ):
+            raise PlaybookError(
+                "[stats]: alpha must be a number strictly between 0 and "
+                "1 (e.g. 0.05). (V14)"
+            )
+        alpha = float(raw_alpha)
+        if not (0.0 < alpha < 1.0):
+            raise PlaybookError(
+                f"[stats]: alpha {alpha} is out of range - it must be "
+                f"strictly between 0 and 1. Alpha is pre-registered and "
+                f"approved at Human Gate 1, never chosen after seeing "
+                f"results. (V14)"
+            )
+    has_stats_stage = any(s.kind is StageKind.STATS for s in stages)
+    if "stats" in doc and not has_stats_stage:
+        raise PlaybookError(
+            "[stats] is declared but no stage has kind = 'stats'. A "
+            "pre-registered alpha with nothing to apply it to is a "
+            "silent-typo hazard. (V14)"
+        )
+
     return Playbook(
         name=name,
         version=version,
@@ -469,4 +543,5 @@ def load_playbook(path: Path) -> Playbook:
         artifacts=artifacts,
         output_formats=output_formats,
         source_path=path,
+        alpha=alpha,
     )

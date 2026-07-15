@@ -46,6 +46,10 @@ User goal + dataset
         ├─ MODEL stage      deterministic fixed-seed baseline; metrics hashed;
         │                   no AI-generated code
         │
+        ├─ STATS stage      deterministic inference: Wilson intervals,
+        │                   Fisher/chi-square, Mann-Whitney, BH-corrected;
+        │                   alpha pre-registered; significance never gates
+        │
         └─ PACKAGE          notebook, reports, PPT, DQ workpaper, README,
                             audit log, manifest (hash tree of the package)
 ```
@@ -62,6 +66,12 @@ User goal + dataset
   the AI-drafted artifact; approving a stale draft is refused.
 - **Re-performability.** Same inputs → same hashes, proven by test at every
   stage. Timestamps live outside hashed content.
+- **Pre-registered inference, never p-hacking.** The stats stage runs
+  fixed, sourced procedures (Wilson intervals, Fisher exact, chi-square,
+  Mann-Whitney, Benjamini-Hochberg FDR) with an alpha declared in the
+  playbook and approved at Human Gate 1 - before any p-value exists.
+  Effect sizes always accompany p-values. Feasibility failures gate;
+  significance never does.
 - **Playbooks, not code.** A new project type is a new TOML playbook, not new
   engine code. Four archetypes ship: `churn_analysis`,
   `data_quality_review`, `transaction_monitoring_review`, and the
@@ -77,7 +87,7 @@ User goal + dataset
 | `opskit-mcp/` | OpsKit exposed as an MCP server, hashed findings envelopes |
 | `tests/` | Planted-answer test suites, one per build step |
 | `PROJECT_CHARTER.md` | The constitutional document — every design decision, dated |
-| `PLAYBOOK_SPEC.md` | The playbook schema and its constitutional rules (V1–V12) |
+| `PLAYBOOK_SPEC.md` | The playbook schema and its constitutional rules (V1–V14) |
 | `STEP*_DECISIONS.md` | Per-step design records and loophole-hunt results |
 
 ## Running the gates
@@ -87,7 +97,7 @@ The three gates that guard every commit, mirrored exactly in CI:
 ```bash
 # one-time setup
 pip install "git+https://github.com/MohdSaifHussain/analystkit.git"
-pip install -e ./analystkit-mcp -e ./opskit-mcp -e ".[dev,ml]"
+pip install -e ./analystkit-mcp -e ./opskit-mcp -e ".[dev,ml,stats]"
 npm install pptxgenjs          # the presentation stage shells out to it
 
 # the gates
@@ -101,7 +111,11 @@ pytest -q
 Traced to primary sources: the Model Context Protocol specification and
 official Python SDK (tool exposure), DAMA-DMBOK (the six data-quality
 dimensions behind the gates), scikit-learn's controlling-randomness guidance
-(the deterministic baseline), the PyPA src-layout, and DuckDB's official
+(the deterministic baseline), the statistical primary sources behind the
+inference stage (Brown, Cai & DasGupta 2001 and the NIST/SEMATECH
+e-Handbook for Wilson intervals; the ASA Statement on p-values 2016;
+Benjamini & Hochberg 1995; scipy and statsmodels official documentation),
+the PyPA src-layout, and DuckDB's official
 documentation (the deterministic query layer). Python 3.12+, `mypy --strict`,
 `ruff`, and a planted-answer testing discipline throughout.
 

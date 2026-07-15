@@ -27,7 +27,7 @@ git clone https://github.com/MohdSaifHussain/delivery-engine.git
 cd delivery-engine
 
 # Python packages — one command; analystkit installs automatically
-pip install -e ./analystkit-mcp -e ./opskit-mcp -e ".[dev,ml,docs]"
+pip install -e ./analystkit-mcp -e ./opskit-mcp -e ".[dev,ml,docs,stats]"
 
 # Node packages — for the docx/pptx builders
 npm install pptxgenjs docx

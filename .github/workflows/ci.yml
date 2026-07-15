@@ -39,7 +39,7 @@ jobs:
           pip install "git+https://github.com/MohdSaifHussain/analystkit.git"
           pip install -e ./analystkit-mcp
           pip install -e ./opskit-mcp
-          pip install -e ".[dev,ml,docs]"
+          pip install -e ".[dev,ml,docs,stats]"
 
       - name: Install document verification tools
         run: pip install "markitdown[pptx]"

@@ -1,0 +1,212 @@
+{
+  "approved": true,
+  "approved_at_ist": "2026-07-15T21:36:32+05:30",
+  "approved_by": "RegTech_Auditor_Mohd",
+  "candidates_considered": [
+    "churn_analysis",
+    "data_quality_review",
+    "supplychain_audit"
+  ],
+  "column_kinds": [
+    [
+      "Benefit per order",
+      "numeric_column"
+    ],
+    [
+      "Category Id",
+      "numeric_column"
+    ],
+    [
+      "Customer Country",
+      "binary_target"
+    ],
+    [
+      "Customer Country",
+      "categorical_column"
+    ],
+    [
+      "Customer Email",
+      "categorical_column"
+    ],
+    [
+      "Customer Id",
+      "numeric_column"
+    ],
+    [
+      "Customer Password",
+      "categorical_column"
+    ],
+    [
+      "Customer Segment",
+      "categorical_column"
+    ],
+    [
+      "Customer Zipcode",
+      "numeric_column"
+    ],
+    [
+      "Days for shipment (scheduled)",
+      "numeric_column"
+    ],
+    [
+      "Days for shipping (real)",
+      "numeric_column"
+    ],
+    [
+      "Delivery Status",
+      "categorical_column"
+    ],
+    [
+      "Department Id",
+      "numeric_column"
+    ],
+    [
+      "Department Name",
+      "categorical_column"
+    ],
+    [
+      "Late_delivery_risk",
+      "binary_target"
+    ],
+    [
+      "Late_delivery_risk",
+      "numeric_column"
+    ],
+    [
+      "Latitude",
+      "numeric_column"
+    ],
+    [
+      "Longitude",
+      "numeric_column"
+    ],
+    [
+      "Market",
+      "categorical_column"
+    ],
+    [
+      "Order Customer Id",
+      "numeric_column"
+    ],
+    [
+      "Order Id",
+      "numeric_column"
+    ],
+    [
+      "Order Item Cardprod Id",
+      "numeric_column"
+    ],
+    [
+      "Order Item Discount",
+      "numeric_column"
+    ],
+    [
+      "Order Item Discount Rate",
+      "numeric_column"
+    ],
+    [
+      "Order Item Id",
+      "id_column"
+    ],
+    [
+      "Order Item Id",
+      "numeric_column"
+    ],
+    [
+      "Order Item Product Price",
+      "numeric_column"
+    ],
+    [
+      "Order Item Profit Ratio",
+      "numeric_column"
+    ],
+    [
+      "Order Item Quantity",
+      "numeric_column"
+    ],
+    [
+      "Order Item Total",
+      "numeric_column"
+    ],
+    [
+      "Order Profit Per Order",
+      "numeric_column"
+    ],
+    [
+      "Order Status",
+      "categorical_column"
+    ],
+    [
+      "Order Zipcode",
+      "numeric_column"
+    ],
+    [
+      "Product Card Id",
+      "numeric_column"
+    ],
+    [
+      "Product Category Id",
+      "numeric_column"
+    ],
+    [
+      "Product Price",
+      "numeric_column"
+    ],
+    [
+      "Product Status",
+      "numeric_column"
+    ],
+    [
+      "Sales",
+      "numeric_column"
+    ],
+    [
+      "Sales per customer",
+      "numeric_column"
+    ],
+    [
+      "Shipping Mode",
+      "categorical_column"
+    ],
+    [
+      "Type",
+      "categorical_column"
+    ]
+  ],
+  "created_at_ist": "2026-07-15T21:36:32+05:30",
+  "decision_rationale": "highest goal-keyword overlap (score 3) among 3 qualified playbooks",
+  "decision_source": "deterministic",
+  "goal": "Run a rigorous data quality audit of supply chain orders",
+  "plan_sha256": "637631b44471e304f3e4d34bfa4ca2b4205d5fa54b10547435c92b3a309170f6",
+  "playbook_name": "supplychain_audit",
+  "playbook_path": "C:\\Users\\mohds\\delivery-engine\\playbooks\\supplychain_audit.toml",
+  "playbook_version": "1.0.0",
+  "requirement_results": [
+    [
+      "min_rows >= 100",
+      true,
+      "source has 180,519 rows"
+    ],
+    [
+      "required kind 'id_column'",
+      true,
+      "found in: Order Item Id"
+    ],
+    [
+      "source type 'csv' accepted",
+      true,
+      "playbook accepts: csv, excel, sqlite, postgres, mysql"
+    ]
+  ],
+  "source": "C:\\Users\\mohds\\delivery-engine\\data\\DataCoSupplyChainDataset_utf8.csv",
+  "stage_ids": [
+    "dq_profile",
+    "dq_validate",
+    "dq_dedupe",
+    "plan_approval",
+    "eda",
+    "report",
+    "readme",
+    "package"
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "findings": {
+    "accuracy_note": "Accuracy is never scored from the dataset alone \u2014 that would be fabrication. Use analystkit_reconcile against an authoritative source.",
+    "columns": [
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 300,
+        "dtype": "VARCHAR",
+        "name": "customer_id",
+        "nulls": 0,
+        "total": 300,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 2,
+        "dtype": "BOOLEAN",
+        "name": "converted",
+        "nulls": 0,
+        "total": 300,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 3,
+        "dtype": "VARCHAR",
+        "name": "channel",
+        "nulls": 0,
+        "total": 300,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 31,
+        "dtype": "BIGINT",
+        "name": "days_active",
+        "nulls": 0,
+        "total": 300,
+        "valid_ratio": 1.0
+      }
+    ],
+    "dama_scores": {
+      "accuracy": null,
+      "completeness": 1.0,
+      "consistency": 1.0,
+      "timeliness": null,
+      "uniqueness": 1.0,
+      "validity": 1.0
+    }
+  },
+  "sha256": "b8a253a436c31641f7b4dc4163fbcf17c72028fdc024dd3dd725e5d5e0639772",
+  "stage": "dq_profile"
+}

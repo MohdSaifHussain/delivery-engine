@@ -1,0 +1,78 @@
+# supplychain_audit.toml
+# RegTech playbook for Supply Chain Data Quality Audit
+# Schema: PLAYBOOK_SPEC.md v1
+
+schema_version = 1
+
+[playbook]
+name = "supplychain_audit"
+version = "1.0.0"
+description = "Supply chain order audit: DQ-gated profiling, dedupe, narrative, packaged as evidence"
+
+[requirements]
+min_rows = 100
+required_kinds = ["id_column"]
+source_types = ["csv", "excel", "sqlite", "postgres", "mysql"]
+
+# ── Stage 1: the deterministic gate. Nothing runs before this passes. ──
+[[stages]]
+id = "dq_profile"
+kind = "kit"
+tool = "analystkit_profile"
+gate = "must_pass"
+
+[[stages]]
+id = "dq_validate"
+kind = "kit"
+tool = "analystkit_validate"
+gate = "must_pass"
+needs = ["dq_profile"]
+
+[[stages]]
+id = "dq_dedupe"
+kind = "kit"
+tool = "analystkit_dedupe"
+gate = "advisory"
+needs = ["dq_profile"]
+
+# ── Human Gate 1: plan approval ──
+[[stages]]
+id = "plan_approval"
+kind = "human_gate"
+needs = ["dq_profile", "dq_validate"]
+
+# ── AI stages: prose and structure only ──
+[[stages]]
+id = "eda"
+kind = "ai"
+slot = "eda_notebook"
+numbers_from = "findings_store"
+human_approval = false
+feeds_deterministic = false
+needs = ["plan_approval"]
+
+[[stages]]
+id = "report"
+kind = "ai"
+slot = "narrative_report"
+numbers_from = "findings_store"
+human_approval = false
+feeds_deterministic = false
+needs = ["eda"]
+
+[[stages]]
+id = "readme"
+kind = "ai"
+slot = "readme"
+numbers_from = "findings_store"
+human_approval = false
+feeds_deterministic = false
+needs = ["report"]
+
+[[stages]]
+id = "package"
+kind = "package"
+needs = ["eda", "report", "readme"]
+
+[deliverables]
+artifacts = ["eda_notebook", "narrative_report", "readme", "audit_log", "manifest"]

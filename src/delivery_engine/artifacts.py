@@ -204,6 +204,54 @@ def build_narrative_report(
             "This is a reference point for human modeling work, not a "
             "delivered model.",
         ]
+    stats_digest = store.digests().get("stats")
+    if stats_digest is not None:
+        s = store.get("stats")
+        lines += [
+            "",
+            "## Statistical evidence (deterministic inference)",
+            "",
+            f"Inference suite `{s['stat_test']}` on target `{s['target']}` "
+            f"(positive class `{s['positive_class']}`), pre-registered "
+            f"alpha {inj.inject(s['alpha'])} approved at Human Gate 1. "
+            f"Significance flags use Benjamini-Hochberg-adjusted p-values "
+            f"across all {inj.inject(len(s['tests']))} test(s); effect "
+            f"sizes accompany every p-value (the ASA statement on p-values).",
+            "",
+        ]
+        for prop in s.get("proportions", []):
+            lines.append(
+                f"- Rate `{prop['scope']}`: {inj.inject(prop['rate'])} "
+                f"(n={inj.inject(prop['n'], '{:,}')}, Wilson "
+                f"{inj.inject(prop['confidence'])} CI "
+                f"[{inj.inject(prop['ci_low'])}, "
+                f"{inj.inject(prop['ci_high'])}])"
+            )
+        for t in s.get("tests", []):
+            verdict = ("significant" if t.get("significant_at_alpha")
+                       else "not significant")
+            effect = (t.get("effect_size_cramers_v")
+                      if t["kind"] == "independence"
+                      else t.get("effect_size_rank_biserial"))
+            effect_name = ("Cramer's V" if t["kind"] == "independence"
+                           else "rank-biserial r")
+            lines.append(
+                f"- `{t['columns'][0]}` x `{t['columns'][1]}` "
+                f"(`{t['method']}`): p_adj "
+                f"{inj.inject(t['p_adjusted_bh'])} - {verdict} at "
+                f"pre-registered alpha; {effect_name} "
+                f"{inj.inject(effect)}"
+            )
+        for sk in s.get("skipped", []):
+            lines.append(f"- Skipped: `{sk['what']}` (`{sk['reason']}`)")
+        lines.append("")
+        lines.append(
+            "A reported p of `0.0` means below the `6`-decimal rounding "
+            "contract's resolution (p < `1e-06`), not literally zero. "
+            "Statistical significance informed, and never gated, this "
+            "pipeline: p-values are evidence for human judgment, not a "
+            "stopping rule."
+        )
     lines += [
         "",
         "## Evidence trail",
@@ -212,6 +260,8 @@ def build_narrative_report(
         f"- dq_validate findings: `{store.digest('dq_validate')}`",
         *([f"- baseline findings: `{store.digest('baseline')}`"]
           if store.digests().get("baseline") else []),
+        *([f"- stats findings: `{stats_digest}`"]
+          if stats_digest else []),
         "",
         "Re-run the same commands on the same source: matching hashes "
         "prove the findings; a mismatch proves the data changed.",
