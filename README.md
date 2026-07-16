@@ -72,6 +72,13 @@ User goal + dataset
   playbook and approved at Human Gate 1 - before any p-value exists.
   Effect sizes always accompany p-values. Feasibility failures gate;
   significance never does.
+- **See it before it runs; sign it after.** Every run writes an
+  `execution_preview.md` (what was about to execute, from the same
+  documents the executor runs from) and a `handoff_manifest.json`
+  (per-team checks generated from the hashed findings, signatures left
+  null - the engine never signs for a human). Entry points can pass
+  `preview_confirm=prompt_confirmation` to pause for a human before
+  any stage runs; declining is an audited stop.
 - **Playbooks, not code.** A new project type is a new TOML playbook, not new
   engine code. Four archetypes ship: `churn_analysis`,
   `data_quality_review`, `transaction_monitoring_review`, and the

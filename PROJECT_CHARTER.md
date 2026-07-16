@@ -1,7 +1,41 @@
 # PROJECT CHARTER — Delivery Engine
 
-**Version:** 0.11
-**Date:** 9 July 2026 (v0.1 founding) · amended 11-15 July 2026 (v0.2 through v0.11)
+**Version:** 0.12
+**Date:** 9 July 2026 (v0.1 founding) · amended 11-15 July 2026 (v0.2 through v0.12)
+**Amendment record (v0.12):** Build-sequence step 16 recorded as built:
+the pre-flight preview and the multi-team handoff manifest. PREVIEW
+(delivery_engine.preview): before any stage runs, the executor renders
+a human-readable summary of exactly what is about to execute - stages
+in order, gates split by mode, the approved column classification,
+requirement checks, the pre-registered alpha where a stats stage
+exists, deliverables and formats - as a PURE FUNCTION of the loaded
+playbook and the approved plan, the same two documents the executor
+runs from; there is no third source of truth to drift. The engine core
+stays NON-INTERACTIVE by design (a library that blocks on stdin hangs
+every test, CI job, and scheduled run): interactivity is a callback -
+run(..., preview_confirm=...) - supplied only by entry points with a
+human at the terminal (delivery_engine.preview.prompt_confirmation).
+Declining stops the run with an audit entry before anything executes;
+the rendered preview is written to execution_preview.md either way and
+hashed by the manifest, so what the human was shown is itself
+evidence. HANDOFF (delivery_engine.handoff): at package time the
+engine writes handoff_manifest.json - a structured receipt with
+per-team checks (data engineering, QA, compliance, manager) generated
+from what the pipeline ACTUALLY ran, each check carrying the SHA-256
+of the sealed findings it references; signature fields start null and
+the engine never signs for a human; the file is written before
+manifest.json so the package manifest hashes it and a forged signature
+fails verification. Step-16 hunt: H1 (real bug, fixed) - the
+data-engineering row-count check initially read a findings key that
+does not exist and would have said "matches None"; the engine never
+fabricates a check around a number it does not have - the count now
+comes from the per-column totals in the hashed profile, and when those
+disagree or are absent no row-count check is written. H4: a declined
+run keeps its preview and audit entry (stopped runs keep their
+evidence, the step-9 rule), so the decline message directs the human
+to a fresh output directory and the stale-files refusal enforces it.
+H8: the interactive helper is itself under test via monkeypatched
+stdin. 227 tests.
 **Amendment record (v0.11):** Build-sequence step 15 recorded as built:
 the statistical evidence layer. A new stage kind `stats`
 (delivery_engine.stats) upgrades the engine's findings from DESCRIPTIVE

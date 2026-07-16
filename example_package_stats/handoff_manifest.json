@@ -1,0 +1,86 @@
+{
+  "note": "Each team verifies its checks against the referenced hashed findings, then fills its signature (e.g. 'name, date'). Signatures start null: the engine never signs for a human. This file is hashed in manifest.json - alter it and package verification fails.",
+  "pipeline": {
+    "approved_by": "Saif",
+    "goal": "segment comparison with statistical significance for the growth team",
+    "plan_sha256": "1a1beab09fa286d926ad8105e262fddf49eddc8e8da78968dc1251369331a811",
+    "playbook": "segment_comparison v1.0.0",
+    "source": "examples/segment_comparison/signup_conversion.csv"
+  },
+  "team_handoff": {
+    "compliance": {
+      "checks": [
+        {
+          "check": "Review the 2 statistical test(s) (2 significant at the pre-registered alpha 0.05); confirm alpha was approved at Human Gate 1 and effect sizes were considered, not p-values alone.",
+          "evidence": {
+            "sha256": "f2e6c8e9c15112b17fe2bc9ddfbc8f5e22cc57070bfa2daf9a627e3af26ab64b",
+            "stage": "stats"
+          }
+        },
+        {
+          "check": "Verify manifest.json against the package files - matching hashes certify unaltered evidence; then verify the audit log tells the full story of every gate.",
+          "evidence": {
+            "files": [
+              "manifest.json",
+              "audit_log.jsonl"
+            ]
+          }
+        }
+      ],
+      "signature": null
+    },
+    "data_engineering": {
+      "checks": [
+        {
+          "check": "Verify the loaded row count matches 300 (source: examples/segment_comparison/signup_conversion.csv).",
+          "evidence": {
+            "sha256": "b8a253a436c31641f7b4dc4163fbcf17c72028fdc024dd3dd725e5d5e0639772",
+            "stage": "dq_profile"
+          }
+        },
+        {
+          "check": "Confirm uniqueness/null status of id column(s) ['customer_id'] before loading to staging.",
+          "evidence": {
+            "sha256": "b8a253a436c31641f7b4dc4163fbcf17c72028fdc024dd3dd725e5d5e0639772",
+            "stage": "dq_profile"
+          }
+        }
+      ],
+      "signature": null
+    },
+    "manager": {
+      "checks": [
+        {
+          "check": "Read narrative_report.md; every figure in it is injected from hashed findings. Approve the narrative and add business context before forwarding - the engine supplies evidence, the judgment is yours.",
+          "evidence": {
+            "files": [
+              "audit_log",
+              "delivery_package",
+              "manifest",
+              "narrative_report",
+              "readme"
+            ]
+          }
+        }
+      ],
+      "signature": null
+    },
+    "qa_quality_control": {
+      "checks": [
+        {
+          "check": "Re-perform the validation rules against the source and confirm the recorded exception counts match the findings exactly (rules and results are in the hashed findings).",
+          "evidence": {
+            "sha256": "ade7b1f24789740aa19355c00c832f5b7cc44235f9800ea0cc70790905c2fe83",
+            "stage": "dq_validate",
+            "summary_keys": [
+              "results",
+              "rules_evaluated",
+              "total_exceptions"
+            ]
+          }
+        }
+      ],
+      "signature": null
+    }
+  }
+}

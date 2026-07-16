@@ -28,6 +28,7 @@ Gate semantics for v0.1 (declared defaults, documented, testable):
 from __future__ import annotations
 
 import json
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any, Final
 
@@ -48,6 +49,10 @@ from delivery_engine.store import (
 )
 
 __all__ = ["MAX_EXCEPTION_RATE", "ExecutionStopped", "ExecutorError", "run"]
+
+# Step 16: the pre-flight confirmation callback - receives the rendered
+# preview text, returns True to proceed.
+PreviewConfirm = Callable[[str], bool]
 
 MAX_EXCEPTION_RATE: Final[float] = 0.10
 
@@ -80,8 +85,20 @@ def run(
     out_dir: Path,
     approvals: dict[str, str | dict[str, str]] | None = None,
     max_exception_rate: float = MAX_EXCEPTION_RATE,
+    preview_confirm: PreviewConfirm | None = None,
 ) -> Path:
     """Executes an approved plan against its playbook. Returns out_dir.
+
+    preview_confirm (step 16): optional callable receiving the rendered
+    pre-flight preview text and returning True to proceed or False to
+    stop. Entry points with a human at the terminal pass
+    delivery_engine.preview.prompt_confirmation; tests pass a lambda;
+    automation passes nothing and no pause happens. The engine core
+    stays non-interactive by design - a library that blocks on stdin
+    hangs every test, CI job, and scheduled run that calls it.
+    Declining stops the run with an audit entry, like any refusal.
+    The rendered preview is written to execution_preview.md either way,
+    so what the human was shown is part of the hashed evidence.
 
     approvals:
       - human_gate stages: {stage_id: approver_name}
@@ -160,6 +177,37 @@ def run(
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "findings").mkdir(exist_ok=True)
 
+    # ── Step 16: the pre-flight preview. Rendered from the same two
+    # documents the executor runs from (no third source of truth),
+    # written into the package (the manifest will hash it), and - only
+    # when an entry point supplies a callback - shown for confirmation
+    # BEFORE any heavy stage runs. Declining is an audited stop.
+    from delivery_engine.preview import render_preview
+
+    preview_text = render_preview(playbook, plan)
+    (out_dir / "execution_preview.md").write_text(
+        preview_text + "\n", encoding="utf-8"
+    )
+    if preview_confirm is not None and not preview_confirm(preview_text):
+        audit.record(
+            "preflight", "preview", "declined",
+            "human reviewed the execution preview and declined to "
+            "proceed; nothing was executed",
+        )
+        audit.write(out_dir / "audit_log.jsonl")
+        raise ExecutionStopped(
+            "preflight",
+            "execution declined at the pre-flight preview; adjust the "
+            "playbook or plan and re-run with a FRESH output directory "
+            "(this one now holds the declined preview and its audit "
+            "entry - stopped runs keep their evidence, the step-9 rule)",
+        )
+    if preview_confirm is not None:
+        audit.record(
+            "preflight", "preview", "confirmed",
+            "human reviewed the execution preview and confirmed",
+        )
+
     store = FindingsStore()
     injector = NumberInjector(store)
     ctx: dict[str, Any] = {
@@ -214,6 +262,19 @@ def run(
         elif stage.kind is StageKind.PACKAGE:
             _build_deliverable_documents(
                 playbook, plan, store, audit, out_dir
+            )
+            # Step 16: the multi-team handoff receipt - checks
+            # pre-populated from the sealed findings, signatures null
+            # (the engine never signs for a human). Written BEFORE the
+            # manifest so the manifest hashes it.
+            from delivery_engine.handoff import write_handoff
+
+            write_handoff(out_dir, plan, playbook, store)
+            audit.record(
+                stage.stage_id, "package:handoff", "written",
+                "handoff_manifest.json written: per-team checks "
+                "generated from the hashed findings, signature fields "
+                "null for humans to fill; the manifest hashes this file",
             )
             audit.record(
                 stage.stage_id, "package", "sealed",
