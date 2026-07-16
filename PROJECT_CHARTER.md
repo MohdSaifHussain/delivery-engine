@@ -1,7 +1,52 @@
 # PROJECT CHARTER — Delivery Engine
 
-**Version:** 0.12
-**Date:** 9 July 2026 (v0.1 founding) · amended 11-15 July 2026 (v0.2 through v0.12)
+**Version:** 0.13
+**Date:** 9 July 2026 (v0.1 founding) · amended 11-16 July 2026 (v0.2 through v0.13)
+**Amendment record (v0.13):** Build-sequence step 17 recorded as built:
+the universal descriptive math layer. A new stage kind `math`
+(delivery_engine.mathkit) answers "what is the SHAPE of every column?"
+- requiring no target, so it runs on any dataset the planner can
+classify. Methods fixed and traced to primary sources: bias-adjusted
+sample skewness G1 and excess kurtosis G2 (Joanes & Gill 1998, the
+scipy bias=False estimators), t-intervals for the mean (NIST/SEMATECH
+e-Handbook 7.2.2.1, 95% a declared constant, small-n noted), empirical
+tail percentiles p95/p99 with the numpy linear method pinned (the
+historical-simulation VaR levels in risk contexts - Jorion), robust
+outliers by the MAD modified z-score with the 0.6745 scale and 3.5
+threshold (Iglewicz & Hoban 1993; NIST) where MAD == 0 is a declared
+skip rather than a division by zero, Shannon entropy in bits with
+normalized entropy and a fixed disclosed 1% rare-category cutoff
+(Shannon 1948), and temporal structure (max day gap; daily-count trend
+via linregress). THE DESIGN FIX OF THE STEP: distribution fitting with
+the estimated-parameter correction - a KS p-value is INVALID when the
+tested distribution's parameters were estimated from the same sample
+(Lilliefors 1967), so normality and lognormality carry proper
+Lilliefors p-values (statsmodels), while the Weibull candidate reports
+its fitted parameters and KS DISTANCE EXPLICITLY WITHOUT A P-VALUE,
+reason recorded in the findings; best fit is the smallest KS distance,
+a disclosed selection rule and not a significance claim.
+CONSTITUTIONAL POSITIONS (new rule V15): math_checks is declared from
+a fixed list (numeric_shape, outliers, distribution_fit,
+categorical_entropy, temporal, all) - the engine never improvises a
+method; every threshold is a fixed constant DISCLOSED INSIDE THE
+HASHED FINDINGS, chosen in code and never after seeing results;
+columns come from the plan approved at Human Gate 1, id columns
+excluded; descriptive values never gate - feasibility does; skips
+carry written reasons; an all-skipped stage is a feasibility failure;
+6-decimal rounding (the step-10 contract). New archetype
+universal_audit (requires only an id column); the narrative report
+gains a Distribution & shape section (injected numbers only - the
+claims scan caught the un-injected digits in the literal tokens "p95"
+and "p99" before the end-to-end test could pass, the charter working
+as designed); the handoff manifest's QA section gains a math
+spot-check bound to the sealed digest. Step-17 hunt closed M2 (a
+two-valued 0/1 column is a category wearing a number's clothes -
+excluded from the numeric suite with the exclusion disclosed;
+inference on it belongs to the stats stage), M4 (NaN accounting
+extended to categorical and temporal findings), and M7 (a failed
+Weibull MLE fit is a recorded absence pinned at the worst possible
+distance so it can never be selected best fit, never a crash and never
+silent). 256 tests.
 **Amendment record (v0.12):** Build-sequence step 16 recorded as built:
 the pre-flight preview and the multi-team handoff manifest. PREVIEW
 (delivery_engine.preview): before any stage runs, the executor renders

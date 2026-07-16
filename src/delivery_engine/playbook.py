@@ -52,6 +52,19 @@ KNOWN_STAT_TESTS: Final[frozenset[str]] = frozenset({
     "full_inference",
 })
 
+# V15: math stages must declare WHICH descriptive check suite to run.
+# Each key maps to a fixed, sourced procedure in delivery_engine.mathkit;
+# the engine never improvises a method, and every threshold the methods
+# use is a fixed constant disclosed inside the findings.
+KNOWN_MATH_CHECKS: Final[frozenset[str]] = frozenset({
+    "numeric_shape",
+    "outliers",
+    "distribution_fit",
+    "categorical_entropy",
+    "temporal",
+    "all",
+})
+
 # V11: opskit stages must name which OpsKit playbook to run. OpsKit
 # playbook keys are lowercase with hyphens (e.g. "weekly-review"),
 # distinct from V10's snake_case engine identifiers.
@@ -84,6 +97,7 @@ class StageKind(StrEnum):
     AI = "ai"
     MODEL = "model"
     STATS = "stats"
+    MATH = "math"
     HUMAN_GATE = "human_gate"
     PACKAGE = "package"
 
@@ -124,6 +138,8 @@ class Stage:
     ops_playbook: str | None = None    # opskit_run_playbook stages only (V11)
     # stats
     stat_test: str | None = None       # stats stages only (V14)
+    # math
+    math_checks: str | None = None     # math stages only (V15)
     # ai
     slot: AiSlot | None = None
     numbers_from: str | None = None
@@ -225,6 +241,7 @@ _STAGE_KEYS: Final[dict[StageKind, frozenset[str]]] = {
     | {"slot", "numbers_from", "human_approval", "feeds_deterministic"},
     StageKind.MODEL: _STAGE_KEYS_COMMON | {"gate"},
     StageKind.STATS: _STAGE_KEYS_COMMON | {"gate", "stat_test"},
+    StageKind.MATH: _STAGE_KEYS_COMMON | {"gate", "math_checks"},
     StageKind.HUMAN_GATE: _STAGE_KEYS_COMMON,
     StageKind.PACKAGE: _STAGE_KEYS_COMMON,
 }
@@ -353,6 +370,32 @@ def _parse_stage(raw: dict[str, Any], index: int) -> Stage:
             )
         return Stage(stage_id=stage_id, kind=kind, needs=needs, gate=gate,
                      stat_test=stat_test)
+
+    if kind is StageKind.MATH:
+        gate_raw = _require(raw, "gate", str, where)
+        try:
+            gate = GateMode(gate_raw)
+        except ValueError:
+            raise PlaybookError(
+                f"{where}: unknown gate '{gate_raw}'. "
+                f"Valid gates: {sorted(g.value for g in GateMode)}. (V8)"
+            ) from None
+        math_checks = _require(raw, "math_checks", str, where)
+        if math_checks not in KNOWN_MATH_CHECKS:
+            raise PlaybookError(
+                f"{where}: unknown math_checks '{math_checks}'. "
+                f"Valid checks: {sorted(KNOWN_MATH_CHECKS)}. The engine "
+                f"never improvises a descriptive method - each key maps "
+                f"to a fixed, sourced procedure. (V15)"
+            )
+        if not needs:
+            raise PlaybookError(
+                f"{where}: math stages must declare needs - descriptive "
+                f"math never runs before at least the deterministic "
+                f"profile gate has passed. (V15)"
+            )
+        return Stage(stage_id=stage_id, kind=kind, needs=needs, gate=gate,
+                     math_checks=math_checks)
 
     if kind is StageKind.MODEL:
         gate_raw = _require(raw, "gate", str, where)

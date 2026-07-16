@@ -1,0 +1,64 @@
+{
+  "approved": true,
+  "approved_at_ist": "2026-07-16T13:03:53+05:30",
+  "approved_by": "Saif",
+  "candidates_considered": [
+    "data_quality_review",
+    "ops_review",
+    "transaction_monitoring_review",
+    "universal_audit"
+  ],
+  "column_kinds": [
+    [
+      "amount",
+      "numeric_column"
+    ],
+    [
+      "event_date",
+      "timestamp_column"
+    ],
+    [
+      "record_id",
+      "id_column"
+    ],
+    [
+      "region",
+      "categorical_column"
+    ]
+  ],
+  "created_at_ist": "2026-07-16T13:03:53+05:30",
+  "decision_rationale": "highest goal-keyword overlap (score 9) among 4 qualified playbooks",
+  "decision_source": "deterministic",
+  "goal": "universal descriptive audit: distribution shape outliers entropy temporal structure",
+  "plan_sha256": "94389e90e69c14b43b80f81a5ce14ece53ebd453e35e41c653c66f42dcc36c74",
+  "playbook_name": "universal_audit",
+  "playbook_path": "playbooks/universal_audit.toml",
+  "playbook_version": "1.0.0",
+  "requirement_results": [
+    [
+      "min_rows >= 100",
+      true,
+      "source has 300 rows"
+    ],
+    [
+      "required kind 'id_column'",
+      true,
+      "found in: record_id"
+    ],
+    [
+      "source type 'csv' accepted",
+      true,
+      "playbook accepts: csv"
+    ]
+  ],
+  "source": "examples/universal_audit/orders.csv",
+  "stage_ids": [
+    "dq_profile",
+    "dq_validate",
+    "plan_approval",
+    "math",
+    "report",
+    "readme",
+    "package"
+  ]
+}

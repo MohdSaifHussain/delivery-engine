@@ -259,6 +259,8 @@ def run(
             _run_model_stage(stage, plan, store, audit, out_dir)
         elif stage.kind is StageKind.STATS:
             _run_stats_stage(stage, plan, playbook, store, audit, out_dir)
+        elif stage.kind is StageKind.MATH:
+            _run_math_stage(stage, plan, store, audit, out_dir)
         elif stage.kind is StageKind.PACKAGE:
             _build_deliverable_documents(
                 playbook, plan, store, audit, out_dir
@@ -663,6 +665,83 @@ def _run_stats_stage(
         f"{n_skips} skip(s) recorded with reasons; findings stored "
         f"hashed - significance never gates, feasibility does (declared "
         f"step 15 semantics)",
+        sha256=digest,
+    )
+
+
+def _run_math_stage(
+    stage: Stage,
+    plan: Plan,
+    store: FindingsStore,
+    audit: AuditLog,
+    out_dir: Path,
+) -> None:
+    """The deterministic descriptive math stage (step 17).
+
+    Columns come from the plan's classified kinds - approved at Human
+    Gate 1, never auto-detected behind the human's back. The declared
+    math_checks suite (V15) selects which fixed, sourced procedures
+    run; every threshold those procedures use is a constant disclosed
+    inside the hashed findings. Findings never gate; feasibility does
+    (missing dependency, plan/source drift, nothing measurable).
+    """
+    from delivery_engine.mathkit import MathError, run_math
+
+    kinds = list(plan.column_kinds)
+    id_cols = {c for c, k in kinds if k == "id_column"}
+    binary = {c for c, k in kinds if k == "binary_target"}
+    # M2 (step-17 hunt): a two-valued column is a category wearing a
+    # number's clothes - skewness, tail percentiles, and distribution
+    # fits on 0/1 data are noise. Binary columns are excluded from the
+    # numeric suite (they remain available to the stats stage, where
+    # they belong); the exclusion is disclosed in the findings.
+    numeric = [c for c, k in kinds
+               if k == "numeric_column" and c not in id_cols
+               and c not in binary]
+    categorical = [c for c, k in kinds
+                   if k == "categorical_column" and c not in id_cols]
+    timestamps = [c for c, k in kinds
+                  if k == "timestamp_column" and c not in id_cols]
+
+    checks = stage.math_checks or "all"
+    try:
+        findings = run_math(plan.source, checks, numeric, categorical,
+                            timestamps)
+        findings["column_selection"] = (
+            "numeric, categorical, and timestamp kinds from the plan "
+            "approved at Human Gate 1; id columns excluded; two-valued "
+            "(binary_target) columns excluded from the numeric suite - "
+            "shape statistics on 0/1 data are noise, and inference on "
+            "them belongs to the stats stage"
+        )
+    except MathError as exc:
+        outcome = "fail" if stage.gate is GateMode.MUST_PASS else "advisory_flag"
+        audit.record(stage.stage_id, "math:descriptive", outcome,
+                     str(exc)[:300])
+        audit.write(out_dir / "audit_log.jsonl")
+        if stage.gate is GateMode.MUST_PASS:
+            raise ExecutionStopped(stage.stage_id, str(exc)) from None
+        return
+
+    digest = store.put(stage.stage_id, findings)
+    (out_dir / "findings" / f"{stage.stage_id}.json").write_text(
+        store.to_json(stage.stage_id), encoding="utf-8"
+    )
+    counts = {k: len(findings[k]) for k in
+              ("numeric", "outliers", "distribution_fit", "categorical",
+               "temporal")}
+    audit.record(
+        stage.stage_id, "math:descriptive", "pass",
+        f"deterministic descriptive math (suite '{checks}'): "
+        f"{counts['numeric']} numeric shape profile(s), "
+        f"{counts['outliers']} MAD outlier scan(s), "
+        f"{counts['distribution_fit']} distribution fit(s) with the "
+        f"Lilliefors correction, {counts['categorical']} entropy "
+        f"profile(s), {counts['temporal']} temporal profile(s), "
+        f"{len(findings['skipped'])} skip(s) recorded with reasons; all "
+        f"thresholds fixed constants disclosed in the findings; "
+        f"findings stored hashed - descriptive values never gate "
+        f"(declared step 17 semantics)",
         sha256=digest,
     )
 

@@ -50,6 +50,10 @@ User goal + dataset
         │                   Fisher/chi-square, Mann-Whitney, BH-corrected;
         │                   alpha pre-registered; significance never gates
         │
+        ├─ MATH stage       deterministic shape: skewness/kurtosis, t-CIs,
+        │                   tail percentiles, MAD outliers, Lilliefors-
+        │                   corrected distribution fits, entropy, temporal
+        │
         └─ PACKAGE          notebook, reports, PPT, DQ workpaper, README,
                             audit log, manifest (hash tree of the package)
 ```
@@ -94,7 +98,7 @@ User goal + dataset
 | `opskit-mcp/` | OpsKit exposed as an MCP server, hashed findings envelopes |
 | `tests/` | Planted-answer test suites, one per build step |
 | `PROJECT_CHARTER.md` | The constitutional document — every design decision, dated |
-| `PLAYBOOK_SPEC.md` | The playbook schema and its constitutional rules (V1–V14) |
+| `PLAYBOOK_SPEC.md` | The playbook schema and its constitutional rules (V1–V15) |
 | `STEP*_DECISIONS.md` | Per-step design records and loophole-hunt results |
 
 ## Running the gates

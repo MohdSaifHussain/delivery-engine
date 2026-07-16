@@ -85,6 +85,19 @@ def _qa_checks(store: FindingsStore) -> list[dict[str, Any]]:
                          "sha256": digests["dq_validate"],
                          "summary_keys": sorted(val.keys())[:12]},
         })
+    if "math" in digests:
+        m = store.get("math")
+        n_out_cols = len(m.get("outliers", {}))
+        checks.append({
+            "check": (
+                f"Review the descriptive math findings: MAD outlier "
+                f"scans on {n_out_cols} column(s), distribution fits "
+                f"(Lilliefors-corrected), entropy and temporal "
+                f"profiles; spot-check one value per family against "
+                f"the source before sign-off."
+            ),
+            "evidence": {"stage": "math", "sha256": digests["math"]},
+        })
     if "dq_dedupe" in digests:
         checks.append({
             "check": "Confirm duplicate analysis was reviewed before load.",

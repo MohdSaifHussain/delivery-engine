@@ -1,0 +1,57 @@
+{
+  "findings": {
+    "accuracy_note": "Accuracy is never scored from the dataset alone \u2014 that would be fabrication. Use analystkit_reconcile against an authoritative source.",
+    "columns": [
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 300,
+        "dtype": "VARCHAR",
+        "name": "record_id",
+        "nulls": 0,
+        "total": 300,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 47,
+        "dtype": "DOUBLE",
+        "name": "amount",
+        "nulls": 0,
+        "total": 300,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 5,
+        "dtype": "VARCHAR",
+        "name": "region",
+        "nulls": 0,
+        "total": 300,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 75,
+        "dtype": "DATE",
+        "name": "event_date",
+        "nulls": 0,
+        "total": 300,
+        "valid_ratio": 1.0
+      }
+    ],
+    "dama_scores": {
+      "accuracy": null,
+      "completeness": 1.0,
+      "consistency": 1.0,
+      "timeliness": 0.0,
+      "uniqueness": 1.0,
+      "validity": 1.0
+    }
+  },
+  "sha256": "1ed426a2984404dc90b5d8434c44979fd5b7b0993faddc287aa8a7eb71b1e4a3",
+  "stage": "dq_profile"
+}

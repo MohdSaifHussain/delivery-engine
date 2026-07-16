@@ -204,6 +204,76 @@ def build_narrative_report(
             "This is a reference point for human modeling work, not a "
             "delivered model.",
         ]
+    math_digest = store.digests().get("math")
+    if math_digest is not None:
+        m = store.get("math")
+        lines += [
+            "",
+            "## Distribution & shape (deterministic descriptive math)",
+            "",
+            f"Suite `{m['math_checks']}` over the plan-approved columns. "
+            f"Every threshold is a fixed constant disclosed in the hashed "
+            f"findings; distribution fits use the Lilliefors correction "
+            f"(a plain KS p-value is invalid when parameters are "
+            f"estimated from the sample).",
+            "",
+        ]
+        for col, e in sorted(m.get("numeric", {}).items()):
+            ci = ""
+            if "mean_ci_low" in e:
+                ci = (f", mean CI [{inj.inject(e['mean_ci_low'])}, "
+                      f"{inj.inject(e['mean_ci_high'])}]")
+            lines.append(
+                f"- `{col}`: mean {inj.inject(e['mean'])}, median "
+                f"{inj.inject(e['median'])}, skewness "
+                f"{inj.inject(e['skewness_g1_adjusted'])}, excess "
+                f"kurtosis {inj.inject(e['excess_kurtosis_g2_adjusted'])}"
+                f"{ci}, tail `p95` {inj.inject(e['p95'])} / `p99` "
+                f"{inj.inject(e['p99'])}"
+            )
+        for col, o in sorted(m.get("outliers", {}).items()):
+            lines.append(
+                f"- `{col}` outliers (MAD modified z, fixed threshold): "
+                f"{inj.inject(o['outlier_count'])} flagged "
+                f"({inj.inject(o['outlier_share'])} of values)"
+            )
+        for col, d in sorted(m.get("distribution_fit", {}).items()):
+            best = d["best_fit"]
+            cand = d["candidates"][best]
+            p_part = (f", Lilliefors p {inj.inject(cand['lilliefors_p'])}"
+                      if "lilliefors_p" in cand else
+                      " (fit distance only; no valid p exists for this "
+                      "candidate)")
+            lines.append(
+                f"- `{col}` best-fitting candidate: `{best}` (KS "
+                f"distance {inj.inject(cand['ks_distance'])}{p_part})"
+            )
+        for col, c in sorted(m.get("categorical", {}).items()):
+            lines.append(
+                f"- `{col}`: {inj.inject(c['distinct'])} categories, "
+                f"entropy {inj.inject(c['entropy_bits'])} bits "
+                f"(normalized {inj.inject(c['entropy_normalized'])}), "
+                f"{inj.inject(c['rare_count'])} rare below the fixed "
+                f"frequency threshold"
+            )
+        for col, t in sorted(m.get("temporal", {}).items()):
+            r_part = (f" (r {inj.inject(t['trend_r'])})"
+                      if "trend_r" in t else
+                      " (correlation undefined: constant daily counts)")
+            lines.append(
+                f"- `{col}`: {inj.inject(t['distinct_days'])} distinct "
+                f"days, max gap {inj.inject(t['max_gap_days'])} day(s), "
+                f"trend {inj.inject(t['trend_slope_rows_per_day'])} "
+                f"rows/day{r_part}"
+            )
+        for sk in m.get("skipped", []):
+            lines.append(f"- Skipped: `{sk['what']}` (`{sk['reason']}`)")
+        lines.append("")
+        lines.append(
+            "Descriptive values informed, and never gated, this "
+            "pipeline: shape is evidence for human judgment, not a "
+            "stopping rule."
+        )
     stats_digest = store.digests().get("stats")
     if stats_digest is not None:
         s = store.get("stats")
@@ -260,6 +330,8 @@ def build_narrative_report(
         f"- dq_validate findings: `{store.digest('dq_validate')}`",
         *([f"- baseline findings: `{store.digest('baseline')}`"]
           if store.digests().get("baseline") else []),
+        *([f"- math findings: `{store.digest('math')}`"]
+          if store.digests().get("math") else []),
         *([f"- stats findings: `{stats_digest}`"]
           if stats_digest else []),
         "",
