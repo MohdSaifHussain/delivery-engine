@@ -322,6 +322,104 @@ def build_narrative_report(
             "pipeline: p-values are evidence for human judgment, not a "
             "stopping rule."
         )
+    # ── Step 18 (G6): the Limitations & assumptions section - the 2026
+    # anti-hallucination control: communicate uncertainty and
+    # limitations instead of presenting outputs as absolute facts. No
+    # new computation: every line below surfaces a caveat ALREADY
+    # recorded in the hashed findings; when a caveat class was not
+    # recorded, no line is fabricated for it.
+    caveats: list[str] = []
+    prof_f = store.get("dq_profile") if store.digests().get("dq_profile") else {}
+    dama = prof_f.get("dama_scores", {})
+    if dama.get("timeliness") is not None and dama["timeliness"] < 1.0:
+        caveats.append(
+            f"- Data freshness: the DAMA timeliness score is "
+            f"{inj.inject(dama['timeliness'])} - the source's currency "
+            f"is not established; confirm the extract date before "
+            f"relying on time-sensitive conclusions."
+        )
+    if dama.get("accuracy") is None and prof_f:
+        caveats.append(
+            "- Accuracy is unscored: it is never inferred from the "
+            "dataset alone - reconciliation against an authoritative "
+            "source is a separate, human-initiated step."
+        )
+    if stats_digest is not None:
+        s_f = store.get("stats")
+        indep = s_f.get("independence", {})
+        if indep.get("warning"):
+            cols = ", ".join(
+                f"`{g['column']}` ({inj.inject(g['distinct'])} entities, "
+                f"~{inj.inject(g['avg_rows_per_value'])} rows each)"
+                for g in indep.get("grouping_candidates", [])
+            )
+            caveats.append(
+                f"- Independence: the hypothesis tests treat rows as "
+                f"independent, but the source contains grouping "
+                f"column(s) {cols} - rows may be repeated measures of "
+                f"the same entities and p-values are not "
+                f"cluster-robust."
+            )
+        mdes = [t["mde"] for t in s_f.get("tests", []) if "mde" in t]
+        if mdes:
+            caveats.append(
+                "- Sensitivity: each two-group test reports its minimum "
+                "detectable effect at the pre-registered alpha - a "
+                "non-significant result rules out effects above that "
+                "size, not the existence of an effect."
+            )
+        n_sk = len(s_f.get("skipped", []))
+        if n_sk:
+            caveats.append(
+                f"- {inj.inject(n_sk)} inference check(s) were skipped "
+                f"with recorded reasons (see the Statistical evidence "
+                f"section)."
+            )
+        n_validity = sum(
+            1 for t in s_f.get("tests", []) if "validity_warning" in t
+        )
+        if n_validity:
+            caveats.append(
+                f"- {inj.inject(n_validity)} chi-square test(s) violate "
+                f"Cochran's expected-frequency rule - their asymptotic "
+                f"p-values are unreliable for those tables (flagged in "
+                f"the findings)."
+            )
+    math_f = store.get("math") if store.digests().get("math") else {}
+    if math_f:
+        n_sk = len(math_f.get("skipped", []))
+        if n_sk:
+            caveats.append(
+                f"- {inj.inject(n_sk)} descriptive check(s) were "
+                f"skipped with recorded reasons (see the Distribution & "
+                f"shape section)."
+            )
+    base_f = (store.get("baseline")
+              if store.digests().get("baseline") else {})
+    for w in base_f.get("leakage_warnings", []):
+        caveats.append(
+            f"- Possible target leakage: feature `{w['feature']}` has "
+            f"near-perfect association with the target "
+            f"({inj.inject(w['association'])} by `{w['measure']}`) - "
+            f"baseline metrics may be meaningless; a human must judge "
+            f"whether this feature encodes the outcome after the fact."
+        )
+    lines += ["", "## Limitations & assumptions", ""]
+    if caveats:
+        lines += caveats
+    else:
+        lines.append(
+            "- No caveat of the recorded classes (freshness, "
+            "independence, sensitivity, skips, leakage) was raised by "
+            "this run."
+        )
+    lines.append("")
+    lines.append(
+        "Every caveat above is read from the hashed findings - nothing "
+        "is inferred at writing time, and absent caveats are absent "
+        "because nothing was recorded, not because nothing was checked."
+    )
+
     lines += [
         "",
         "## Evidence trail",

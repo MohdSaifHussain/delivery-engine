@@ -3,7 +3,7 @@
   "pipeline": {
     "approved_by": "Saif",
     "goal": "segment comparison with statistical significance for the growth team",
-    "plan_sha256": "1a1beab09fa286d926ad8105e262fddf49eddc8e8da78968dc1251369331a811",
+    "plan_sha256": "5252b686843537ad3748a9a0c162af55550c236f20cb751b3715eec28be644be",
     "playbook": "segment_comparison v1.0.0",
     "source": "examples/segment_comparison/signup_conversion.csv"
   },
@@ -13,7 +13,7 @@
         {
           "check": "Review the 2 statistical test(s) (2 significant at the pre-registered alpha 0.05); confirm alpha was approved at Human Gate 1 and effect sizes were considered, not p-values alone.",
           "evidence": {
-            "sha256": "f2e6c8e9c15112b17fe2bc9ddfbc8f5e22cc57070bfa2daf9a627e3af26ab64b",
+            "sha256": "38e7b38d7c93e8ee58fe0e8f7e31e29408268f44daba2ac7bbbe7d7a3e63a572",
             "stage": "stats"
           }
         },
@@ -60,6 +60,24 @@
               "narrative_report",
               "readme"
             ]
+          }
+        },
+        {
+          "check": "Selection & survivorship: does this dataset include the cases that dropped out, failed, or were never captured - or only the survivors? State what population the findings generalize to.",
+          "evidence": {
+            "kind": "human_judgment"
+          }
+        },
+        {
+          "check": "Denominators: for every rate in the narrative, confirm the denominator is the population you intend (per row? per entity? per period?) - rates with mismatched denominators are the classic silent analytics error.",
+          "evidence": {
+            "kind": "human_judgment"
+          }
+        },
+        {
+          "check": "Granularity: confirm the source is a single grain (one row = one event/entity/period) - mixed granularity from multi-system integration silently double-counts.",
+          "evidence": {
+            "kind": "human_judgment"
           }
         }
       ],

@@ -83,6 +83,15 @@ User goal + dataset
   null - the engine never signs for a human). Entry points can pass
   `preview_confirm=prompt_confirmation` to pause for a human before
   any stage runs; declining is an audited stop.
+- **Guardrails against how analysts actually fail.** A leakage
+  sentinel on the baseline (the answer key can't hide in the
+  features), pseudoreplication disclosure on inference (p-values that
+  assume independence say so when the data has repeated entities),
+  minimum detectable effects beside every test, a fingerprint of the
+  input dataset in the manifest (lineage: "the data changed" is
+  provable), and a Limitations section in every report assembled only
+  from recorded caveats - each control traced to published research
+  in STEP18_DECISIONS.md.
 - **Playbooks, not code.** A new project type is a new TOML playbook, not new
   engine code. Four archetypes ship: `churn_analysis`,
   `data_quality_review`, `transaction_monitoring_review`, and the

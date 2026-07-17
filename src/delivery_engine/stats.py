@@ -85,6 +85,9 @@ STAT_DECIMALS: Final[int] = 6
 MIN_GROUP_N: Final[int] = 5          # smallest group size worth testing
 COCHRAN_MIN_EXPECTED: Final[float] = 1.0
 COCHRAN_SHARE_GE_5: Final[float] = 0.8
+MDE_POWER: Final[float] = 0.8            # step 18: declared power for MDE
+GROUPING_MIN_DISTINCT: Final[int] = 20   # step 18: pseudoreplication scan
+GROUPING_MIN_REPEAT: Final[float] = 5.0  # avg rows per group to flag
 
 
 
@@ -135,6 +138,39 @@ def _cramers_v(table: Any) -> float:
     if n <= 0 or k <= 0:
         return 0.0
     return _round(float((chi2 / (n * k)) ** 0.5))
+
+
+def _mde_two_group(n1: int, n2: int, alpha: float) -> dict[str, Any]:
+    """Step 18 (G3): the minimum detectable effect at the pre-registered
+    alpha and declared power - the honest companion to every p-value.
+    Low-power analyses inflate both false negatives and false positives
+    (Button et al. via the reproducibility literature), and a
+    'not significant' without an MDE invites the misreading 'no effect'.
+
+    Closed forms, normal approximation:
+    - proportions: MDE in Cohen's h units, h = (z_{1-a/2} + z_power) *
+      sqrt(1/n1 + 1/n2) (Cohen, Statistical Power Analysis, 1988)
+    - Mann-Whitney: MDE in rank-biserial units via the large-sample
+      normal approximation of U: r = (z_{1-a/2} + z_power) *
+      sqrt((n1 + n2 + 1) / (3 * n1 * n2))
+    Deterministic: z from the standard normal quantile function.
+    """
+    from scipy.stats import norm
+
+    z = float(norm.ppf(1 - alpha / 2.0)) + float(norm.ppf(MDE_POWER))
+    return {
+        "power": MDE_POWER,
+        "mde_cohens_h": _round(z * (1.0 / n1 + 1.0 / n2) ** 0.5),
+        "mde_rank_biserial": _round(
+            z * ((n1 + n2 + 1) / (3.0 * n1 * n2)) ** 0.5
+        ),
+        "note": (
+            "smallest effect this test could reliably detect at the "
+            "pre-registered alpha and the declared power; a "
+            "non-significant result rules out effects above this size, "
+            "not the existence of an effect"
+        ),
+    }
 
 
 def run_inference(
@@ -339,6 +375,12 @@ def run_inference(
                 entry["method"] = "fisher_exact_two_sided"
                 entry["odds_ratio"] = _round(float(odds))
                 entry["p_value"] = _round(float(p))
+                margins = table.sum(axis=1).to_numpy()
+                mde = _mde_two_group(int(margins[0]), int(margins[1]),
+                                     alpha)
+                entry["mde"] = {"power": mde["power"],
+                                "cohens_h": mde["mde_cohens_h"],
+                                "note": mde["note"]}
             else:
                 from scipy.stats import chi2_contingency
 
@@ -403,6 +445,11 @@ def run_inference(
                 "effect_size_rank_biserial": rank_biserial,
                 "median_" + levels[0]: _round(float(g_lo.median())),
                 "median_" + levels[1]: _round(float(g_hi.median())),
+                "mde": {
+                    "power": (_m := _mde_two_group(n1, n2, alpha))["power"],
+                    "rank_biserial": _m["mde_rank_biserial"],
+                    "note": _m["note"],
+                },
             })
             raw_p.append(float(res.pvalue))
 

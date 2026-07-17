@@ -1,7 +1,57 @@
 # PROJECT CHARTER — Delivery Engine
 
-**Version:** 0.13
-**Date:** 9 July 2026 (v0.1 founding) · amended 11-16 July 2026 (v0.2 through v0.13)
+**Version:** 0.14
+**Date:** 9 July 2026 (v0.1 founding) · amended 11-17 July 2026 (v0.2 through v0.14)
+**Amendment record (v0.14):** Build-sequence step 18 recorded as built:
+the Analyst-Error Guardrails - six controls, each traceable to
+published research on how analysts actually fail, several motivated by
+failures observed first-hand in this engine's own production runs.
+G1 LEAKAGE SENTINEL (model stage): per-feature association with the
+target (Cramér's V for categoricals by the textbook Pearson formula,
+absolute point-biserial for numerics); associations at or above a
+fixed disclosed threshold are recorded as possible_target_leakage in
+the hashed findings - motivated by the July 2026 fraud run where a
+post-hoc label column (fraud_type) rode into the baseline and produced
+ROC-AUC 1.0. The warning NEVER gates: near-perfect association can be
+legitimate, so the judgment stays human; the engine's job is to make
+the pattern impossible to miss. G2 PSEUDOREPLICATION DISCLOSURE (stats
+stage): unaccounted non-independence of data points produces incorrect
+p-values (Forstmeier, Wagenmakers & Parker 2017); a deterministic,
+disclosed scan over the same hashed profile the human approved flags
+high-cardinality grouping columns outside the analysis (many rows per
+entity - the 500k-transactions-from-5k-cardholders pattern) and the
+findings state plainly that p-values are not cluster-robust. G3
+MINIMUM DETECTABLE EFFECT (stats stage): every two-group test carries
+its MDE at the pre-registered alpha and a declared power constant -
+Cohen's h closed form for proportions (Cohen, Statistical Power
+Analysis, 1988), the normal-approximation rank-biserial form for
+Mann-Whitney - so "not significant" can never again be silently read
+as "no effect"; low-power analyses inflate both false negatives and
+false positives. G4 ANALYST-BIAS CHECKLIST (handoff manifest): three
+human-judgment questions (selection/survivorship, denominators, mixed
+granularity) that no algorithm can answer from the data alone - the
+spreadsheet-error literature (Panko; EuSpRIG) is unanimous that
+self-checking does not catch what structured inspection does, with
+field audits finding errors in the great majority of operational
+spreadsheets and no error-rate difference between novices and
+experienced developers. G5 SOURCE FINGERPRINT (manifest + audit): the
+SHA-256 and byte size of the INPUT dataset, streamed in 64 KB chunks,
+recorded before any stage runs - closing the lineage gap named among
+critical 2026 governance risks (Info-Tech Data Priorities 2026; 2026
+AI-governance literature on lineage); "the data changed" is now a
+provable claim, and re-performability no longer assumes the same
+source, it verifies it. G6 LIMITATIONS & ASSUMPTIONS SECTION
+(narrative report): the 2026 anti-hallucination control - communicate
+uncertainty and limitations instead of presenting outputs as absolute
+facts; assembled with NO new computation from caveats already recorded
+in hashed findings (DAMA timeliness below 1, unscored accuracy,
+independence warnings, MDE presence, skip counts, Cochran validity
+violations, leakage warnings), with the standing rule that absent
+caveats are absent because nothing was recorded, never fabricated and
+never suppressed. Step-18 hunt closed H5: a source file that vanishes
+between Human Gate 1 and execution is an audited ExecutionStopped in
+the engine's own voice, not a raw FileNotFoundError traceback. 272
+tests.
 **Amendment record (v0.13):** Build-sequence step 17 recorded as built:
 the universal descriptive math layer. A new stage kind `math`
 (delivery_engine.mathkit) answers "what is the SHAPE of every column?"

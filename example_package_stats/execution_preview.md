@@ -3,7 +3,7 @@ PLAYBOOK EXECUTION PREVIEW
 Dataset: examples/segment_comparison/signup_conversion.csv
 Playbook: segment_comparison v1.0.0 (segment_comparison.toml)
 Goal: segment comparison with statistical significance for the growth team
-Plan digest: 1a1beab09fa286d926ad8105e262fddf49eddc8e8da78968dc1251369331a811
+Plan digest: 5252b686843537ad3748a9a0c162af55550c236f20cb751b3715eec28be644be
 Approved by: Saif
 
 COLUMN CLASSIFICATION (approved at Human Gate 1):

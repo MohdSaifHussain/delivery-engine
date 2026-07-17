@@ -1,0 +1,65 @@
+schema_version = 1
+
+[playbook]
+name = "healthcare_claims_audit"
+version = "1.0.0"
+description = "Healthcare claims audit: age, BMI, ICU, claim amount profiling with financial and clinical risk checks"
+
+[requirements]
+min_rows = 100
+required_kinds = ["id_column"]
+source_types = ["csv"]
+
+# ── Stage 1: the deterministic gate. Nothing runs before this passes. ──
+[[stages]]
+id = "dq_profile"
+kind = "kit"
+tool = "analystkit_profile"
+gate = "must_pass"
+
+[[stages]]
+id = "dq_validate"
+kind = "kit"
+tool = "analystkit_validate"
+gate = "must_pass"
+needs = ["dq_profile"]
+
+[[stages]]
+id = "plan_approval"
+kind = "human_gate"
+needs = ["dq_profile", "dq_validate"]
+
+# ── The descriptive math stage (COPYING THE WORKING UNIVERSAL AUDIT SYNTAX) ──
+[[stages]]
+id = "math"
+kind = "math"
+math_checks = "all"
+gate = "must_pass"
+needs = ["dq_profile", "dq_validate", "plan_approval"]
+
+# ── AI stages: prose and structure only; every number injected ──
+[[stages]]
+id = "report"
+kind = "ai"
+slot = "narrative_report"
+numbers_from = "findings_store"
+human_approval = false
+feeds_deterministic = false
+needs = ["math"]
+
+[[stages]]
+id = "readme"
+kind = "ai"
+slot = "readme"
+numbers_from = "findings_store"
+human_approval = false
+feeds_deterministic = false
+needs = ["report"]
+
+[[stages]]
+id = "package"
+kind = "package"
+needs = ["report", "readme"]
+
+[deliverables]
+artifacts = ["narrative_report", "readme", "audit_log", "manifest"]

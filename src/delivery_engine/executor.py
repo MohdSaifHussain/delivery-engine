@@ -38,7 +38,7 @@ from delivery_engine.artifacts import (
     build_ops_report,
     build_readme,
 )
-from delivery_engine.audit import AuditLog, write_manifest
+from delivery_engine.audit import AuditLog, file_sha256, write_manifest
 from delivery_engine.planner import Plan
 from delivery_engine.playbook import AiSlot, GateMode, Playbook, Stage, StageKind
 from delivery_engine.rules_draft import draft_digest, draft_rules
@@ -208,6 +208,37 @@ def run(
             "human reviewed the execution preview and confirmed",
         )
 
+    # ── Step 18 (G5, lineage): fingerprint the INPUT before anything
+    # reads it. Every output is already hashed; this closes the loop on
+    # the source side - 2026 governance literature names lineage gaps
+    # (inability to trace where data came from and whether it changed)
+    # among the critical analytics risks. "The data changed" is now a
+    # provable claim: re-run against a source whose fingerprint differs
+    # and the manifests disagree.
+    src_path = Path(plan.source)
+    if not src_path.exists():
+        reason = (
+            f"the approved plan's source '{plan.source}' does not exist "
+            f"at execution time - the file moved or was deleted after "
+            f"planning. Restore it or re-profile and re-plan against "
+            f"its new location. (step-18 hunt, H5: a vanished source "
+            f"is an audited stop, not a raw traceback)"
+        )
+        audit.record("preflight", "source_fingerprint", "fail", reason)
+        audit.write(out_dir / "audit_log.jsonl")
+        raise ExecutionStopped("preflight", reason)
+    source_fingerprint: dict[str, object] = {
+        "path": plan.source,
+        "sha256": file_sha256(src_path),
+        "bytes": src_path.stat().st_size,
+    }
+    audit.record(
+        "preflight", "source_fingerprint", "recorded",
+        f"input dataset fingerprinted before execution: sha256 "
+        f"{source_fingerprint['sha256']}, {source_fingerprint['bytes']} "
+        f"bytes; recorded in manifest.json (step 18 lineage control)",
+    )
+
     store = FindingsStore()
     injector = NumberInjector(store)
     ctx: dict[str, Any] = {
@@ -285,7 +316,8 @@ def run(
                 "written after the manifest",
             )
             audit.write(out_dir / "audit_log.jsonl")
-            write_manifest(out_dir, store.digests(), plan.plan_digest())
+            write_manifest(out_dir, store.digests(), plan.plan_digest(),
+                           source_fingerprint=source_fingerprint)
 
     return out_dir
 
@@ -641,6 +673,58 @@ def _run_stats_stage(
             "first binary_target in plan column order (plan approved at "
             "Human Gate 1); candidates listed under target_candidates"
         )
+        # ── Step 18 (G2): pseudoreplication disclosure. Incorrect
+        # p-values due to unaccounted non-independence of data points
+        # are a named driver of irreproducibility (Forstmeier,
+        # Wagenmakers & Parker 2017). The inference above treats every
+        # row as independent; when the profiled source contains
+        # high-cardinality grouping columns (many rows per entity -
+        # e.g. 500k transactions from 5k cardholders), that assumption
+        # deserves a written challenge. Deterministic, disclosed scan
+        # over the SAME hashed profile the human approved: columns with
+        # >= GROUPING_MIN_DISTINCT distinct values and an average of
+        # >= GROUPING_MIN_REPEAT rows per value, excluding the columns
+        # already in the analysis.
+        from delivery_engine.stats import (
+            GROUPING_MIN_DISTINCT,
+            GROUPING_MIN_REPEAT,
+        )
+
+        used = {target, *categorical, *numeric} | id_cols
+        clusters: list[dict[str, Any]] = []
+        if "dq_profile" in store.digests():
+            prof = store.get("dq_profile")
+            for c in prof.get("columns", []):
+                name, distinct = c.get("name"), int(c.get("distinct", 0))
+                total = int(c.get("total", 0))
+                if (name and name not in used
+                        and distinct >= GROUPING_MIN_DISTINCT
+                        and distinct > 0
+                        and total / distinct >= GROUPING_MIN_REPEAT):
+                    clusters.append({
+                        "column": name,
+                        "distinct": distinct,
+                        "avg_rows_per_value": round(total / distinct, 2),
+                    })
+        findings["independence"] = {
+            "assumption": (
+                "every hypothesis test above treats rows as independent "
+                "observations"
+            ),
+            "grouping_candidates": sorted(
+                clusters, key=lambda x: str(x["column"])
+            ),
+            "warning": (
+                "rows may be repeated measures of the same entities "
+                "(pseudoreplication); p-values are not cluster-robust - "
+                "Forstmeier, Wagenmakers & Parker 2017"
+            ) if clusters else None,
+            "scan_rule": (
+                "profiled columns outside the analysis with >= "
+                f"{GROUPING_MIN_DISTINCT} distinct values and >= "
+                f"{GROUPING_MIN_REPEAT} average rows per value"
+            ),
+        }
     except StatsError as exc:
         outcome = "fail" if stage.gate is GateMode.MUST_PASS else "advisory_flag"
         audit.record(stage.stage_id, "stats:inference", outcome, str(exc)[:300])

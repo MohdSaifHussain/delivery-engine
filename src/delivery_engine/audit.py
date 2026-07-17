@@ -74,12 +74,18 @@ def write_manifest(
     out_dir: Path,
     finding_digests: dict[str, str],
     plan_sha256: str,
+    source_fingerprint: dict[str, object] | None = None,
 ) -> Path:
     """Writes manifest.json: the hash tree of the package.
 
     Hashes every file in out_dir (except the manifest itself), records
     the finding digests and the plan digest. The manifest is written
     last; verifying it verifies everything.
+
+    source_fingerprint (step 18): the SHA-256 and byte size of the
+    INPUT dataset, closing the lineage gap - re-performability no
+    longer assumes the same source, it proves it. "The data changed"
+    becomes a verifiable claim, not an inference.
     """
     files: dict[str, str] = {}
     for p in sorted(out_dir.rglob("*")):
@@ -95,6 +101,8 @@ def write_manifest(
             "why each entry came to exist."
         ),
     }
+    if source_fingerprint is not None:
+        manifest["source_fingerprint"] = source_fingerprint
     path = out_dir / "manifest.json"
     path.write_text(
         json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8"

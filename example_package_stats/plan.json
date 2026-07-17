@@ -1,11 +1,12 @@
 {
   "approved": true,
-  "approved_at_ist": "2026-07-16T06:08:44+05:30",
+  "approved_at_ist": "2026-07-17T08:19:08+05:30",
   "approved_by": "Saif",
   "candidates_considered": [
     "churn_analysis",
     "data_quality_review",
-    "segment_comparison"
+    "segment_comparison",
+    "universal_audit"
   ],
   "column_kinds": [
     [
@@ -25,11 +26,11 @@
       "numeric_column"
     ]
   ],
-  "created_at_ist": "2026-07-16T06:08:44+05:30",
-  "decision_rationale": "highest goal-keyword overlap (score 5) among 3 qualified playbooks",
+  "created_at_ist": "2026-07-17T08:19:08+05:30",
+  "decision_rationale": "highest goal-keyword overlap (score 5) among 4 qualified playbooks",
   "decision_source": "deterministic",
   "goal": "segment comparison with statistical significance for the growth team",
-  "plan_sha256": "1a1beab09fa286d926ad8105e262fddf49eddc8e8da78968dc1251369331a811",
+  "plan_sha256": "5252b686843537ad3748a9a0c162af55550c236f20cb751b3715eec28be644be",
   "playbook_name": "segment_comparison",
   "playbook_path": "playbooks/segment_comparison.toml",
   "playbook_version": "1.0.0",

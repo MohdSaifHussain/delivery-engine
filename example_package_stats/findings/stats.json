@@ -4,6 +4,12 @@
     "alpha_provenance": "pre-registered in the playbook [stats] table; approved with the plan at Human Gate 1, before any p-value was computed",
     "bh_family_size": 2,
     "bh_note": "significance flags use Benjamini-Hochberg-adjusted p-values across the full family of tests this stage ran; raw p-values are reported for re-performance, never for the flag. A reported 0.0 means the value is below the 6-decimal rounding contract's resolution (p < 1e-06), not literally zero.",
+    "independence": {
+      "assumption": "every hypothesis test above treats rows as independent observations",
+      "grouping_candidates": [],
+      "scan_rule": "profiled columns outside the analysis with >= 20 distinct values and >= 5.0 average rows per value",
+      "warning": null
+    },
     "methods": {
       "contingency_2x2": "Fisher exact test (scipy.stats.fisher_exact)",
       "contingency_rxc": "Pearson chi-square, correction=False (scipy.stats.chi2_contingency); validity per Cochran's rule (NIST/SEMATECH e-Handbook)",
@@ -97,6 +103,11 @@
           "yes": 170
         },
         "kind": "mann_whitney",
+        "mde": {
+          "note": "smallest effect this test could reliably detect at the pre-registered alpha and the declared power; a non-significant result rules out effects above this size, not the existence of an effect",
+          "power": 0.8,
+          "rank_biserial": 0.188769
+        },
         "median_no": 16.0,
         "median_yes": 53.0,
         "method": "mann_whitney_u_two_sided_auto",
@@ -108,6 +119,6 @@
       }
     ]
   },
-  "sha256": "f2e6c8e9c15112b17fe2bc9ddfbc8f5e22cc57070bfa2daf9a627e3af26ab64b",
+  "sha256": "38e7b38d7c93e8ee58fe0e8f7e31e29408268f44daba2ac7bbbe7d7a3e63a572",
   "stage": "stats"
 }

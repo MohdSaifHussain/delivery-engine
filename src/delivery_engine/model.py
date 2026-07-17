@@ -39,6 +39,7 @@ RANDOM_SEED: Final[int] = 42
 TEST_SIZE: Final[float] = 0.25
 METRIC_DECIMALS: Final[int] = 6
 MIN_ROWS_PER_CLASS: Final[int] = 10
+LEAKAGE_THRESHOLD: Final[float] = 0.95   # step 18: fixed, disclosed
 
 
 class ModelError(Exception):
@@ -77,6 +78,7 @@ def train_baseline(
     Same source + same classified columns -> same findings -> same hash.
     """
     _require_sklearn()
+    import numpy as np
     import pandas as pd
     from sklearn.compose import ColumnTransformer
     from sklearn.linear_model import LogisticRegression
@@ -138,6 +140,53 @@ def train_baseline(
             f"baseline."
         )
     y = (y_raw.astype(str) == classes[1]).astype(int)
+
+    # ── Step 18 (G1): the target-leakage sentinel. Found in production:
+    # a post-hoc label column (fraud_type) rode into the features and
+    # produced AUC 1.0 - a perfect score that meant nothing. For every
+    # feature, compute a deterministic association with the target:
+    # Cramér's V for categoricals (Pearson chi-square by the textbook
+    # formula), absolute point-biserial correlation for numerics. Any
+    # association >= LEAKAGE_THRESHOLD (a fixed, disclosed constant) is
+    # recorded as a possible_target_leakage warning in the hashed
+    # findings and echoed by the narrative's Limitations section. The
+    # warning NEVER gates - near-perfect association can be legitimate
+    # (a duplicate encoding is not always leakage), so the judgment
+    # stays human; the engine's job is to make the pattern impossible
+    # to miss.
+    leakage_warnings: list[dict[str, object]] = []
+    y_bin = y.to_numpy(dtype=float)
+    for col in categorical_features:
+        table = pd.crosstab(df[col].astype(str), df[target].astype(str))
+        obs = table.to_numpy(dtype=float)
+        n_tot = obs.sum()
+        if n_tot <= 0 or min(obs.shape) < 2:
+            continue
+        row_m = obs.sum(axis=1, keepdims=True)
+        col_m = obs.sum(axis=0, keepdims=True)
+        exp = row_m @ col_m / n_tot
+        with np.errstate(divide="ignore", invalid="ignore"):
+            cells = np.where(exp > 0, (obs - exp) ** 2 / exp, 0.0)
+        chi2 = float(cells.sum())
+        k = min(obs.shape) - 1
+        v = float((chi2 / (n_tot * k)) ** 0.5) if k > 0 else 0.0
+        if v >= LEAKAGE_THRESHOLD:
+            leakage_warnings.append({
+                "feature": col,
+                "measure": "cramers_v",
+                "association": round(v, 6),
+            })
+    for col in numeric_features:
+        x = df[col].astype(float).to_numpy()
+        if np.std(x) == 0.0 or np.std(y_bin) == 0.0:
+            continue
+        r = abs(float(np.corrcoef(x, y_bin)[0, 1]))
+        if r >= LEAKAGE_THRESHOLD:
+            leakage_warnings.append({
+                "feature": col,
+                "measure": "abs_point_biserial",
+                "association": round(r, 6),
+            })
     counts = y.value_counts()
     if int(counts.min()) < MIN_ROWS_PER_CLASS:
         raise ModelError(
@@ -179,6 +228,18 @@ def train_baseline(
         "positive_class": classes[1],
         "negative_class": classes[0],
         "numeric_features": sorted(numeric_features),
+        "leakage_threshold": LEAKAGE_THRESHOLD,
+        "leakage_warnings": sorted(
+            leakage_warnings, key=lambda w: str(w["feature"])
+        ),
+        "leakage_check": (
+            "per-feature association with the target (Cramér's V for "
+            "categoricals, absolute point-biserial for numerics); "
+            "associations at or above the fixed threshold are flagged "
+            "possible_target_leakage - a warning for human judgment, "
+            "never a gate. Motivated by a production run where a "
+            "post-hoc label column produced a perfect score."
+        ),
         "categorical_features": sorted(categorical_features),
         "n_rows_dropped_nulls": int(n_dropped),
         "n_train": len(x_train),

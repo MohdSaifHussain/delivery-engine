@@ -27,10 +27,17 @@ Inference suite `full_inference` on target `converted` (positive class `yes`), p
 
 A reported p of `0.0` means below the `6`-decimal rounding contract's resolution (p < `1e-06`), not literally zero. Statistical significance informed, and never gated, this pipeline: p-values are evidence for human judgment, not a stopping rule.
 
+## Limitations & assumptions
+
+- Accuracy is unscored: it is never inferred from the dataset alone - reconciliation against an authoritative source is a separate, human-initiated step.
+- Sensitivity: each two-group test reports its minimum detectable effect at the pre-registered alpha - a non-significant result rules out effects above that size, not the existence of an effect.
+
+Every caveat above is read from the hashed findings - nothing is inferred at writing time, and absent caveats are absent because nothing was recorded, not because nothing was checked.
+
 ## Evidence trail
 
 - dq_profile findings: `b8a253a436c31641f7b4dc4163fbcf17c72028fdc024dd3dd725e5d5e0639772`
 - dq_validate findings: `ade7b1f24789740aa19355c00c832f5b7cc44235f9800ea0cc70790905c2fe83`
-- stats findings: `f2e6c8e9c15112b17fe2bc9ddfbc8f5e22cc57070bfa2daf9a627e3af26ab64b`
+- stats findings: `38e7b38d7c93e8ee58fe0e8f7e31e29408268f44daba2ac7bbbe7d7a3e63a572`
 
 Re-run the same commands on the same source: matching hashes prove the findings; a mismatch proves the data changed.

@@ -26,6 +26,13 @@ Suite `all` over the plan-approved columns. Every threshold is a fixed constant 
 
 Descriptive values informed, and never gated, this pipeline: shape is evidence for human judgment, not a stopping rule.
 
+## Limitations & assumptions
+
+- Data freshness: the DAMA timeliness score is 0.0 - the source's currency is not established; confirm the extract date before relying on time-sensitive conclusions.
+- Accuracy is unscored: it is never inferred from the dataset alone - reconciliation against an authoritative source is a separate, human-initiated step.
+
+Every caveat above is read from the hashed findings - nothing is inferred at writing time, and absent caveats are absent because nothing was recorded, not because nothing was checked.
+
 ## Evidence trail
 
 - dq_profile findings: `1ed426a2984404dc90b5d8434c44979fd5b7b0993faddc287aa8a7eb71b1e4a3`

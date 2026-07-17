@@ -154,6 +154,34 @@ def _manager_checks(playbook: Playbook) -> list[dict[str, Any]]:
             "evidence, the judgment is yours."
         ),
         "evidence": {"files": sorted(playbook.artifacts)},
+    }, {
+        # Step 18 (G4): the analyst-bias checklist - three questions no
+        # algorithm can answer from the data alone, which is exactly why
+        # they belong in the human checklist (spreadsheet-error research
+        # is unanimous that self-checking does not catch what a
+        # structured checklist does - Panko / EuSpRIG).
+        "check": (
+            "Selection & survivorship: does this dataset include the "
+            "cases that dropped out, failed, or were never captured - "
+            "or only the survivors? State what population the findings "
+            "generalize to."
+        ),
+        "evidence": {"kind": "human_judgment"},
+    }, {
+        "check": (
+            "Denominators: for every rate in the narrative, confirm the "
+            "denominator is the population you intend (per row? per "
+            "entity? per period?) - rates with mismatched denominators "
+            "are the classic silent analytics error."
+        ),
+        "evidence": {"kind": "human_judgment"},
+    }, {
+        "check": (
+            "Granularity: confirm the source is a single grain (one row "
+            "= one event/entity/period) - mixed granularity from "
+            "multi-system integration silently double-counts."
+        ),
+        "evidence": {"kind": "human_judgment"},
     }]
 
 

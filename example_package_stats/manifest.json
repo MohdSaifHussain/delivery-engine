@@ -1,20 +1,25 @@
 {
   "files": {
     "README.md": "7c616e22c5137de26ac7ca3866e1dfc9866f10106ba77315ca4abfcc6a7cb9e5",
-    "audit_log.jsonl": "7987ae3a2aa8911e521e54a3bc66937d1bd728cea25f1098ff5c071eddfdba18",
-    "execution_preview.md": "64d909b1ced3c219204449d230918bc179611d47b221046d5179a73eea0830a8",
+    "audit_log.jsonl": "45988370db1faf68b6576cc0d85fd15b0ac5b99aa10456c754163d5c706667c4",
+    "execution_preview.md": "9788b62b0f1031f2d8b670effc643ff9672e8ae8bda05332d50c78918fe61f7d",
     "findings/dq_profile.json": "992580df76015fc5f6ed9a4a1e139a3a12599d4e510113a74bc267e76e2dbd25",
     "findings/dq_validate.json": "70c0678a0c9a85509add85ac5fbdc6e6994ae9eecfc6b26e2287468ccdead8ff",
-    "findings/stats.json": "fae1716b0175f952a3c926144a6b966096da23bbece58825ee9615dcd12b1943",
-    "handoff_manifest.json": "8d1d939cbcacd74e8fa88d36ddf9ccbb229b5691e51502141462887e1a734977",
-    "narrative_report.md": "2db7cf43643eb6574ad2d4dad9f450f6fcd72d8bc3a0c7ff0aef28110f281595",
-    "plan.json": "0105f763b193b6a18c48e6649fa8a2f975fa0f590b75fd7f5a7c51d40cf371ac"
+    "findings/stats.json": "27dbb7207dcaf0b0232e952a657b6989986abfe2d502ea78809cb22690ed94df",
+    "handoff_manifest.json": "34cd1fe6aaf6b8042c310dc71df7cbc631913a7a7cc494a38f1271bc157d5a1e",
+    "narrative_report.md": "bb3651451b0b3ce01bbec0b6caff4bd72e02b8b659c120cf5cd84b3ac7e9ef76",
+    "plan.json": "fb22b0eaabf79fddcf027758eee0c5106f924c86d8bdeb4fbe17e7614dff48ae"
   },
   "findings": {
     "dq_profile": "b8a253a436c31641f7b4dc4163fbcf17c72028fdc024dd3dd725e5d5e0639772",
     "dq_validate": "ade7b1f24789740aa19355c00c832f5b7cc44235f9800ea0cc70790905c2fe83",
-    "stats": "f2e6c8e9c15112b17fe2bc9ddfbc8f5e22cc57070bfa2daf9a627e3af26ab64b"
+    "stats": "38e7b38d7c93e8ee58fe0e8f7e31e29408268f44daba2ac7bbbe7d7a3e63a572"
   },
   "note": "Verify each file's SHA-256 against this manifest. Matching hashes = unaltered evidence. The audit log records when and why each entry came to exist.",
-  "plan_sha256": "1a1beab09fa286d926ad8105e262fddf49eddc8e8da78968dc1251369331a811"
+  "plan_sha256": "5252b686843537ad3748a9a0c162af55550c236f20cb751b3715eec28be644be",
+  "source_fingerprint": {
+    "bytes": 6903,
+    "path": "examples/segment_comparison/signup_conversion.csv",
+    "sha256": "3bf10114753bd5c78a4c4a4d06d1f1286f6e086062de0525f2ae3e5dcdeccc69"
+  }
 }
