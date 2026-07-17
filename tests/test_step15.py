@@ -159,7 +159,15 @@ class TestWilsonInterval:
         src = _segment_csv(tmp_path / "seg.csv")
         f = run_inference(str(src), "proportion_ci", "converted",
                           [], [], 0.05)
-        assert f["positive_class"] == "yes"  # lexicographically last
+        # Step 20 (the single-reader swap) changed what this fixture
+        # sees, and the change is the point: DuckDB's CSV sniffer types
+        # a yes/no column as BOOLEAN, so the classes are False/True and
+        # the lexicographically-last positive class is 'True'. The
+        # profile gate ALWAYS reported this column as BOOLEAN; before
+        # step 20 the stages read it with pandas as strings and
+        # silently disagreed with the gate. The disclosed rule is
+        # unchanged - only the reader agreeing with itself is new.
+        assert f["positive_class"] == "True"  # lexicographically last
         assert "disclosed deterministic rule" in f["positive_class_rule"]
 
 

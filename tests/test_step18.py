@@ -142,8 +142,12 @@ class TestMde:
         f = run_inference(str(src), "mann_whitney", "converted", [],
                           ["spend"], 0.05)
         t = f["tests"][0]
-        n1 = t["groups"]["no"]
-        n2 = t["groups"]["yes"]
+        # Step 20: the single reader types this yes/no column BOOLEAN
+        # (DuckDB's sniffer), matching what the profile gate always
+        # reported - so the group keys are 'False'/'True'. The MDE
+        # formula under test is unchanged; only the labels are.
+        n1 = t["groups"]["False"]
+        n2 = t["groups"]["True"]
         expected = (Z_975 + Z_80) * math.sqrt(
             (n1 + n2 + 1) / (3.0 * n1 * n2)
         )

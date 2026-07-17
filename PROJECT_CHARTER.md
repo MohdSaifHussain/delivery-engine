@@ -1,7 +1,66 @@
 # PROJECT CHARTER — Delivery Engine
 
-**Version:** 0.15
-**Date:** 9 July 2026 (v0.1 founding) · amended 11-17 July 2026 (v0.2 through v0.15)
+**Version:** 0.16
+**Date:** 9 July 2026 (v0.1 founding) · amended 11-18 July 2026 (v0.2 through v0.16)
+**Amendment record (v0.16):** Build-sequence step 20 recorded as built:
+source adapters, and with them THE SINGLE-READER PRINCIPLE - the
+architectural heart of the step. Until now the computational stages
+(model, stats, math) read their source with pandas.read_csv while the
+kit stages read the same file through AnalystKit's DuckDB loader: two
+parsers, one file, a divergence risk carried openly on the register
+since the AnalystKit v2.0.x type-boundary bugs (where a mismatch
+between two type systems produced 1.5M silent false failures on valid
+data). delivery_engine.sources is now the ONLY loading path for the
+computational stages, and it parses nothing itself: it delegates to
+analystkit.engine.load_source, the very function the profile gate
+uses. Whatever the gate saw, the stages see. The risk register item
+retires. FORMATS, each rule traced to official documentation and
+verified by probe before design (never assumed): .parquet via DuckDB
+read_parquet - the Apache Parquet specification is hosted in the
+apache/parquet-format repository with the Thrift IDL authoritative -
+where nested and semi-structured columns (LIST, STRUCT, MAP, UNION and
+the VARIANT type that went official in February 2026) are a LOUD
+REFUSAL NAMING THE COLUMNS, never a silent flatten, because this
+engine analyzes tables and says so; .xlsx via DuckDB's official excel
+extension, whose documented defaults become disclosed rules (first
+sheet; numeric cells inferred as DOUBLE), with a missing extension a
+loud error naming the INSTALL remedy; .xls refused cleanly with the
+remedy, as that extension documents it as unsupported; .db/.sqlite via
+ATTACH with the existing single-user-table rule. FORMAT PARITY, the
+step's crown-jewel test, is claimed HONESTLY AND SCOPED: the same
+logical data in CSV, Parquet and SQLite produces byte-identical stats
+and math findings digests, and all four containers agree on math; XLSX
+is pinned at the VALUE level instead, because the excel extension's
+documented DOUBLE inference makes an integer 1 arrive as 1.0 so the
+disclosed class label reads '1.0' - every statistic identical, only
+the label spelling differing. Normalizing that away would have hidden
+a real, documented container difference; the suite tests what is
+actually true instead. Constitutional change: parquet joins
+KNOWN_SOURCE_TYPES, and the planner's _source_type gains a parquet
+branch - a gap found during wiring, where a .parquet source fell
+through to 'csv' and would have passed a CSV-only playbook's
+requirement check silently; a requirement that says nothing is worse
+than no requirement. The generator's rule-drafting now reads through
+the single reader too (drafting rules against a different parser than
+the one that validates them is exactly the divergence this step ends),
+which makes drafting work for every format for free; universal_audit
+and segment_comparison accept the new types. Step-20 hunt closed H1
+(a Parquet TIMESTAMP WITH TIME ZONE is an instant rendered in UTC, so
+an IST-midnight event lands on the previous UTC day - the instant is
+correct but day-level findings would be silently shifted; the engine
+does not re-zone anyone's data, it now DISCLOSES the UTC reading
+inside the hashed findings) and H2 (SQLite's dynamic typing lets one
+column mix integers and text and surfaces as raw bytes; analyzing
+untyped bytes would be fabrication, so it is a refusal naming the
+column and the CAST remedy), and verified H3 (a zero-row Parquet
+loads; the stage's existing feasibility rules decide, with a written
+reason) and H4 (a directory source dies in the engine's voice). Two
+pre-existing test fixtures were corrected, not the code: they encoded
+the OLD pandas view of a yes/no column as strings, while the profile
+gate had ALWAYS reported that column BOOLEAN - the fixtures were
+recording the divergence, and the swap exposed it. AnalystKit
+v2.1.0 ships alongside (75 tests) carrying the same three format
+rules at the doorstep. 310 tests.
 **Amendment record (v0.15):** Build-sequence step 19 recorded as built:
 the user journey - the deterministic playbook generator, the one
 project runner, and the user-facing documentation. GENERATOR

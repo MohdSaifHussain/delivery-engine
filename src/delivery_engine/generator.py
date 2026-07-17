@@ -93,8 +93,6 @@ def _draft_rules(
     types. No ranges are invented - a minimum the data happens to
     satisfy today is an assumption, not a requirement, and assumptions
     belong to the human."""
-    import duckdb
-
     rules: list[dict[str, Any]] = []
     id_cols = sorted(
         c for c, ks in kinds.items() if ColumnKind.ID_COLUMN in ks
@@ -103,29 +101,34 @@ def _draft_rules(
         rules.append({"column": id_cols[0], "rule": "unique"})
         rules.append({"column": id_cols[0], "rule": "not_null"})
 
-    con = duckdb.connect()
+    # Step 20: values come from the SINGLE READER, not a second
+    # read_csv here - drafting rules against a different parser than
+    # the one that will validate them is exactly the divergence this
+    # step exists to end. This also makes drafting work for Parquet,
+    # .xlsx and SQLite sources for free.
+    from delivery_engine.sources import load_dataframe
+
+    df = load_dataframe(source)
     try:
         for col in profile_findings.get("columns", []):
             name = col.get("name")
             distinct = int(col.get("distinct", 0))
-            if not name or name in id_cols[:1]:
+            if not name or name in id_cols[:1] or name not in df.columns:
                 continue
             if 0 < distinct <= MAX_ALLOWED_VALUES:
-                res = con.execute(
-                    'SELECT DISTINCT "' + name.replace('"', '""') + '" '
-                    "FROM read_csv(?, header=True, auto_detect=True) "
-                    'WHERE "' + name.replace('"', '""') + '" IS NOT NULL',
-                    [source],
-                ).fetchall()
-                values = sorted((r[0] for r in res), key=str)
+                series = df[name].dropna()
+                values = sorted(set(series.tolist()), key=str)
                 if values:
                     rules.append({
                         "column": name,
                         "rule": "allowed",
-                        "values": list(values),
+                        "values": [
+                            v.item() if hasattr(v, "item") else v
+                            for v in values
+                        ],
                     })
     finally:
-        con.close()
+        del df
     return rules
 
 
@@ -174,7 +177,10 @@ def _emit_toml(
     ]
     if required:
         lines.append(f"required_kinds = [{', '.join(required)}]")
-    lines += ['source_types = ["csv"]', ""]
+    # Step 20: generated playbooks accept every format the single
+    # reader supports - the draft should not be narrower than the
+    # engine it runs on.
+    lines += ['source_types = ["csv", "parquet", "excel", "sqlite"]', ""]
 
     if alpha is not None and "stats" in stages:
         lines += ["[stats]", f"alpha = {alpha}", ""]

@@ -15,7 +15,7 @@ description = "Segment comparison with statistical significance inference: rates
 [requirements]
 min_rows = 100
 required_kinds = ["binary_target", "id_column"]
-source_types = ["csv"]
+source_types = ["csv", "parquet", "excel", "sqlite"]
 
 # V14: the pre-registered significance level. Part of what the human
 # approves at Human Gate 1 — fixed before any p-value is computed.

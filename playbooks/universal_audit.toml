@@ -16,7 +16,7 @@ description = "Universal descriptive audit of any dataset: distribution shape, o
 [requirements]
 min_rows = 100
 required_kinds = ["id_column"]
-source_types = ["csv"]
+source_types = ["csv", "parquet", "excel", "sqlite"]
 
 # ── Stage 1: the deterministic gate. Nothing runs before this passes. ──
 [[stages]]

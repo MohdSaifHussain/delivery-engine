@@ -204,15 +204,13 @@ def run_inference(
         )
 
     path = Path(source)
-    if not path.exists():
-        raise StatsError(f"Source not found: {path}")
-    if path.suffix.lower() != ".csv":
-        raise StatsError(
-            f"Statistical inference v1 runs on CSV sources only; got "
-            f"'{path.suffix}'. Other source types are a declared future "
-            f"extension, not a silent failure."
-        )
-    df = pd.read_csv(path)
+    # Step 20: the single reader (see delivery_engine.sources).
+    from delivery_engine.sources import SourceError, load_dataframe
+
+    try:
+        df = load_dataframe(str(path))
+    except SourceError as exc:
+        raise StatsError(str(exc)) from exc
 
     # Loophole L4 (step 15 hunt): testing the target against itself is
     # circular nonsense that would otherwise die deep inside pandas with

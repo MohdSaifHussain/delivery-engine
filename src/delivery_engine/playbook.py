@@ -79,7 +79,9 @@ KNOWN_REQUIRED_KINDS: Final[frozenset[str]] = frozenset({
 })
 
 KNOWN_SOURCE_TYPES: Final[frozenset[str]] = frozenset({
-    "csv", "excel", "sqlite", "postgres", "mysql",
+    # Step 20: parquet joins the declared source types - the warehouse
+    # extract format the engine's single reader now loads natively.
+    "csv", "parquet", "excel", "sqlite", "postgres", "mysql",
 })
 
 # V10: identifiers are snake_case ASCII. Stage ids and playbook names become

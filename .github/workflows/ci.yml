@@ -40,6 +40,11 @@ jobs:
           pip install -e ./analystkit-mcp
           pip install -e ./opskit-mcp
           pip install -e ".[dev,ml,docs,stats]"
+          # Step 20: pre-install the DuckDB extensions the source
+          # adapters need. They autoload on first use, but doing it
+          # here means a network problem fails loudly at setup instead
+          # of surfacing as a mysterious mid-test error.
+          python -c "import duckdb; c=duckdb.connect(); c.execute('INSTALL excel'); c.execute('INSTALL sqlite'); print('duckdb extensions ready')"
 
       - name: Install document verification tools
         run: pip install "markitdown[pptx]"

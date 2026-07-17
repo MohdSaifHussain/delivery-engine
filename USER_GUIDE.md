@@ -73,6 +73,29 @@ the run:
 If a playbook validates and you pass no rules, the runner tells you
 immediately — before any work runs — rather than failing later.
 
+## Supported formats
+
+Bring the extract you actually have. Every format enters through the
+same reader — the one the data-quality gate itself uses — so what the
+gate profiled is exactly what the analysis stages see:
+
+| Format | Notes |
+|---|---|
+| `.csv` | RFC 4180 quoting; unparseable rows recorded, not silently dropped |
+| `.parquet` | The warehouse-extract standard. Nested/semi-structured columns (`LIST`, `STRUCT`, `MAP`, and the Variant type that went official in February 2026) are **refused by name** — this engine analyzes tables and will not silently flatten your evidence |
+| `.xlsx` | Read via DuckDB's official `excel` extension. Two documented behaviours are disclosed rules: the **first sheet** is read, and numeric cells arrive as `DOUBLE` (so an integer `1` reads as `1.0` in class labels — the statistics are identical, only the label spelling differs). Legacy `.xls` is refused: save as `.xlsx` |
+| `.db` / `.sqlite` | Attached read-only; the file must contain **exactly one table**, otherwise the refusal names the tables it found. A column with no single type (SQLite lets one column mix integers and text) is refused rather than analyzed as raw bytes |
+
+Two things worth knowing:
+
+- **Timezones.** A Parquet timestamp *with* a timezone is an instant.
+  It is read as UTC, so an event at midnight IST falls on the previous
+  UTC day. The engine does not silently re-zone your data — it records
+  the note inside the hashed findings so you see it before a reviewer
+  does.
+- **The fingerprint covers the file.** For a SQLite source that means
+  the whole database file, not just the table you analyzed.
+
 ## Your first playbook in ten minutes: the generator
 
 When no curated playbook matches your standard, generate a draft:

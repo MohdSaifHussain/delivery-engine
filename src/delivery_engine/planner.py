@@ -260,6 +260,12 @@ def _source_type(source: str) -> str:
         return "postgres"
     if s.startswith("mysql://"):
         return "mysql"
+    # Step 20: parquet is its own type. Without this branch it fell
+    # through to "csv" and would have passed a CSV-only playbook's
+    # requirement check silently - a requirement that says nothing is
+    # worse than no requirement.
+    if s.endswith(".parquet"):
+        return "parquet"
     if s.endswith((".xlsx", ".xls")):
         return "excel"
     if s.endswith((".sqlite", ".db", ".sqlite3")):

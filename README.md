@@ -30,8 +30,9 @@ literature; see STEP18_DECISIONS.md). In production runs on
 and a real 1.5M-false-exception tool bug before either reached a
 stakeholder.
 
-Bring your own dataset: **[USER_GUIDE.md](USER_GUIDE.md)** takes you
-from a CSV to a sealed package in one command
+Bring your own dataset — CSV, Parquet, `.xlsx`, or SQLite, all read
+through one reader: **[USER_GUIDE.md](USER_GUIDE.md)** takes you
+from an extract to a sealed package in one command
 (`run_project.py`), and `generate_playbook.py` compiles a draft
 playbook for your data - deterministically, as a draft a human must
 approve, because a pipeline never approves its own rules of

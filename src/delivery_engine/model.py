@@ -94,15 +94,16 @@ def train_baseline(
     from sklearn.preprocessing import OneHotEncoder
 
     path = Path(source)
-    if not path.exists():
-        raise ModelError(f"Source not found: {path}")
-    if path.suffix.lower() != ".csv":
-        raise ModelError(
-            f"Baseline model v1 trains on CSV sources only; got "
-            f"'{path.suffix}'. Other source types are a declared future "
-            f"extension, not a silent failure."
-        )
-    df = pd.read_csv(path)
+    # Step 20: the single reader (delivery_engine.sources -> the kit's
+    # DuckDB loader, the same one the profile gate used). CSV, Parquet,
+    # .xlsx and SQLite all arrive here; the loader's refusals are loud
+    # and specific, and are re-raised in this stage's voice.
+    from delivery_engine.sources import SourceError, load_dataframe
+
+    try:
+        df = load_dataframe(str(path))
+    except SourceError as exc:
+        raise ModelError(str(exc)) from exc
 
     for col in [target, *numeric_features, *categorical_features]:
         if col not in df.columns:

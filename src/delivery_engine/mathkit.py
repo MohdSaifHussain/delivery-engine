@@ -323,15 +323,13 @@ def run_math(
             f"Valid: {sorted(KNOWN_MATH_CHECKS)}."
         )
     path = Path(source)
-    if not path.exists():
-        raise MathError(f"Source not found: {path}")
-    if path.suffix.lower() != ".csv":
-        raise MathError(
-            f"Descriptive math v1 runs on CSV sources only; got "
-            f"'{path.suffix}'. Other source types are a declared future "
-            f"extension, not a silent failure."
-        )
-    df = pd.read_csv(path)
+    # Step 20: the single reader (see delivery_engine.sources).
+    from delivery_engine.sources import SourceError, load_dataframe
+
+    try:
+        df = load_dataframe(str(path))
+    except SourceError as exc:
+        raise MathError(str(exc)) from exc
 
     feats = [*numeric_features, *categorical_features, *timestamp_features]
     if len(feats) != len(set(feats)):
@@ -368,6 +366,13 @@ def run_math(
         "temporal": {},
         "skipped": [],
     }
+    # Step 20 (H1): if the single reader found timezone-aware columns,
+    # the caveat travels into the hashed findings - day-level results
+    # are computed on UTC calendar days, and the analyst sees that here
+    # rather than in a review.
+    tz_note = df.attrs.get("timezone_note")
+    if tz_note:
+        findings["source_timezone_note"] = tz_note
 
     def want(check: str) -> bool:
         return math_checks in (check, "all")

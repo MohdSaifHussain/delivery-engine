@@ -27,6 +27,7 @@ constitution fails to load with a clean, numbered error. The rules:
 | V13 | `[deliverables] formats` (optional) lists output formats from markdown/docx/pptx/xlsx/pdf; absent = markdown-only | per-playbook deliverable format, backward-compatible |
 | V12 | `kind = "model"` stages declare a `gate` and non-empty `needs` — a baseline never trains before the deterministic profile gate | 4.2 gates before anything |
 | V14 | `kind = "stats"` stages declare `stat_test` from a fixed sourced list, a `gate`, and non-empty `needs`; `[stats] alpha` (optional, default 0.05) is pre-registered, in (0, 1), and only legal when a stats stage exists. Significance never gates. | pre-registration; anti-p-hacking |
+| Source types | `csv`, `parquet`, `excel`, `sqlite`, `postgres`, `mysql` — declared in `[requirements] source_types`; the planner refuses a source whose type the playbook does not accept. | step 20 |
 | V15 | `kind = "math"` stages declare `math_checks` from a fixed sourced list, a `gate`, and non-empty `needs`; every method threshold is a fixed constant disclosed in the findings. Descriptive values never gate. | no improvised methods; no post-hoc thresholds |
 
 ## Version choice, sourced
