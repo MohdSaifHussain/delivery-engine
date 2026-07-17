@@ -1,7 +1,50 @@
 # PROJECT CHARTER — Delivery Engine
 
-**Version:** 0.14
-**Date:** 9 July 2026 (v0.1 founding) · amended 11-17 July 2026 (v0.2 through v0.14)
+**Version:** 0.15
+**Date:** 9 July 2026 (v0.1 founding) · amended 11-17 July 2026 (v0.2 through v0.15)
+**Amendment record (v0.15):** Build-sequence step 19 recorded as built:
+the user journey - the deterministic playbook generator, the one
+project runner, and the user-facing documentation. GENERATOR
+(delivery_engine.generator + generate_playbook.py): compiles a DRAFT
+playbook for the user's dataset and goal from the AnalystKit profile
+and stated requirements - deterministic template assembly with no LLM
+in the path (same profile + same answers -> byte-identical output,
+proven by test); the constitution is the compiler's type-checker
+(every generated file re-loads through load_playbook rules V1-V15; an
+invalid draft is deleted, never left half-valid); feasibility gates
+the stage menu (stats/model without a binary target is a refusal, not
+a playbook that fails later); drafted validation rules are
+evidence-typed (numerics as numbers, booleans as booleans - the
+AnalystKit v2.0.2 per-dtype contract honored at the source); output
+lands in playbooks/generated/, which the planner's non-recursive glob
+makes INVISIBLE to the archetype lottery by construction. THE DRAFT
+PRINCIPLE, the constitutional heart of the step: a pipeline must
+never approve its own rules of engagement - generated playbooks
+carry a DRAFT header and the runner refuses to execute them without
+--playbook-approved-by <name>, the step-9 rules_draft pattern
+(draft -> human approval -> execution) applied to the constitution
+itself. RUNNER (delivery_engine.runner + run_project.py): ONE tested,
+hardened runner replaces the per-project run_<name>.py copy-paste
+pattern - the Python edition of the spreadsheet-drift failure mode
+the error literature documents; flags with interactive fallback
+(scriptable for CI, prompted at a terminal); the step-16 pre-flight
+preview confirmed by default, --yes for automation; validate-bearing
+playbooks without rules fail BEFORE any work with the remedy stated;
+raising --max-exception-rate above the engine default prints an
+unmissable override warning (the July 2026 fraud-run lesson: a 400%
+override waved a tool bug into a stakeholder package). Docs:
+USER_GUIDE.md (why playbooks - a team's analysis standard frozen as a
+governed executable document; first playbook in ten minutes; reading
+the package like a reviewer) and the README's "Who this is for"
+section. Step-19 hunt closed L1 (hostile goal text - quotes,
+newlines, backslashes - sanitized before entering TOML instead of
+killing generation), L4 (a draft named after a curated playbook would
+be silently SHADOWED at resolution - review one playbook, run
+another; now a refusal naming the trap), L5 (path fragments smuggled
+through name resolution - names must match a strict slug), and L7
+(invalid rules JSON is a clean exit with the expected shape shown,
+not a raw traceback). Zero engine-core changes: the entire step is
+entry-point layer, which is itself a safety property. 291 tests.
 **Amendment record (v0.14):** Build-sequence step 18 recorded as built:
 the Analyst-Error Guardrails - six controls, each traceable to
 published research on how analysts actually fail, several motivated by

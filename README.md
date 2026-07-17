@@ -13,6 +13,30 @@ append-only audit log. A reviewer who was never in the room can re-perform any
 stage from the delivery package alone and get the same hashes. If they can, it
 is evidence. If they cannot, it is just output.
 
+
+## Who this is for, and why it matters
+
+For data analysts and their reviewers. Most analysis tooling helps
+you compute; almost none of it helps you **prove**. This engine
+produces analysis a reviewer can re-perform and an auditor can
+verify: every number in every deliverable traces to a hashed finding,
+the input dataset is fingerprinted, statistics are pre-registered
+before any p-value exists, and the report carries its own limitations
+- leakage warnings, independence caveats, minimum detectable effects
+- mapped to the published research on how analysts actually fail
+(Panko's spreadsheet-error corpus through the 2026 governance
+literature; see STEP18_DECISIONS.md). In production runs on
+500,000-row datasets it caught a real target-leakage AUC-1.0 baseline
+and a real 1.5M-false-exception tool bug before either reached a
+stakeholder.
+
+Bring your own dataset: **[USER_GUIDE.md](USER_GUIDE.md)** takes you
+from a CSV to a sealed package in one command
+(`run_project.py`), and `generate_playbook.py` compiles a draft
+playbook for your data - deterministically, as a draft a human must
+approve, because a pipeline never approves its own rules of
+engagement.
+
 ## Start here
 
 - **[QUICKSTART.md](QUICKSTART.md)** — install, run an example in 60
