@@ -12,6 +12,9 @@
 
 ---
 
+> [!TIP]
+> New here? See [how these examples grew up](../docs/how-the-examples-grew-up.md) — the learning arc from planted-signal demos to a real 6.36M-row run.
+
 > [!NOTE]
 > Each subdirectory is a **complete output package** the engine produced on a real dataset — checked in so you can read the results *before* running anything. Every package ships a `manifest.json` whose SHA-256 tree covers every file. Recompute a hash, compare it to the manifest, and you've proven the evidence is unaltered.
 
@@ -58,9 +61,15 @@ Each folder's own `README` documents that example in full.
 
 **Statistical inference between segments** — Wilson intervals, effect sizes, BH-corrected tests, minimum detectable effect.
 
+> [!NOTE]
+> This folder currently holds a **sample dataset only** (`signup_conversion.csv`), ready to run with the `segment_comparison` playbook. A committed output package is not yet included.
+
 ### 📐 `universal_audit/` &nbsp;·&nbsp; `universal_audit`
 
 **Descriptive shape on any table** — distribution fits, MAD outliers, entropy, temporal structure.
+
+> [!NOTE]
+> This folder currently holds a **sample dataset only** (`orders.csv`), ready to run with the `universal_audit` playbook. A committed output package is not yet included.
 
 ---
 
