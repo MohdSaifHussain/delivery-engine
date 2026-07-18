@@ -1,8 +1,8 @@
 # USER GUIDE — Running Your Project Through the Delivery Engine
 
 This guide is for the analyst who just arrived with a CSV and a
-deadline. The [README](README.md) explains what the engine is; the
-[PLAYBOOK_SPEC](PLAYBOOK_SPEC.md) defines what is legal; this document
+deadline. The [project overview (README.md)](README.md) explains what the engine is; the
+[playbook specification (PLAYBOOK_SPEC.md)](PLAYBOOK_SPEC.md) defines what is legal; this document
 shows you how to get from *your* dataset to a sealed, reviewable
 package — in about ten minutes the first time, about one minute after
 that.
@@ -150,7 +150,7 @@ raise `min_rows`, tighten an allowed-values rule, change the alpha in
 any p-value exists), or bump the version and move the file from
 `generated/` into `playbooks/` once it has earned curated status.
 Every edit is checked against the constitution (rules V1–V15 in
-PLAYBOOK_SPEC.md) the moment the file loads — an invalid playbook
+the [playbook specification (PLAYBOOK_SPEC.md)](PLAYBOOK_SPEC.md)) the moment the file loads — an invalid playbook
 refuses to load with the rule number and the reason.
 
 ## Reading the package like a reviewer
@@ -170,7 +170,8 @@ refuses to load with the rule number and the reason.
 
 ## One warning worth repeating
 
-If validation reports a mountain of exceptions, that is **evidence** —
+> [!WARNING]
+> If validation reports a mountain of exceptions, that is **evidence** —
 of dirty data, or of wrong rules. Diagnose before overriding: a real
 production run once "fixed" 1.5 million false exceptions by raising
 the gate to 400%, when the true cause was a one-character rule bug

@@ -2,7 +2,9 @@
 
 **Version:** 0.16
 **Date:** 9 July 2026 (v0.1 founding) · amended 11-18 July 2026 (v0.2 through v0.16)
-**Amendment record (v0.16):** Build-sequence step 20 recorded as built:
+### Amendment record (v0.16)
+
+Build-sequence step 20 recorded as built:
 source adapters, and with them THE SINGLE-READER PRINCIPLE - the
 architectural heart of the step. Until now the computational stages
 (model, stats, math) read their source with pandas.read_csv while the
@@ -61,7 +63,9 @@ gate had ALWAYS reported that column BOOLEAN - the fixtures were
 recording the divergence, and the swap exposed it. AnalystKit
 v2.1.0 ships alongside (75 tests) carrying the same three format
 rules at the doorstep. 310 tests.
-**Amendment record (v0.15):** Build-sequence step 19 recorded as built:
+### Amendment record (v0.15)
+
+Build-sequence step 19 recorded as built:
 the user journey - the deterministic playbook generator, the one
 project runner, and the user-facing documentation. GENERATOR
 (delivery_engine.generator + generate_playbook.py): compiles a DRAFT
@@ -104,7 +108,9 @@ through name resolution - names must match a strict slug), and L7
 (invalid rules JSON is a clean exit with the expected shape shown,
 not a raw traceback). Zero engine-core changes: the entire step is
 entry-point layer, which is itself a safety property. 291 tests.
-**Amendment record (v0.14):** Build-sequence step 18 recorded as built:
+### Amendment record (v0.14)
+
+Build-sequence step 18 recorded as built:
 the Analyst-Error Guardrails - six controls, each traceable to
 published research on how analysts actually fail, several motivated by
 failures observed first-hand in this engine's own production runs.
@@ -154,7 +160,9 @@ never suppressed. Step-18 hunt closed H5: a source file that vanishes
 between Human Gate 1 and execution is an audited ExecutionStopped in
 the engine's own voice, not a raw FileNotFoundError traceback. 272
 tests.
-**Amendment record (v0.13):** Build-sequence step 17 recorded as built:
+### Amendment record (v0.13)
+
+Build-sequence step 17 recorded as built:
 the universal descriptive math layer. A new stage kind `math`
 (delivery_engine.mathkit) answers "what is the SHAPE of every column?"
 - requiring no target, so it runs on any dataset the planner can
@@ -199,7 +207,9 @@ extended to categorical and temporal findings), and M7 (a failed
 Weibull MLE fit is a recorded absence pinned at the worst possible
 distance so it can never be selected best fit, never a crash and never
 silent). 256 tests.
-**Amendment record (v0.12):** Build-sequence step 16 recorded as built:
+### Amendment record (v0.12)
+
+Build-sequence step 16 recorded as built:
 the pre-flight preview and the multi-team handoff manifest. PREVIEW
 (delivery_engine.preview): before any stage runs, the executor renders
 a human-readable summary of exactly what is about to execute - stages
@@ -233,7 +243,9 @@ evidence, the step-9 rule), so the decline message directs the human
 to a fresh output directory and the stale-files refusal enforces it.
 H8: the interactive helper is itself under test via monkeypatched
 stdin. 227 tests.
-**Amendment record (v0.11):** Build-sequence step 15 recorded as built:
+### Amendment record (v0.11)
+
+Build-sequence step 15 recorded as built:
 the statistical evidence layer. A new stage kind `stats`
 (delivery_engine.stats) upgrades the engine's findings from DESCRIPTIVE
 (counts, rates) to INFERENTIAL (is a difference real; how uncertain is
@@ -266,7 +278,9 @@ is live not decorative, NaN drops are counted, Wilson bounds hold in
 [0,1] at k=0 extremes where Wald fails, findings are row-order
 invariant, significance flags mirror BH-adjusted values at the
 boundary. 212 tests.
-**Amendment record (v0.10):** Build-sequence step 14 recorded as built:
+### Amendment record (v0.10)
+
+Build-sequence step 14 recorded as built:
 the developer-experience layer, positioned from a real-world job
 description (Senior Analyst, GBM Audit COO, Scotiabank). Three parts:
 (1) the Playbook Compatibility Report — a deterministic pre-flight
@@ -286,7 +300,9 @@ AI-level contract (zero-AI is a first-class mode; narrative-AI never
 writes numbers; no third level by design). POSITIONING made explicit in
 the docs: a first-level accelerator and cognitive assistant with
 workpaper discipline — not a replacement for enterprise tooling.
-**Amendment record (v0.9):** Build-sequence step 13 recorded as built:
+### Amendment record (v0.9)
+
+Build-sequence step 13 recorded as built:
 deterministic multi-format deliverables (Word, PowerPoint, Excel, PDF)
 declared per-playbook via [deliverables] formats (schema rule V13,
 backward-compatible — absent key defaults to markdown). CRITICAL DESIGN
@@ -302,7 +318,9 @@ sections. Format-aware verification: detail formats (docx/xlsx/pdf) carry
 full column detail; decks (pptx) carry summary numbers — a correct
 professional distinction. The .json/.md evidence layer is preserved
 underneath; documents are additive.
-**Amendment record (v0.8):** Build-sequence step 12 recorded as built:
+### Amendment record (v0.8)
+
+Build-sequence step 12 recorded as built:
 GitHub Actions CI (ruff + mypy strict + pytest) mirroring the local gates
 exactly, plus a root README with CI badge. This closes the LAST open item
 in Section 10's definition of done — the v0.1 thin slice is now complete
@@ -311,7 +329,9 @@ markitdown is installed so the one PPT content-scan test executes instead
 of skipping (156 passed, 0 skipped from a clean checkout). The workflow
 was validated in a fresh-venv clean-checkout simulation before being
 committed, not merely written.
-**Amendment record (v0.7):** Build-sequence step 11 recorded as built:
+### Amendment record (v0.7)
+
+Build-sequence step 11 recorded as built:
 the deterministic PPT builder. CONSCIOUS DESIGN DECISION: the slot is
 named PRESENTATION under the AI stage kind, but it generates NO AI
 content. Every number on every slide is a Python literal from the
@@ -321,7 +341,9 @@ the audit trail. pptxgenjs embeds a creation timestamp in the OOXML
 package so the binary .pptx bytes legitimately differ across runs, but
 the script hash proves content identity — a tool limitation, not an
 engine failure. Section 11's artifact box is now complete.
-**Amendment record (v0.6):** Build-sequence step 10 recorded as built: the
+### Amendment record (v0.6)
+
+Build-sequence step 10 recorded as built: the
 deterministic baseline model stage. CONSCIOUS AMENDMENT of the original
 architecture: the diagram placed "Baseline Model" under bounded AI slots
 ("code generated, run deterministically"); v1 goes further - NO code is
@@ -334,7 +356,9 @@ Declared stage semantics: metric values never gate; training feasibility
 does. Target selection is disclosed deterministic (first binary candidate
 in the plan order approved at Human Gate 1, all candidates recorded in
 hashed findings).
-**Amendment record (v0.5):** Build-sequence step 9 recorded as built: the
+### Amendment record (v0.5)
+
+Build-sequence step 9 recorded as built: the
 transaction_monitoring_review archetype, the first playbook composing the
 full system (both kits, Human Gate 2, dual narratives) with ZERO engine
 changes - the playbooks-not-code principle (4.5) demonstrated at full
@@ -342,19 +366,25 @@ scale. Design lesson recorded: the planner's tie-break is lexical, so
 archetype descriptions are part of the routing contract; descriptions
 must be lexically differentiated, and routing regression tests pin the
 contract.
-**Amendment record (v0.4):** Build-sequence step 8 recorded as built: the
+### Amendment record (v0.4)
+
+Build-sequence step 8 recorded as built: the
 ops_report AI slot renders OpsKit findings into a narrative under the
 injected-numbers rule. The rule was extended, not weakened: the injector
 gained inject_from_findings, which proves a quoted string exists verbatim
 inside the stage's hashed findings before registering its numeric tokens -
 provenance by construction. Section 8's deferred list updated accordingly.
-**Amendment record (v0.3):** Build-sequence step 7 recorded as built:
+### Amendment record (v0.3)
+
+Build-sequence step 7 recorded as built:
 OpsKit wired into the engine as a kit stage (tool `opskit_run_playbook`,
 schema rule V11, archetype ops_review), with envelope seal verification
 and declared insight-vs-unfitness gate semantics. Section 8's deferred
 list updated: OpsKit engine wiring is done; ops narrative artifacts
 (report/readme built from OpsKit findings) are the named next deferral.
-**Amendment record (v0.2):** Build-sequence steps 5 and 6 recorded as built.
+### Amendment record (v0.2)
+
+Build-sequence steps 5 and 6 recorded as built.
 Section 8's deferred list updated: OpsKit integration has begun via
 opskit-mcp; engine-stage wiring is the explicitly remaining deferred piece.
 Section 9 updated with the as-built sequence. Section 4.9 added: the

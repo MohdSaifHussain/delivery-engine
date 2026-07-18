@@ -106,7 +106,7 @@ Then edit `my_review.toml`:
 3. **`[[stages]]`** — the workflow, one block per stage, in order.
    Deterministic gates first (`kind = "kit"` with `gate = "must_pass"`),
    AI slots after (`kind = "ai"`), package last. The full schema with
-   every rule (V1–V13) is in [`PLAYBOOK_SPEC.md`](PLAYBOOK_SPEC.md).
+   every rule (V1–V15) is in [`PLAYBOOK_SPEC.md`](PLAYBOOK_SPEC.md).
 4. **`[deliverables]`** — pick your output formats:
    `formats = ["markdown", "docx", "pptx", "xlsx"]` (add `"pdf"` if
    LibreOffice is installed). Omit the key for markdown-only.
@@ -124,9 +124,10 @@ The engine is honest about where AI sits, and you control it:
 | **Zero AI** | No `ANTHROPIC_API_KEY` set (the default) | Fully deterministic run. Reports use clean structured templates; every number injected from the store. Nothing degrades silently — this is a first-class mode, and it is how the test suite runs. |
 | **Narrative AI** | Set `ANTHROPIC_API_KEY` | AI slots write richer prose in reports and READMEs. The injected-numbers rule still holds: AI **never** computes, estimates, or writes a figure — artifacts are verified after generation and the pipeline stops if a number lacks provenance. |
 
-There is no third level by design. AI authoring numbers, code, or
-documents end-to-end is the exact failure mode this engine exists to
-prevent.
+> [!NOTE]
+> There is no third level by design. AI authoring numbers, code, or
+> documents end-to-end is the exact failure mode this engine exists to
+> prevent.
 
 ## 6. The two human gates (you stay the governor)
 
@@ -143,7 +144,7 @@ prevent.
 |---|---|
 | `playbooks/` | The archetypes — add yours here |
 | `examples/` | Three complete runs with committed output |
-| `PLAYBOOK_SPEC.md` | The playbook schema and rules V1–V13 |
+| `PLAYBOOK_SPEC.md` | The playbook schema and rules V1–V15 |
 | `PROJECT_CHARTER.md` | Every design decision, dated and versioned |
 | `output/final/manifest.json` (per run) | The hash tree — the proof |
 

@@ -1,6 +1,6 @@
 # PLAYBOOK_SPEC.md — Delivery Engine Playbook Schema v1
 
-**Status:** Approved (build step 2 of PROJECT_CHARTER.md section 9)
+**Status:** Approved (build step 2 of the [project charter (PROJECT_CHARTER.md)](PROJECT_CHARTER.md), section 9)
 **Format:** TOML 1.0.0 (parseable by Python stdlib `tomllib`, docs.python.org)
 **Date:** 10 July 2026
 
