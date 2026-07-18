@@ -1,0 +1,44 @@
+{
+  "findings": {
+    "categorical_features": [
+      "type"
+    ],
+    "class_balance_positive": 0.001291,
+    "leakage_check": "per-feature association with the target (Cram\u00e9r's V for categoricals, absolute point-biserial for numerics); associations at or above the fixed threshold are flagged possible_target_leakage - a warning for human judgment, never a gate. Motivated by a production run where a post-hoc label column produced a perfect score.",
+    "leakage_threshold": 0.95,
+    "leakage_warnings": [],
+    "library": "scikit-learn",
+    "metrics": {
+      "accuracy": 0.999266,
+      "f1": 0.62612,
+      "precision": 0.913165,
+      "recall": 0.476376,
+      "roc_auc": 0.989545
+    },
+    "model": "LogisticRegression(max_iter=1000)",
+    "n_rows_dropped_nulls": 0,
+    "n_test": 1590655,
+    "n_train": 4771965,
+    "negative_class": "0",
+    "note": "Deterministic baseline: fixed integer seeds on splitter and estimator per scikit-learn's controlling-randomness guidance; metrics rounded to 6 decimals as a declared contract. This is a reference point for human modeling work, not a delivered model.",
+    "numeric_features": [
+      "amount",
+      "newbalanceDest",
+      "newbalanceOrig",
+      "oldbalanceDest",
+      "oldbalanceOrg",
+      "step"
+    ],
+    "positive_class": "1",
+    "random_seed": 42,
+    "split": "stratified",
+    "target": "isFraud",
+    "target_candidates": [
+      "isFraud"
+    ],
+    "target_selection": "first binary_target in plan column order (plan approved at Human Gate 1); candidates listed under target_candidates",
+    "test_size": 0.25
+  },
+  "sha256": "6c7910d915068403b41a286e6734e2071869d348c68ad34e1e130ee8441db4dd",
+  "stage": "baseline"
+}

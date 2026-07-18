@@ -1,0 +1,29 @@
+{
+  "files": {
+    "README.md": "09939cc4e6ce0f2ee9f9f84af66938d9ee544b9adc57d2b65859ddb7b5f0c7d5",
+    "audit_log.jsonl": "450d7f99ad12da34f3a02429d57c008af3e684559c0dc3731ea9f3890e232e2f",
+    "delivery_package.pptx": "7e6029ac02db1f2ec71ebe32f1b180a4a9bc593fb0003044e63550e8a3d0425b",
+    "eda_notebook.ipynb": "f3430748ef3845d6dd0e5c58f634d22b37e75d9c2d199862eb1047470af9a753",
+    "execution_preview.md": "6d14f470b7f1dcb006cdede15c28328274f62c4d4f4e82d7d2f96a03c75f26db",
+    "findings\\baseline.json": "b58e831089e979a37b3b22c7112d02b22b8b46188642544742dbc4ae1de827a7",
+    "findings\\dq_dedupe.json": "955270cc19bfed4e170b359803b2e5da05d0a3f966db7323109f01cda7a95606",
+    "findings\\dq_profile.json": "af0526db06be64f02a8363becee416c5f596e15ee2791f1c5fa05f2713db2c79",
+    "findings\\dq_validate.json": "c1f66c9deb243dc5014d12530561493caf109f4f3dded59c22eab24fca58d4c4",
+    "handoff_manifest.json": "60bde2cb1884ebe27fc15c2f71e00f6fa436fd14a90dfa60947bfe5d4632c076",
+    "narrative_report.md": "7f30af21455f08e3507a6af3e588856b11af25b2ea19ed363c0abd21143d5a18",
+    "plan.json": "ea1c66505d86f8652c744bb932017922acf585f555d1d71776ad55a4061f65f9"
+  },
+  "findings": {
+    "baseline": "6c7910d915068403b41a286e6734e2071869d348c68ad34e1e130ee8441db4dd",
+    "dq_dedupe": "c304c11a27d5fb7382e933d1a3fbbd8c35889137dc46ba87d42c3c953f426953",
+    "dq_profile": "4e9922d8774997e6c7ccd3e151cd9d82290e6e93213d2cc58a81f4386523c41e",
+    "dq_validate": "c48535674696453410712220cf0a739bbd83bfd534ab57f1defc5ea65dfa57bd"
+  },
+  "note": "Verify each file's SHA-256 against this manifest. Matching hashes = unaltered evidence. The audit log records when and why each entry came to exist.",
+  "plan_sha256": "b0df8813249edc5c8e994e5a0363f4921a11c8c94976fc78a1b524273ce02137",
+  "source_fingerprint": {
+    "bytes": 529599454,
+    "path": "data\\fraud_model.csv",
+    "sha256": "94411471338aaf65f622fe7c14ba98c1f0cf894148bf49a889b1b3e9b444e4d1"
+  }
+}

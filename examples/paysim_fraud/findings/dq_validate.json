@@ -1,0 +1,50 @@
+{
+  "findings": {
+    "results": [
+      {
+        "column": "row_id",
+        "detail": "value must be unique",
+        "failures": 0,
+        "rule": "unique",
+        "rule_id": "R01",
+        "sample": []
+      },
+      {
+        "column": "row_id",
+        "detail": "value must not be null",
+        "failures": 0,
+        "rule": "not_null",
+        "rule_id": "R02",
+        "sample": []
+      },
+      {
+        "column": "amount",
+        "detail": "value outside [0, inf]",
+        "failures": 0,
+        "rule": "range",
+        "rule_id": "R03",
+        "sample": []
+      },
+      {
+        "column": "type",
+        "detail": "value not in the allowed set (5 values)",
+        "failures": 0,
+        "rule": "allowed",
+        "rule_id": "R04",
+        "sample": []
+      },
+      {
+        "column": "isFraud",
+        "detail": "value not in the allowed set (2 values)",
+        "failures": 0,
+        "rule": "allowed",
+        "rule_id": "R05",
+        "sample": []
+      }
+    ],
+    "rules_evaluated": 5,
+    "total_exceptions": 0
+  },
+  "sha256": "c48535674696453410712220cf0a739bbd83bfd534ab57f1defc5ea65dfa57bd",
+  "stage": "dq_validate"
+}

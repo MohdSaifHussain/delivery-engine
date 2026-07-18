@@ -1,0 +1,102 @@
+{
+  "approved": true,
+  "approved_at_ist": "2026-07-18T04:56:02+05:30",
+  "approved_by": "Saif",
+  "candidates_considered": [
+    "churn_analysis",
+    "data_quality_review",
+    "healthcare_claims_audit",
+    "segment_comparison",
+    "supplychain_audit",
+    "universal_audit"
+  ],
+  "column_kinds": [
+    [
+      "amount",
+      "numeric_column"
+    ],
+    [
+      "isFraud",
+      "binary_target"
+    ],
+    [
+      "isFraud",
+      "numeric_column"
+    ],
+    [
+      "newbalanceDest",
+      "numeric_column"
+    ],
+    [
+      "newbalanceOrig",
+      "numeric_column"
+    ],
+    [
+      "oldbalanceDest",
+      "numeric_column"
+    ],
+    [
+      "oldbalanceOrg",
+      "numeric_column"
+    ],
+    [
+      "row_id",
+      "id_column"
+    ],
+    [
+      "row_id",
+      "numeric_column"
+    ],
+    [
+      "step",
+      "numeric_column"
+    ],
+    [
+      "type",
+      "categorical_column"
+    ]
+  ],
+  "created_at_ist": "2026-07-18T04:56:02+05:30",
+  "decision_rationale": "explicitly chosen by the user",
+  "decision_source": "human",
+  "goal": "detect fraud patterns and quantify risk drivers in payment transactions",
+  "plan_sha256": "b0df8813249edc5c8e994e5a0363f4921a11c8c94976fc78a1b524273ce02137",
+  "playbook_name": "churn_analysis",
+  "playbook_path": "playbooks\\churn_analysis.toml",
+  "playbook_version": "1.2.0",
+  "requirement_results": [
+    [
+      "min_rows >= 100",
+      true,
+      "source has 6,362,620 rows"
+    ],
+    [
+      "required kind 'binary_target'",
+      true,
+      "found in: isFraud"
+    ],
+    [
+      "required kind 'id_column'",
+      true,
+      "found in: row_id"
+    ],
+    [
+      "source type 'csv' accepted",
+      true,
+      "playbook accepts: csv, excel, sqlite, postgres, mysql"
+    ]
+  ],
+  "source": "data\\fraud_model.csv",
+  "stage_ids": [
+    "dq_profile",
+    "dq_validate",
+    "dq_dedupe",
+    "plan_approval",
+    "baseline",
+    "eda",
+    "report",
+    "readme",
+    "presentation",
+    "package"
+  ]
+}
