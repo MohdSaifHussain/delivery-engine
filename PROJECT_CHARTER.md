@@ -1,7 +1,55 @@
 # PROJECT CHARTER — Delivery Engine
 
-**Version:** 0.17
-**Date:** 9 July 2026 (v0.1 founding) · amended 11-18 July 2026 (v0.2 through v0.17)
+**Version:** 0.18
+**Date:** 9 July 2026 (v0.1 founding) · amended 11-19 July 2026 (v0.2 through v0.18)
+**Amendment record (v0.18):** Build-sequence step 22 recorded as built:
+RUN LINEAGE - sequenced, immutable run folders. The problem is
+analytically real: cleaning a messy dataset is iterative, never
+one-shot (true even with enterprise tooling - fixing one issue exposes
+the next, routinely 3-10 iterations). That messy-to-clean lifecycle is
+the most audit-relevant artifact the engine produces and must be
+preserved as evidence, never overwritten. The executor already refuses
+a non-empty output directory (stale files must not be hash-certified as
+a new run's evidence); that safety rule and the need to keep history
+were in tension. Step 22 resolves it by SATISFYING the safety rule, not
+changing it: each run seals into its own fresh, sequentially numbered
+folder, so the executor always receives an empty directory and its rule
+holds by construction - the executor is untouched. THE ANCHOR IS THE
+RUN SEQUENCE NUMBER, NOT THE DATE: two iterations can happen the same
+afternoon or weeks apart, so a date says WHEN not WHICH ATTEMPT;
+run_001, run_002, ... is the identity, monotonically increasing, never
+reused, never renumbered (the generation date lives inside each run's
+report as metadata from step 21). THE FILESYSTEM IS THE LEDGER: a
+dataset's output area holds run_001 .. run_NNN in order, each a
+complete hash-sealed package, so a reviewer opens run_003 and run_005
+side by side and sees completeness climbing and exceptions shrinking -
+no database, no hidden counter, the directory listing is the only
+source of truth. Key properties, all proven by test: a deleted middle
+run is NEVER refilled (a missing run_002 is visible history, evidence
+something was removed, not a slot to reuse); an existing run is NEVER
+overwritten (fails loudly instead); recognition is strict (exactly
+run_ + >=3 digits AND a directory, so a file named run_005 or a folder
+run_bad or RUN_001 is ignored and cannot corrupt ordering); ordering is
+numeric not lexical (run_100 never sorts before run_009); lineage is
+opt-in via a --lineage flag so no existing workflow changes silently.
+Determinism verified, not assumed: two runs on the SAME input produce
+IDENTICAL findings hashes (determinism working, not a conflict) - when
+the data is actually cleaned between runs the input differs so the
+hashes differ, and that difference IS the evidence of remediation; each
+run folder is physically separate (distinct inodes, no shared or
+overwritten files) and its manifest hashes only its own package (no
+cross-run references), so any run folder can be verified in isolation.
+lineage.py is stdlib only (pathlib, re) - no DuckDB, no version-
+sensitive API - and was verified empirically on real directories. The
+hunt closed numeric-ordering, 4-digit runs, file-named-like-a-run,
+strict-name-recognition, and symlinked-area. Declared as its own small
+follow-on (captured, not lost): HUMAN-DECLARED FINAL - the "all-green =
+final" signal must NOT be an engine decision (all-green means zero
+exceptions against the rules the human wrote, not that the data is
+objectively correct); the engine reports the green state as fact and a
+NAMED HUMAN declares a run final, the same pattern as Human Gate 2 and
+null signatures. Step 23 (deterministic across-runs trend report) is
+now unblocked. 347 tests.
 ### Amendment record (v0.17)
 
 Build-sequence step 21 recorded as built: THE DETERMINISTIC VISUAL REPORT. The engine's generated eda_notebook.ipynb presents the hashed findings as tables and prose; step 21 adds a second, presentation-grade artifact - a self-contained HTML report (src/delivery_engine/report.py, run via generate_report.py) that DRAWS those same hashed findings as clean charts. The governing principle, stated in the report itself: charts are COGNITIVE SCAFFOLDING, NOT CONCLUSIONS - they show the shape of the data so a reviewer decides where to look, never what to conclude. This is the injected-numbers rule made visual: the report draws hashed findings and never computes, estimates, or decides. build_report_html is a PURE FUNCTION - same findings produce byte-identical HTML (proven by test); no randomness, no network, no AI at runtime, so the report is re-performable and every drawn number is verifiable against the store. It is ADAPTIVE THROUGH THE HASHED PROFILE, NOT THROUGH JUDGEMENT: which charts appear and how tall they are follows the deterministic column profile the engine already produced (more columns -> a taller completeness chart), by code, never by an LLM reading the data. v1 draws only the three families whose numbers already exist in the store - the DAMA scorecard, the validation results, and per-column completeness/profile; richer target-based charts (class balance, rate by segment) are a declared future extension requiring a deterministic aggregation stage to compute-and-hash those numbers first, because drawing them today would require calculation the constitution forbids. Colour is honest: bars are green at high scores and amber below, so a messy dataset renders amber automatically (a 90%-completeness / 1,000-exception dataset was proven to render amber), while accuracy and timeliness - which the engine reports as not scored - render as dashed "not scored" outlines, NEVER as a 0% bar, because absence of a score is not a score of zero. THE REPORT IS A MIRROR, NOT A TARGET: it shows whatever state the data is in; the clean all-green look is simply what honesty looks like when the data is genuinely clean, and a messy dataset's amber report is the tool doing its job - surfacing the problem so a human fixes it and re-runs to a greener, provably-improved report. The generation date is display metadata in the footer, passed explicitly and kept OUTSIDE the determinism contract, so the content stays a pure function of the findings while the render date is honest metadata. The artifact is self-contained and offline (inline SVG + CSS, no CDN), with a tuned professional system-font stack. The step-21 hunt verified escaping of hostile column names and source labels (no HTML injection), zero-column rendering, and clamping of out-of-range scores to valid bar widths; the load-bearing test proves every number a reader sees traces to the findings - the report's equivalent of verify_artifact_numbers. Zero engine-core changes: a read-only module plus a thin CLI. Charter also carries the declared roadmap: step 22 (run lineage - sequenced immutable run_NNN folders preserving the iterative cleaning lifecycle as evidence, anchored on the run sequence number not the date, with a human-declared-final guardrail so the engine reports the green state as fact and a named human declares a run final) and step 23 (a deterministic across-runs trend report, depending on step 22). 331 tests.

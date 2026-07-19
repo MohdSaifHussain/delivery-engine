@@ -108,6 +108,12 @@ def main(argv: list[str] | None = None) -> Path:
                                     "(e.g. a generated .rules.json)")
     ap.add_argument("--out", default="output/run",
                     help="output directory (default: output/run)")
+    ap.add_argument("--lineage", action="store_true",
+                    help="preserve run history: seal into the next "
+                         "run_NNN folder under --out instead of "
+                         "overwriting. The cleaning lifecycle (messy "
+                         "to clean across attempts) becomes an ordered, "
+                         "immutable chain of sealed packages.")
     ap.add_argument("--approver",
                     help="your name - recorded at Human Gate 1")
     ap.add_argument("--playbook-approved-by",
@@ -200,6 +206,18 @@ def main(argv: list[str] | None = None) -> Path:
     findings = envelope["findings"]
 
     out = Path(args.out)
+    if args.lineage:
+        # Step 22: seal into the next run_NNN under the output area,
+        # preserving every prior run. The executor still receives a
+        # fresh empty directory, so its non-empty-directory safety rule
+        # is satisfied by construction rather than bypassed.
+        from delivery_engine.lineage import LineageError, next_run_dir
+
+        try:
+            out = next_run_dir(out)
+        except LineageError as exc:
+            raise SystemExit(f"Run lineage error: {exc}") from exc
+        print(f"Run lineage: sealing into {out.name} (history preserved)")
     out.mkdir(parents=True, exist_ok=True)
     report = build_compatibility_report(findings, playbook_dir, source)
     (out / "compatibility_report.md").write_text(report, encoding="utf-8")
