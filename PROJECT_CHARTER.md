@@ -1,7 +1,49 @@
 # PROJECT CHARTER — Delivery Engine
 
-**Version:** 0.18
-**Date:** 9 July 2026 (v0.1 founding) · amended 11-19 July 2026 (v0.2 through v0.18)
+**Version:** 0.19
+**Date:** 9 July 2026 (v0.1 founding) · amended 11-19 July 2026 (v0.2 through v0.19)
+**Amendment record (v0.19):** Build-sequence step 23 recorded as built:
+THE DETERMINISTIC ACROSS-RUNS TREND REPORT. Step 22 preserves the
+iterative cleaning lifecycle as an ordered chain of sealed runs
+(run_001 .. run_NNN); step 23 reads that chain and renders ONE picture
+of the remediation journey - how validation exceptions shrink and
+data-quality scores climb from the first messy attempt to the latest.
+It is the comparison feature the single-run report (step 21) made
+people want once they could see one run at a time; run via
+generate_trend.py against a dataset's output area. THE GOVERNING
+CONSTRAINT, the constitutional line of the step: the report reads and
+draws the VALUES from each run and lets the reader see the movement -
+it NEVER computes a delta, a percentage improvement, or a "23% better"
+claim, because computing a cross-run difference would be the AI
+authoring a figure, exactly what the injected-numbers rule forbids. The
+improvement is VISUAL (the bars move across attempts), not an authored
+number; proven by test - the exception-difference 1312-312=1000 and the
+completeness-difference 100-90=10% are asserted ABSENT from the output.
+build_trend_html is a PURE FUNCTION (same runs -> byte-identical HTML,
+generation date in the footer outside the determinism contract as in
+step 21); every point is a hashed finding read from a sealed run's
+store (total_exceptions, rules_evaluated, DAMA scores), and the per-run
+table carries each run's validate digest so any point traces to its
+run. It is A MIRROR NOT A CHEERLEADER: if the data got worse across
+runs the report shows it honestly and never claims improvement (hunt
+regression). Not-scored dimensions are omitted for that run, never
+plotted as zero; incomplete/stopped runs are skipped not guessed; runs
+are read through step 22's existing_runs so out-of-order-on-disk still
+renders in numeric sequence; trend.py imports report.py's palette and
+CSS rather than duplicating them so the two artifacts cannot drift. The
+hunt closed worsening-data-honesty, all-dimensions-unscored,
+dataset-name-injection, extreme-scale-clamping, and out-of-order
+sorting. Verified end-to-end on REAL engine output: two --lineage runs
+sealed into run_001/run_002, then trend_from_area read them and
+produced trend.html - the full step 22 -> step 23 pipeline works on
+genuine sealed packages, not only fixtures. This COMPLETES the roadmap
+that began with the iterative-cleaning insight: step 21 (single-run
+report), step 22 (run lineage), step 23 (trend report), built end to
+end. Open item carried forward: human-declared-final (the all-green =
+final signal must be a named human's decision, not the engine's) -
+still a small self-contained follow-on, not built here, not silently
+folded in. 368 tests.
+
 **Amendment record (v0.18):** Build-sequence step 22 recorded as built:
 RUN LINEAGE - sequenced, immutable run folders. The problem is
 analytically real: cleaning a messy dataset is iterative, never
