@@ -1,16 +1,12 @@
 {
   "approved": true,
-  "approved_at_ist": "2026-07-21T17:16:28+05:30",
+  "approved_at_ist": "2026-07-14T14:07:16+05:30",
   "approved_by": "Example Analyst",
   "candidates_considered": [
     "churn_analysis",
     "data_quality_review",
-    "healthcare_claims_audit",
     "ops_review",
-    "segment_comparison",
-    "supplychain_audit",
-    "transaction_monitoring_review",
-    "universal_audit"
+    "transaction_monitoring_review"
   ],
   "column_kinds": [
     [
@@ -46,13 +42,13 @@
       "categorical_column"
     ]
   ],
-  "created_at_ist": "2026-07-21T17:16:28+05:30",
-  "decision_rationale": "highest goal-keyword overlap (score 3) among 8 qualified playbooks",
+  "created_at_ist": "2026-07-14T14:07:16+05:30",
+  "decision_rationale": "highest goal-keyword overlap (score 3) among 4 qualified playbooks",
   "decision_source": "deterministic",
   "goal": "data quality review of this extract",
-  "plan_sha256": "72ca76e3819d39a062507edb7b8c1e225169849771179657595436680067eac1",
+  "plan_sha256": "bedcd21b6da39418be5b4699098b7f28124c9682adb35820784769145181574f",
   "playbook_name": "data_quality_review",
-  "playbook_path": "C:\\Users\\mohds\\delivery-engine\\playbooks\\data_quality_review.toml",
+  "playbook_path": "/home/claude/repo/delivery-engine/playbooks/data_quality_review.toml",
   "playbook_version": "1.0.0",
   "requirement_results": [
     [
@@ -66,7 +62,7 @@
       "playbook accepts: csv, excel, sqlite, postgres, mysql"
     ]
   ],
-  "source": "C:\\Users\\mohds\\delivery-engine\\examples\\audit_data_quality\\audit_issues.csv",
+  "source": "/home/claude/repo/delivery-engine/examples/audit_data_quality/audit_issues.csv",
   "stage_ids": [
     "dq_profile",
     "rules",

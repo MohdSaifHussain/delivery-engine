@@ -1,13 +1,19 @@
-__pycache__/ 
-*.egg-info/ 
-.venv/ 
-*.pyc 
-.mypy_cache/ 
-.pytest_cache/ 
-.ruff_cache/ 
-node_modules/ 
-package-lock.json 
-package.json 
+__pycache__/
+*.egg-info/
+.venv/
+*.pyc
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+node_modules/
+package-lock.json
+package.json
 data/
 output/
 playbooks/generated/
+
+# Curated example packages are intentional showcase deliverables — they must
+# ship in the repo so visitors see results on first click, without running
+# anything. Un-ignore example outputs only; all other output/ stays ignored.
+!examples/*/output/
+!examples/*/output/**
