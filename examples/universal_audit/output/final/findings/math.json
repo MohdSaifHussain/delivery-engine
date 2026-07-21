@@ -1,0 +1,106 @@
+{
+  "findings": {
+    "categorical": {
+      "region": {
+        "distinct": 5,
+        "entropy_bits": 2.321928,
+        "entropy_normalized": 1.0,
+        "entropy_source": "Shannon 1948, base 2",
+        "n": 300,
+        "n_dropped_nan": 0,
+        "rare_categories": [],
+        "rare_count": 0,
+        "rare_threshold": 0.01
+      }
+    },
+    "column_selection": "numeric, categorical, and timestamp kinds from the plan approved at Human Gate 1; id columns excluded; two-valued (binary_target) columns excluded from the numeric suite - shape statistics on 0/1 data are noise, and inference on them belongs to the stats stage",
+    "constants": {
+      "ci_confidence": 0.95,
+      "mad_scale": 0.6745,
+      "mad_threshold": 3.5,
+      "min_n": 8,
+      "note": "all thresholds are fixed constants of the method, declared here and never chosen after seeing results",
+      "rare_frequency": 0.01
+    },
+    "distribution_fit": {
+      "amount": {
+        "best_fit": "lognormal",
+        "best_fit_rule": "smallest KS distance among the fitted candidates - a disclosed selection rule, not a significance claim",
+        "candidates": {
+          "lognormal": {
+            "ks_distance": 0.091293,
+            "lilliefors_p": 0.001,
+            "note": "Lilliefors applied to log(x) (x strictly positive)",
+            "params": {
+              "log_loc": 4.933147,
+              "log_scale": 0.424629
+            }
+          },
+          "normal": {
+            "ks_distance": 0.160411,
+            "lilliefors_p": 0.001,
+            "params": {
+              "loc": 153.125,
+              "scale": 90.367663
+            }
+          },
+          "weibull": {
+            "ks_distance": 0.151662,
+            "p_value_omitted_reason": "KS p-values are invalid when parameters are estimated from the same sample (Lilliefors 1967) and no standard Lilliefors table exists for the Weibull; the distance is reported as a fit-quality metric only",
+            "params": {
+              "loc": 0.0,
+              "scale": 172.28724,
+              "shape": 1.835375
+            }
+          }
+        }
+      }
+    },
+    "math_checks": "all",
+    "numeric": {
+      "amount": {
+        "excess_kurtosis_g2_adjusted": 63.771777,
+        "mean": 153.125,
+        "mean_ci_confidence": 0.95,
+        "mean_ci_high": 163.392436,
+        "mean_ci_low": 142.857564,
+        "mean_ci_method": "t-interval (NIST/SEMATECH e-Handbook 7.2.2.1)",
+        "median": 146.1,
+        "n": 300,
+        "n_dropped_nan": 0,
+        "p95": 232.2,
+        "p99": 240.4,
+        "percentile_method": "linear (numpy documented default, pinned)",
+        "skewness_g1_adjusted": 6.534637,
+        "std_sample": 90.367663,
+        "tail_note": "p95/p99 are empirical tail percentiles; in risk contexts these are the historical-simulation VaR levels (Jorion)"
+      }
+    },
+    "outliers": {
+      "amount": {
+        "mad": 45.1,
+        "median": 146.1,
+        "method": "MAD modified z-score (Iglewicz & Hoban 1993; NIST)",
+        "outlier_count": 2,
+        "outlier_share": 0.006667,
+        "scale_factor": 0.6745,
+        "threshold": 3.5
+      }
+    },
+    "skipped": [],
+    "temporal": {
+      "event_date": {
+        "distinct_days": 75,
+        "first_day": "2026-01-01",
+        "last_day": "2026-04-05",
+        "max_gap_days": 21,
+        "n_dropped_unparseable_or_nan": 0,
+        "trend_method": "scipy.stats.linregress on day index vs daily row count",
+        "trend_r_undefined_reason": "daily counts are constant; the correlation coefficient is undefined (zero variance in y)",
+        "trend_slope_rows_per_day": 0.0
+      }
+    }
+  },
+  "sha256": "cfc93b23736a4af03b6f0c259670146ce5feca3935ac0d30d7400d682c25fb15",
+  "stage": "math"
+}

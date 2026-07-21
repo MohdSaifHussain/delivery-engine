@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data review - C:\Users\mohds\delivery-engine\examples\universal_audit\orders.csv</title>
+<style>
+:root { color-scheme: light; }
+* { box-sizing: border-box; }
+body {
+  font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto,
+    "Helvetica Neue", "Noto Sans", Ubuntu, Cantarell, Arial, sans-serif;
+  color: #1a2b4a; background: #ffffff; margin: 0;
+  line-height: 1.55; -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern" 1, "liga" 1;
+}
+h1, h2 {
+  font-family: "Segoe UI Semibold", "Segoe UI", -apple-system,
+    BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+}
+.num, td.num, code {
+  font-family: "SF Mono", "Segoe UI Mono", "Roboto Mono", Menlo,
+    Consolas, "Liberation Mono", monospace;
+}
+.wrap { max-width: 820px; margin: 0 auto; padding: 56px 32px 80px; }
+header { border-bottom: 2px solid #1a2b4a; padding-bottom: 20px;
+  margin-bottom: 8px; }
+h1 { font-size: 1.9rem; margin: 0 0 6px; letter-spacing: -0.01em; }
+.sub { color: #5b6b82; font-size: 0.95rem; margin: 0; }
+.lede { color: #33465f; font-size: 1.02rem; margin: 24px 0 8px; }
+section { margin-top: 44px; }
+h2 { font-size: 1.15rem; margin: 0 0 4px; color: #1a2b4a; }
+.note { color: #5b6b82; font-size: 0.88rem; margin: 0 0 16px; }
+.chart { width: 100%; height: auto; display: block; margin: 8px 0; }
+.chart .lbl { font: 500 13px sans-serif; fill: #33465f; }
+.chart .val { font: 600 13px sans-serif; fill: #1a2b4a;
+  text-anchor: end; }
+.chart .val.muted { fill: #8794a6; font-weight: 500; }
+.caption { color: #5b6b82; font-size: 0.9rem; margin: 4px 0 0; }
+table { border-collapse: collapse; width: 100%; margin: 8px 0;
+  font-size: 0.92rem; }
+th, td { text-align: left; padding: 7px 10px;
+  border-bottom: 1px solid #e8edf3; }
+th { color: #5b6b82; font-weight: 600; }
+td.num { text-align: right; font-variant-numeric: tabular-nums; }
+footer { margin-top: 64px; padding-top: 20px;
+  border-top: 1px solid #e8edf3; color: #5b6b82; font-size: 0.82rem; }
+footer code { font-size: 0.78rem; word-break: break-all;
+  color: #33465f; }
+.sig { margin-top: 8px; color: #33465f; }
+</style>
+</head>
+<body>
+<main class="wrap">
+<header>
+<h1>Data review</h1>
+<p class="sub">Source: C:\Users\mohds\delivery-engine\examples\universal_audit\orders.csv</p>
+</header>
+
+<p class="lede">Every figure below was computed by the deterministic
+engine and drawn directly from the hashed findings store. These charts
+are a starting point for your own review - they show the shape of the
+data so you can decide where to look, not what to conclude.</p>
+
+<section>
+<h2>Data quality scorecard</h2>
+<p class="note">DAMA six dimensions. Accuracy and timeliness are shown
+as "not scored" where the dataset alone cannot establish them - absence
+of a score is never drawn as a score of zero.</p>
+<svg viewBox="0 0 640 192" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Data quality scorecard, DAMA dimensions" class="chart"><title>Data quality scorecard, DAMA dimensions</title><text x="0" y="22" class="lbl">accuracy</text><rect x="150" y="8" width="420" height="18" fill="none" stroke="#d4dce6" stroke-dasharray="4 3" rx="3"/><text x="550" y="22" class="val muted">not scored</text><text x="0" y="52" class="lbl">completeness</text><rect x="150" y="38" width="420" height="18" fill="#e8edf3" rx="3"/><rect x="150" y="38" width="420" height="18" fill="#2e7d5b" rx="3"/><text x="580" y="52" class="val">100.0%</text><text x="0" y="82" class="lbl">consistency</text><rect x="150" y="68" width="420" height="18" fill="#e8edf3" rx="3"/><rect x="150" y="68" width="420" height="18" fill="#2e7d5b" rx="3"/><text x="580" y="82" class="val">100.0%</text><text x="0" y="112" class="lbl">timeliness</text><rect x="150" y="98" width="420" height="18" fill="#e8edf3" rx="3"/><rect x="150" y="98" width="0" height="18" fill="#b45309" rx="3"/><text x="580" y="112" class="val">0.0%</text><text x="0" y="142" class="lbl">uniqueness</text><rect x="150" y="128" width="420" height="18" fill="#e8edf3" rx="3"/><rect x="150" y="128" width="420" height="18" fill="#2e7d5b" rx="3"/><text x="580" y="142" class="val">100.0%</text><text x="0" y="172" class="lbl">validity</text><rect x="150" y="158" width="420" height="18" fill="#e8edf3" rx="3"/><rect x="150" y="158" width="420" height="18" fill="#2e7d5b" rx="3"/><text x="580" y="172" class="val">100.0%</text></svg>
+</section>
+
+<section>
+<h2>Validation results</h2>
+<p class="note">Exceptions per rule. Exceptions are reported, never
+dropped - every failure is evidence.</p>
+<svg viewBox="0 0 640 42" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Validation results, exceptions per rule" class="chart"><title>Validation results, exceptions per rule</title><text x="0" y="22" class="lbl">R01 record_id</text><rect x="150" y="8" width="420" height="18" fill="#e8edf3" rx="3"/><rect x="150" y="8" width="0" height="18" fill="#2e7d5b" rx="3"/><text x="580" y="22" class="val">0 exceptions</text></svg><p class="caption">1 rules evaluated, 0 total exceptions</p>
+</section>
+
+<section>
+<h2>Column completeness</h2>
+<p class="note">Share of non-null rows per column. The chart height
+follows the data - it adapts to however many columns the profile
+found.</p>
+<svg viewBox="0 0 640 132" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Column completeness, share of non-null rows" class="chart"><title>Column completeness, share of non-null rows</title><text x="0" y="22" class="lbl">record_id</text><rect x="150" y="8" width="420" height="18" fill="#e8edf3" rx="3"/><rect x="150" y="8" width="420" height="18" fill="#2e7d5b" rx="3"/><text x="580" y="22" class="val">100.0%</text><text x="0" y="52" class="lbl">amount</text><rect x="150" y="38" width="420" height="18" fill="#e8edf3" rx="3"/><rect x="150" y="38" width="420" height="18" fill="#2e7d5b" rx="3"/><text x="580" y="52" class="val">100.0%</text><text x="0" y="82" class="lbl">region</text><rect x="150" y="68" width="420" height="18" fill="#e8edf3" rx="3"/><rect x="150" y="68" width="420" height="18" fill="#2e7d5b" rx="3"/><text x="580" y="82" class="val">100.0%</text><text x="0" y="112" class="lbl">event_date</text><rect x="150" y="98" width="420" height="18" fill="#e8edf3" rx="3"/><rect x="150" y="98" width="420" height="18" fill="#2e7d5b" rx="3"/><text x="580" y="112" class="val">100.0%</text></svg>
+</section>
+
+<section>
+<h2>Column profile</h2>
+<p class="note">The exact profiled values behind the chart above.</p>
+<table><thead><tr><th>Column</th><th>Type</th><th>Rows</th><th>Nulls</th><th>Distinct</th><th>Validity</th></tr></thead><tbody><tr><td>record_id</td><td>VARCHAR</td><td class='num'>300</td><td class='num'>0</td><td class='num'>300</td><td class='num'>100.0%</td></tr><tr><td>amount</td><td>DOUBLE</td><td class='num'>300</td><td class='num'>0</td><td class='num'>47</td><td class='num'>100.0%</td></tr><tr><td>region</td><td>VARCHAR</td><td class='num'>300</td><td class='num'>0</td><td class='num'>5</td><td class='num'>100.0%</td></tr><tr><td>event_date</td><td>DATE</td><td class='num'>300</td><td class='num'>0</td><td class='num'>75</td><td class='num'>100.0%</td></tr></tbody></table>
+</section>
+
+<footer>
+<p>Report generated: 21 July 2026</p>
+<p>Provenance and verification. Recompute the SHA-256 of each findings
+file and compare against these digests; every number in this report
+traces to them.</p>
+<p>dq_profile: <code>1ed426a2984404dc90b5d8434c44979fd5b7b0993faddc287aa8a7eb71b1e4a3</code></p>
+<p>dq_validate: <code>6fcc04565dab76168bec4cc2f695fdfa43cd4e8fe34c9165d13b060a4cdf05c0</code></p>
+<p class="sig">Rendered deterministically by the Delivery Engine from
+the hashed findings store. No figure was computed, estimated, or
+authored by an AI - the report draws the evidence, the reader supplies
+the judgement.</p>
+</footer>
+</main>
+</body>
+</html>
