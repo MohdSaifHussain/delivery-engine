@@ -1,7 +1,7 @@
 # Findings Report
 
 **Goal:** transaction monitoring completeness review of this feed
-**Source:** `C:\Users\mohds\delivery-engine\examples\transaction_monitoring\transactions_sample.csv`
+**Source:** `/home/claude/repo/delivery-engine/examples/transaction_monitoring/transactions_sample.csv`
 
 Every number below was computed deterministically and injected from the hashed Findings Store.
 
@@ -13,13 +13,6 @@ The source contains 2,000 rows across 12 columns. 12 validation rules were evalu
 
 Total exceptions: 0.
 
-
-## Limitations & assumptions
-
-- Data freshness: the DAMA timeliness score is 0.0 - the source's currency is not established; confirm the extract date before relying on time-sensitive conclusions.
-- Accuracy is unscored: it is never inferred from the dataset alone - reconciliation against an authoritative source is a separate, human-initiated step.
-
-Every caveat above is read from the hashed findings - nothing is inferred at writing time, and absent caveats are absent because nothing was recorded, not because nothing was checked.
 
 ## Evidence trail
 

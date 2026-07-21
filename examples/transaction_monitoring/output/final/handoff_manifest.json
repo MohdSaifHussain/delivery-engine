@@ -1,0 +1,112 @@
+{
+  "note": "Each team verifies its checks against the referenced hashed findings, then fills its signature (e.g. 'name, date'). Signatures start null: the engine never signs for a human. This file is hashed in manifest.json - alter it and package verification fails.",
+  "pipeline": {
+    "approved_by": "Example Analyst",
+    "goal": "transaction monitoring completeness review of this feed",
+    "plan_sha256": "8bf0456af8d415bcfe47f666d786add88833dd45537c607b524afa2cd65f8146",
+    "playbook": "transaction_monitoring_review v1.1.0",
+    "source": "C:\\Users\\mohds\\delivery-engine\\examples\\transaction_monitoring\\transactions_sample.csv"
+  },
+  "team_handoff": {
+    "compliance": {
+      "checks": [
+        {
+          "check": "Review flagged operational findings (drivers, concentrations) against policy thresholds.",
+          "evidence": {
+            "sha256": "5ba482894b474b5dc7870877805b8002030c1d968fa4f4e9dac10a05b669da49",
+            "stage": "ops_review"
+          }
+        },
+        {
+          "check": "Verify manifest.json against the package files - matching hashes certify unaltered evidence; then verify the audit log tells the full story of every gate.",
+          "evidence": {
+            "files": [
+              "manifest.json",
+              "audit_log.jsonl"
+            ]
+          }
+        }
+      ],
+      "signature": null
+    },
+    "data_engineering": {
+      "checks": [
+        {
+          "check": "Verify the loaded row count matches 2000 (source: C:\\Users\\mohds\\delivery-engine\\examples\\transaction_monitoring\\transactions_sample.csv).",
+          "evidence": {
+            "sha256": "a4102b3062665b939af807b981c999201fae4fe25eb4cb0db3256cf726881d1e",
+            "stage": "dq_profile"
+          }
+        },
+        {
+          "check": "Confirm uniqueness/null status of id column(s) ['date', 'id'] before loading to staging.",
+          "evidence": {
+            "sha256": "a4102b3062665b939af807b981c999201fae4fe25eb4cb0db3256cf726881d1e",
+            "stage": "dq_profile"
+          }
+        }
+      ],
+      "signature": null
+    },
+    "manager": {
+      "checks": [
+        {
+          "check": "Read narrative_report.md; every figure in it is injected from hashed findings. Approve the narrative and add business context before forwarding - the engine supplies evidence, the judgment is yours.",
+          "evidence": {
+            "files": [
+              "audit_log",
+              "manifest",
+              "narrative_report",
+              "ops_report",
+              "readme",
+              "rules_draft"
+            ]
+          }
+        },
+        {
+          "check": "Selection & survivorship: does this dataset include the cases that dropped out, failed, or were never captured - or only the survivors? State what population the findings generalize to.",
+          "evidence": {
+            "kind": "human_judgment"
+          }
+        },
+        {
+          "check": "Denominators: for every rate in the narrative, confirm the denominator is the population you intend (per row? per entity? per period?) - rates with mismatched denominators are the classic silent analytics error.",
+          "evidence": {
+            "kind": "human_judgment"
+          }
+        },
+        {
+          "check": "Granularity: confirm the source is a single grain (one row = one event/entity/period) - mixed granularity from multi-system integration silently double-counts.",
+          "evidence": {
+            "kind": "human_judgment"
+          }
+        }
+      ],
+      "signature": null
+    },
+    "qa_quality_control": {
+      "checks": [
+        {
+          "check": "Re-perform the validation rules against the source and confirm the recorded exception counts match the findings exactly (rules and results are in the hashed findings).",
+          "evidence": {
+            "sha256": "04f02808a4e7231e6a6412424c8058a176c8f2ea0210ffa64154d599524f7cf5",
+            "stage": "dq_validate",
+            "summary_keys": [
+              "results",
+              "rules_evaluated",
+              "total_exceptions"
+            ]
+          }
+        },
+        {
+          "check": "Confirm duplicate analysis was reviewed before load.",
+          "evidence": {
+            "sha256": "c304c11a27d5fb7382e933d1a3fbbd8c35889137dc46ba87d42c3c953f426953",
+            "stage": "dq_dedupe"
+          }
+        }
+      ],
+      "signature": null
+    }
+  }
+}

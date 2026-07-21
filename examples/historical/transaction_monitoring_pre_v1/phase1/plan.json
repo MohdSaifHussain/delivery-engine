@@ -1,16 +1,12 @@
 {
   "approved": true,
-  "approved_at_ist": "2026-07-21T22:17:01+05:30",
+  "approved_at_ist": "2026-07-14T14:08:05+05:30",
   "approved_by": "Example Analyst",
   "candidates_considered": [
     "churn_analysis",
     "data_quality_review",
-    "healthcare_claims_audit",
     "ops_review",
-    "segment_comparison",
-    "supplychain_audit",
-    "transaction_monitoring_review",
-    "universal_audit"
+    "transaction_monitoring_review"
   ],
   "column_kinds": [
     [
@@ -66,13 +62,13 @@
       "numeric_column"
     ]
   ],
-  "created_at_ist": "2026-07-21T22:17:01+05:30",
-  "decision_rationale": "highest goal-keyword overlap (score 5) among 8 qualified playbooks",
+  "created_at_ist": "2026-07-14T14:08:05+05:30",
+  "decision_rationale": "highest goal-keyword overlap (score 5) among 4 qualified playbooks",
   "decision_source": "deterministic",
   "goal": "transaction monitoring completeness review of this feed",
-  "plan_sha256": "8bf0456af8d415bcfe47f666d786add88833dd45537c607b524afa2cd65f8146",
+  "plan_sha256": "6de1ee63989031157e6c159342929dc1fcdc031cc29a46427d960fcd1474a9bc",
   "playbook_name": "transaction_monitoring_review",
-  "playbook_path": "C:\\Users\\mohds\\delivery-engine\\playbooks\\transaction_monitoring_review.toml",
+  "playbook_path": "/home/claude/repo/delivery-engine/playbooks/transaction_monitoring_review.toml",
   "playbook_version": "1.1.0",
   "requirement_results": [
     [
@@ -96,7 +92,7 @@
       "playbook accepts: csv, excel, sqlite"
     ]
   ],
-  "source": "C:\\Users\\mohds\\delivery-engine\\examples\\transaction_monitoring\\transactions_sample.csv",
+  "source": "/home/claude/repo/delivery-engine/examples/transaction_monitoring/transactions_sample.csv",
   "stage_ids": [
     "dq_profile",
     "rules",

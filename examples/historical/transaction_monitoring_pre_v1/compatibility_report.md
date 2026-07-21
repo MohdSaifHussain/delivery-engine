@@ -1,6 +1,6 @@
 # Playbook Compatibility Report
 
-**Source:** `C:\Users\mohds\delivery-engine\examples\transaction_monitoring\transactions_sample.csv`
+**Source:** `/home/claude/repo/delivery-engine/examples/transaction_monitoring/transactions_sample.csv`
 **Rows:** 2,000  |  **Columns:** 12
 
 Deterministic pre-flight: for each playbook in the library, the exact requirement checks the planner will enforce, and their verdicts on this dataset. Nothing here is advisory prose - these are the same functions the planner runs, so this report cannot disagree with it.
@@ -29,18 +29,6 @@ Deliverable formats: markdown
 
 Deliverable formats: markdown
 
-## healthcare_claims_audit v1.0.0 — QUALIFIES
-
-*Healthcare claims audit: age, BMI, ICU, claim amount profiling with financial and clinical risk checks*
-
-| Check | Result | Detail |
-|---|---|---|
-| min_rows >= 100 | PASS | source has 2,000 rows |
-| required kind 'id_column' | PASS | found in: id, date |
-| source type 'csv' accepted | PASS | playbook accepts: csv |
-
-Deliverable formats: markdown
-
 ## ops_review v1.1.0 — QUALIFIES
 
 *Operational review of incidents, transactions, tickets, or any time-series extract: volume trends, drivers, drill-down evidence, packaged*
@@ -50,31 +38,6 @@ Deliverable formats: markdown
 | min_rows >= 1 | PASS | source has 2,000 rows |
 | required kind 'timestamp_column' | PASS | found in: date |
 | source type 'csv' accepted | PASS | playbook accepts: csv, excel, sqlite |
-
-Deliverable formats: markdown
-
-## segment_comparison v1.0.0 — QUALIFIES
-
-*Segment comparison with statistical significance inference: rates, group differences, effect sizes, FDR-corrected evidence*
-
-| Check | Result | Detail |
-|---|---|---|
-| min_rows >= 100 | PASS | source has 2,000 rows |
-| required kind 'binary_target' | PASS | found in: use_chip |
-| required kind 'id_column' | PASS | found in: id, date |
-| source type 'csv' accepted | PASS | playbook accepts: csv, parquet, excel, sqlite |
-
-Deliverable formats: markdown
-
-## supplychain_audit v1.0.0 — QUALIFIES
-
-*Supply chain order audit: DQ-gated profiling, dedupe, narrative, packaged as evidence*
-
-| Check | Result | Detail |
-|---|---|---|
-| min_rows >= 100 | PASS | source has 2,000 rows |
-| required kind 'id_column' | PASS | found in: id, date |
-| source type 'csv' accepted | PASS | playbook accepts: csv, excel, sqlite, postgres, mysql |
 
 Deliverable formats: markdown
 
@@ -90,18 +53,6 @@ Deliverable formats: markdown
 | source type 'csv' accepted | PASS | playbook accepts: csv, excel, sqlite |
 
 Deliverable formats: markdown, docx, pptx, xlsx
-
-## universal_audit v1.0.0 — QUALIFIES
-
-*Universal descriptive audit of any dataset: distribution shape, outliers, entropy, temporal structure, quantitative profile for every approved column*
-
-| Check | Result | Detail |
-|---|---|---|
-| min_rows >= 100 | PASS | source has 2,000 rows |
-| required kind 'id_column' | PASS | found in: id, date |
-| source type 'csv' accepted | PASS | playbook accepts: csv, parquet, excel, sqlite |
-
-Deliverable formats: markdown
 
 ## What the planner sees (classified column kinds)
 
@@ -122,6 +73,6 @@ Deliverable formats: markdown
 
 ## Verdict
 
-8 of 8 playbook(s) qualify on this dataset: churn_analysis, data_quality_review, healthcare_claims_audit, ops_review, segment_comparison, supplychain_audit, transaction_monitoring_review, universal_audit.
+4 of 4 playbook(s) qualify on this dataset: churn_analysis, data_quality_review, ops_review, transaction_monitoring_review.
 
 State a goal and run the planner to select among the qualifying playbooks; a failed check above cannot be overridden by goal wording or by the LLM.
