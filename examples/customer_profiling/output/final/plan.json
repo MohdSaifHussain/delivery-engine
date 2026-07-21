@@ -1,0 +1,70 @@
+{
+  "approved": true,
+  "approved_at_ist": "2026-07-21T22:37:31+05:30",
+  "approved_by": "Example Analyst",
+  "candidates_considered": [
+    "churn_analysis",
+    "data_quality_review",
+    "healthcare_claims_audit",
+    "segment_comparison",
+    "supplychain_audit",
+    "universal_audit"
+  ],
+  "column_kinds": [
+    [
+      "churned",
+      "binary_target"
+    ],
+    [
+      "customer_id",
+      "id_column"
+    ],
+    [
+      "monthly_spend",
+      "numeric_column"
+    ],
+    [
+      "plan_type",
+      "categorical_column"
+    ],
+    [
+      "tenure_months",
+      "numeric_column"
+    ]
+  ],
+  "created_at_ist": "2026-07-21T22:37:31+05:30",
+  "decision_rationale": "highest goal-keyword overlap (score 5) among 6 qualified playbooks",
+  "decision_source": "deterministic",
+  "goal": "descriptive profile of the customer base: distribution shape of spend and tenure, plan mix, outliers",
+  "plan_sha256": "907b520581829411e932999b78e4437104962841282a9af50fbe92da9fa4eacd",
+  "playbook_name": "universal_audit",
+  "playbook_path": "C:\\Users\\mohds\\delivery-engine\\playbooks\\universal_audit.toml",
+  "playbook_version": "1.0.0",
+  "requirement_results": [
+    [
+      "min_rows >= 100",
+      true,
+      "source has 400 rows"
+    ],
+    [
+      "required kind 'id_column'",
+      true,
+      "found in: customer_id"
+    ],
+    [
+      "source type 'csv' accepted",
+      true,
+      "playbook accepts: csv, parquet, excel, sqlite"
+    ]
+  ],
+  "source": "C:\\Users\\mohds\\delivery-engine\\examples\\customer_profiling\\customers.csv",
+  "stage_ids": [
+    "dq_profile",
+    "dq_validate",
+    "plan_approval",
+    "math",
+    "report",
+    "readme",
+    "package"
+  ]
+}
