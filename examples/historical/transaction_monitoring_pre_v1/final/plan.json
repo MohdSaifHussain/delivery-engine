@@ -1,0 +1,107 @@
+{
+  "approved": true,
+  "approved_at_ist": "2026-07-14T14:08:05+05:30",
+  "approved_by": "Example Analyst",
+  "candidates_considered": [
+    "churn_analysis",
+    "data_quality_review",
+    "ops_review",
+    "transaction_monitoring_review"
+  ],
+  "column_kinds": [
+    [
+      "amount",
+      "numeric_column"
+    ],
+    [
+      "card_id",
+      "numeric_column"
+    ],
+    [
+      "client_id",
+      "numeric_column"
+    ],
+    [
+      "date",
+      "id_column"
+    ],
+    [
+      "date",
+      "timestamp_column"
+    ],
+    [
+      "errors",
+      "categorical_column"
+    ],
+    [
+      "id",
+      "id_column"
+    ],
+    [
+      "id",
+      "numeric_column"
+    ],
+    [
+      "mcc",
+      "numeric_column"
+    ],
+    [
+      "merchant_id",
+      "numeric_column"
+    ],
+    [
+      "use_chip",
+      "binary_target"
+    ],
+    [
+      "use_chip",
+      "categorical_column"
+    ],
+    [
+      "zip",
+      "numeric_column"
+    ]
+  ],
+  "created_at_ist": "2026-07-14T14:08:05+05:30",
+  "decision_rationale": "highest goal-keyword overlap (score 5) among 4 qualified playbooks",
+  "decision_source": "deterministic",
+  "goal": "transaction monitoring completeness review of this feed",
+  "plan_sha256": "6de1ee63989031157e6c159342929dc1fcdc031cc29a46427d960fcd1474a9bc",
+  "playbook_name": "transaction_monitoring_review",
+  "playbook_path": "/home/claude/repo/delivery-engine/playbooks/transaction_monitoring_review.toml",
+  "playbook_version": "1.1.0",
+  "requirement_results": [
+    [
+      "min_rows >= 100",
+      true,
+      "source has 2,000 rows"
+    ],
+    [
+      "required kind 'id_column'",
+      true,
+      "found in: id, date"
+    ],
+    [
+      "required kind 'timestamp_column'",
+      true,
+      "found in: date"
+    ],
+    [
+      "source type 'csv' accepted",
+      true,
+      "playbook accepts: csv, excel, sqlite"
+    ]
+  ],
+  "source": "/home/claude/repo/delivery-engine/examples/transaction_monitoring/transactions_sample.csv",
+  "stage_ids": [
+    "dq_profile",
+    "rules",
+    "dq_validate",
+    "dq_dedupe",
+    "ops_review",
+    "report",
+    "ops_report",
+    "readme",
+    "package"
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "note": "Each team verifies its checks against the referenced hashed findings, then fills its signature (e.g. 'name, date'). Signatures start null: the engine never signs for a human. This file is hashed in manifest.json - alter it and package verification fails.",
+  "pipeline": {
+    "approved_by": "Example Analyst",
+    "goal": "descriptive profile of the customer base: distribution shape of spend and tenure, plan mix, outliers",
+    "plan_sha256": "907b520581829411e932999b78e4437104962841282a9af50fbe92da9fa4eacd",
+    "playbook": "universal_audit v1.0.0",
+    "source": "C:\\Users\\mohds\\delivery-engine\\examples\\customer_profiling\\customers.csv"
+  },
+  "team_handoff": {
+    "compliance": {
+      "checks": [
+        {
+          "check": "Verify manifest.json against the package files - matching hashes certify unaltered evidence; then verify the audit log tells the full story of every gate.",
+          "evidence": {
+            "files": [
+              "manifest.json",
+              "audit_log.jsonl"
+            ]
+          }
+        }
+      ],
+      "signature": null
+    },
+    "data_engineering": {
+      "checks": [
+        {
+          "check": "Verify the loaded row count matches 400 (source: C:\\Users\\mohds\\delivery-engine\\examples\\customer_profiling\\customers.csv).",
+          "evidence": {
+            "sha256": "4fcc9974835b83c035bfda05c99af8712a1b73681cff725e5c963ee8e862897d",
+            "stage": "dq_profile"
+          }
+        },
+        {
+          "check": "Confirm uniqueness/null status of id column(s) ['customer_id'] before loading to staging.",
+          "evidence": {
+            "sha256": "4fcc9974835b83c035bfda05c99af8712a1b73681cff725e5c963ee8e862897d",
+            "stage": "dq_profile"
+          }
+        }
+      ],
+      "signature": null
+    },
+    "manager": {
+      "checks": [
+        {
+          "check": "Read narrative_report.md; every figure in it is injected from hashed findings. Approve the narrative and add business context before forwarding - the engine supplies evidence, the judgment is yours.",
+          "evidence": {
+            "files": [
+              "audit_log",
+              "delivery_package",
+              "manifest",
+              "narrative_report",
+              "readme"
+            ]
+          }
+        },
+        {
+          "check": "Selection & survivorship: does this dataset include the cases that dropped out, failed, or were never captured - or only the survivors? State what population the findings generalize to.",
+          "evidence": {
+            "kind": "human_judgment"
+          }
+        },
+        {
+          "check": "Denominators: for every rate in the narrative, confirm the denominator is the population you intend (per row? per entity? per period?) - rates with mismatched denominators are the classic silent analytics error.",
+          "evidence": {
+            "kind": "human_judgment"
+          }
+        },
+        {
+          "check": "Granularity: confirm the source is a single grain (one row = one event/entity/period) - mixed granularity from multi-system integration silently double-counts.",
+          "evidence": {
+            "kind": "human_judgment"
+          }
+        }
+      ],
+      "signature": null
+    },
+    "qa_quality_control": {
+      "checks": [
+        {
+          "check": "Re-perform the validation rules against the source and confirm the recorded exception counts match the findings exactly (rules and results are in the hashed findings).",
+          "evidence": {
+            "sha256": "ade7b1f24789740aa19355c00c832f5b7cc44235f9800ea0cc70790905c2fe83",
+            "stage": "dq_validate",
+            "summary_keys": [
+              "results",
+              "rules_evaluated",
+              "total_exceptions"
+            ]
+          }
+        },
+        {
+          "check": "Review the descriptive math findings: MAD outlier scans on 2 column(s), distribution fits (Lilliefors-corrected), entropy and temporal profiles; spot-check one value per family against the source before sign-off.",
+          "evidence": {
+            "sha256": "047a37def98c2d5e655e8b97f5f115cee522f24ab3f95c49e6120e667edbaa6c",
+            "stage": "math"
+          }
+        }
+      ],
+      "signature": null
+    }
+  }
+}

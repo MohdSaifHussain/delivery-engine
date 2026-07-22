@@ -1,0 +1,18 @@
+{
+  "findings": {
+    "results": [
+      {
+        "column": "record_id",
+        "detail": "value must be unique",
+        "failures": 0,
+        "rule": "unique",
+        "rule_id": "R01",
+        "sample": []
+      }
+    ],
+    "rules_evaluated": 1,
+    "total_exceptions": 0
+  },
+  "sha256": "6fcc04565dab76168bec4cc2f695fdfa43cd4e8fe34c9165d13b060a4cdf05c0",
+  "stage": "dq_validate"
+}

@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PROJECT CHARTER — Delivery Engine v1.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,300&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --white: #FFFFFF;
+  --surface: #F8F9FC;
+  --border: #E5E7EB;
+  --border-strong: #D1D5DB;
+  --text: #0D1117;
+  --text-2: #374151;
+  --muted: #6B7280;
+  --muted-light: #9CA3AF;
+  --accent: #1A56DB;
+  --accent-light: #EBF1FF;
+  --green: #059669;
+  --green-light: #ECFDF5;
+  --amber: #D97706;
+  --amber-light: #FFFBEB;
+  --red: #DC2626;
+  --red-light: #FEF2F2;
+  --sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --serif: 'Fraunces', Georgia, serif;
+  --mono: 'JetBrains Mono', 'Cascadia Code', monospace;
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body { background: var(--white); color: var(--text); font-family: var(--sans); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+
+/* ── PROGRESS BAR ── */
+#progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--accent); width: 0%; z-index: 1000; transition: width 0.1s; }
+
+/* ── LAYOUT ── */
+.wrapper { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  background: var(--surface); border-right: 1px solid var(--border);
+  padding: 2.5rem 1.75rem; display: flex; flex-direction: column; gap: 0;
+}
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 2px; }
+
+.sb-logo {
+  font-family: var(--mono); font-size: 10px; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  margin-bottom: 0.6rem;
+}
+.sb-title {
+  font-family: var(--serif); font-size: 26px; font-weight: 900;
+  line-height: 1.1; color: var(--text); margin-bottom: 0.4rem;
+}
+.sb-version {
+  font-family: var(--mono); font-size: 12px; color: var(--muted);
+  margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border);
+}
+.sb-version span { color: var(--accent); font-weight: 600; }
+
+.nav-section { margin-bottom: 1.75rem; }
+.nav-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--muted-light); margin-bottom: 0.5rem;
+  padding-left: 0.75rem;
+}
+.nav-link {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 13.5px; color: var(--text-2); text-decoration: none;
+  padding: 0.4rem 0.75rem; border-radius: 6px;
+  border-left: 2px solid transparent; margin-bottom: 1px;
+  transition: all 0.15s ease; font-weight: 500;
+}
+.nav-link:hover { background: var(--white); color: var(--accent); border-left-color: var(--accent); }
+.nav-link.active { background: var(--accent-light); color: var(--accent); border-left-color: var(--accent); font-weight: 600; }
+.nav-link .nav-num { font-family: var(--mono); font-size: 10px; color: var(--muted-light); min-width: 20px; }
+
+.sb-footer {
+  margin-top: auto; padding-top: 1.5rem; border-top: 1px solid var(--border);
+}
+.sb-owner-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted-light); margin-bottom: 0.5rem; }
+.sb-owner { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 0.15rem; }
+.sb-role { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+/* ── MAIN ── */
+.main { padding: 4rem 4.5rem 8rem 4rem; max-width: 900px; }
+
+/* ── HERO ── */
+.hero { margin-bottom: 5rem; }
+.hero-eyebrow {
+  font-family: var(--mono); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent);
+  margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.6rem;
+}
+.hero-eyebrow::before { content: ''; display: block; width: 24px; height: 1px; background: var(--accent); }
+.hero-title {
+  font-family: var(--serif); font-size: 68px; font-weight: 900;
+  line-height: 1.0; color: var(--text); margin-bottom: 0.75rem;
+  letter-spacing: -1px;
+}
+.hero-title em { font-style: italic; color: var(--accent); }
+.hero-sub { font-size: 15px; color: var(--muted); margin-bottom: 2.5rem; line-height: 1.6; max-width: 540px; }
+
+.badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 3rem; }
+.badge {
+  font-family: var(--mono); font-size: 11px; font-weight: 600;
+  padding: 0.35rem 0.8rem; border-radius: 999px;
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  border: 1.5px solid; letter-spacing: 0.02em;
+}
+.badge-blue { color: var(--accent); border-color: #93C5FD; background: var(--accent-light); }
+.badge-green { color: var(--green); border-color: #6EE7B7; background: var(--green-light); }
+.badge-amber { color: var(--amber); border-color: #FCD34D; background: var(--amber-light); }
+.badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.stat-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.5rem 1.25rem;
+  box-shadow: var(--shadow); position: relative; overflow: hidden;
+}
+.stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent); }
+.stat-num { font-family: var(--serif); font-size: 40px; font-weight: 700; color: var(--text); line-height: 1; display: block; margin-bottom: 0.35rem; }
+.stat-label { font-size: 12px; color: var(--muted); font-weight: 500; letter-spacing: 0.02em; }
+
+/* ── SECTION ── */
+.section { margin-bottom: 5rem; scroll-margin-top: 2rem; position: relative; }
+.section-header { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 1.75rem; }
+.section-num {
+  font-family: var(--serif); font-size: 13px; font-weight: 300;
+  font-style: italic; color: var(--muted-light); white-space: nowrap;
+  border: 1px solid var(--border); border-radius: 4px;
+  padding: 0.1rem 0.5rem; background: var(--surface);
+}
+h2 {
+  font-family: var(--serif); font-size: 30px; font-weight: 700;
+  color: var(--text); line-height: 1.2;
+}
+.section-divider { height: 1px; background: var(--border); margin-bottom: 2rem; }
+p { color: var(--text-2); margin-bottom: 1.1rem; font-size: 15px; line-height: 1.75; }
+p:last-child { margin-bottom: 0; }
+
+/* ── THESIS BLOCK ── */
+.thesis {
+  position: relative; margin: 2rem 0;
+  border-left: 4px solid var(--accent); padding: 1.75rem 2rem;
+  background: var(--accent-light); border-radius: 0 var(--radius) var(--radius) 0;
+}
+.thesis p { font-family: var(--serif); font-size: 20px; font-style: italic; color: var(--text); margin: 0; line-height: 1.55; font-weight: 300; }
+
+/* ── PRINCIPLES ── */
+.principles { display: grid; gap: 1.25rem; }
+.principle {
+  border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.5rem; box-shadow: var(--shadow);
+  transition: box-shadow 0.2s, transform 0.2s; cursor: default;
+  position: relative; overflow: hidden;
+}
+.principle::before {
+  content: attr(data-section);
+  position: absolute; right: 1rem; top: 0.5rem;
+  font-family: var(--serif); font-size: 64px; font-weight: 900;
+  color: rgba(0,0,0,0.03); line-height: 1; pointer-events: none;
+  user-select: none;
+}
+.principle:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.principle-tag {
+  font-family: var(--mono); font-size: 10px; font-weight: 600;
+  color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase;
+  margin-bottom: 0.5rem; display: block;
+}
+.principle h3 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 0.6rem; }
+.principle p { font-size: 14px; color: var(--text-2); margin-bottom: 0.75rem; }
+.principle .rationale {
+  font-size: 13px; color: var(--muted); font-style: italic;
+  border-top: 1px solid var(--border); padding-top: 0.75rem; margin-top: 0; margin-bottom: 0;
+}
+.principle.amber::before { color: rgba(217,119,6,0.06); }
+.principle.amber .principle-tag { color: var(--amber); }
+.principle.amber { border-left: 3px solid var(--amber); }
+.principle.blue { border-left: 3px solid var(--accent); }
+
+/* ── GATES ── */
+.gates { display: grid; gap: 1rem; }
+.gate {
+  border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.5rem; display: grid; grid-template-columns: auto 1fr; gap: 1.25rem;
+  align-items: start; background: var(--white); box-shadow: var(--shadow);
+}
+.gate.gate-1 { border-left: 4px solid var(--accent); }
+.gate.gate-2 { border-left: 4px solid var(--amber); }
+.gate-icon { font-size: 28px; padding-top: 0.1rem; }
+.gate-label { font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.35rem; }
+.gate h3 { font-size: 16px; font-weight: 700; margin-bottom: 0.5rem; }
+.gate p { font-size: 14px; color: var(--text-2); margin: 0; }
+
+/* ── TABLE ── */
+.table-wrap { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+thead { background: var(--surface); }
+th { font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); color: var(--text-2); vertical-align: top; font-size: 14px; }
+td:first-child { font-family: var(--mono); font-size: 12px; color: var(--text); font-weight: 600; white-space: nowrap; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--surface); }
+
+/* ── TIMELINE ── */
+.timeline { position: relative; }
+.timeline::before {
+  content: ''; position: absolute; left: 20px; top: 0; bottom: 0;
+  width: 2px; background: linear-gradient(to bottom, var(--accent), var(--border)); z-index: 0;
+}
+.tl-item { position: relative; padding-left: 56px; margin-bottom: 1.25rem; }
+.tl-dot {
+  position: absolute; left: 0; top: 12px; width: 42px; height: 42px;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 11px; font-weight: 700; z-index: 1;
+  border: 2px solid; transition: transform 0.2s;
+}
+.tl-dot.current { background: var(--accent); border-color: var(--accent); color: white; box-shadow: 0 0 0 4px rgba(26,86,219,0.15); }
+.tl-dot.done { background: var(--white); border-color: var(--green); color: var(--green); }
+.tl-dot.early { background: var(--white); border-color: var(--border-strong); color: var(--muted); }
+
+.tl-card {
+  background: var(--white); border: 1px solid var(--border); border-radius: var(--radius);
+  box-shadow: var(--shadow); transition: box-shadow 0.2s;
+}
+.tl-card:hover { box-shadow: var(--shadow-md); }
+.tl-header {
+  padding: 1rem 1.25rem; cursor: pointer; display: flex;
+  align-items: center; gap: 0.75rem; user-select: none;
+}
+.tl-version { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--accent); min-width: 48px; }
+.tl-step { font-size: 14px; font-weight: 600; color: var(--text); flex: 1; }
+.tl-tests { font-family: var(--mono); font-size: 11px; color: var(--green); background: var(--green-light); padding: 0.2rem 0.6rem; border-radius: 999px; white-space: nowrap; }
+.tl-chevron { color: var(--muted-light); transition: transform 0.25s; flex-shrink: 0; }
+.tl-header.open .tl-chevron { transform: rotate(180deg); }
+.tl-body { display: none; padding: 1rem 1.25rem 1.25rem; border-top: 1px solid var(--border); font-size: 14px; color: var(--text-2); line-height: 1.7; }
+.tl-body.open { display: block; }
+.tl-body strong { color: var(--text); }
+
+/* ── V1.0 BANNER ── */
+.v1-banner {
+  background: linear-gradient(135deg, #EBF1FF 0%, #F0FDF4 100%);
+  border: 1px solid #BFDBFE; border-radius: var(--radius);
+  padding: 2rem; margin-bottom: 1.5rem; position: relative; overflow: hidden;
+}
+.v1-banner::before {
+  content: '1.0'; position: absolute; right: -10px; bottom: -20px;
+  font-family: var(--serif); font-size: 120px; font-weight: 900;
+  color: rgba(26,86,219,0.06); line-height: 1; pointer-events: none;
+}
+.v1-badge {
+  font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 0.75rem;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.v1-badge::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); display: block; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(1.3)} }
+.v1-banner h3 { font-size: 18px; font-weight: 700; margin-bottom: 0.75rem; color: var(--text); }
+.v1-banner p { font-size: 14px; color: var(--text-2); margin: 0; }
+
+/* ── ROADMAP TABLE ── */
+.roadmap-item {
+  display: grid; grid-template-columns: 200px 1fr; gap: 1.25rem;
+  padding: 1.25rem; border-bottom: 1px solid var(--border); align-items: start;
+}
+.roadmap-item:last-child { border-bottom: none; }
+.roadmap-label { font-size: 14px; font-weight: 600; color: var(--text); }
+.roadmap-tag { font-family: var(--mono); font-size: 10px; color: var(--amber); background: var(--amber-light); padding: 0.15rem 0.5rem; border-radius: 4px; display: inline-block; margin-top: 0.25rem; }
+.roadmap-desc { font-size: 14px; color: var(--text-2); }
+
+/* ── CODE ── */
+code { font-family: var(--mono); font-size: 12.5px; background: var(--surface); color: var(--accent); padding: 0.15em 0.45em; border-radius: 4px; border: 1px solid var(--border); }
+
+/* ── CLOSING QUOTE ── */
+.closing-section { border-top: 2px solid var(--border); padding-top: 4rem; margin-top: 2rem; }
+.closing-quote {
+  font-family: var(--serif); font-size: 26px; font-style: italic; font-weight: 300;
+  color: var(--text); line-height: 1.55; max-width: 640px;
+}
+.closing-quote strong { font-weight: 700; color: var(--accent); font-style: normal; }
+.closing-source { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 1.25rem; display: flex; align-items: center; gap: 0.5rem; }
+.closing-source::before { content: '—'; }
+
+/* ── AI COLLAB CALLOUT ── */
+.ai-callout {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.5rem; margin: 1.5rem 0; display: grid;
+  grid-template-columns: auto 1fr; gap: 1rem; align-items: start;
+}
+.ai-callout-icon { font-size: 24px; }
+.ai-callout h4 { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 0.35rem; }
+.ai-callout p { font-size: 14px; color: var(--text-2); margin: 0; }
+
+/* ── INLINE NOTE ── */
+.inline-note { background: var(--amber-light); border: 1px solid #FCD34D; border-radius: 6px; padding: 0.75rem 1rem; font-size: 13px; color: var(--text-2); margin: 1rem 0; }
+.inline-note strong { color: var(--amber); }
+
+@media (max-width: 900px) {
+  .wrapper { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; }
+  .main { padding: 2.5rem 1.5rem 5rem; }
+  .hero-title { font-size: 44px; }
+  .stat-row { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<div class="wrapper">
+<!-- ────────────────── SIDEBAR ────────────────── -->
+<aside class="sidebar">
+  <div class="sb-logo">Project Charter</div>
+  <div class="sb-title">Delivery<br>Engine</div>
+  <div class="sb-version">Version <span>1.0</span> · 22 July 2026<br>Constitutional governing document</div>
+
+  <nav class="nav-section">
+    <div class="nav-label">Overview</div>
+    <a class="nav-link active" href="#overview"><span class="nav-num">—</span> Overview</a>
+    <a class="nav-link" href="#thesis"><span class="nav-num">§2</span> Thesis</a>
+    <a class="nav-link" href="#principles"><span class="nav-num">§4</span> Architecture Principles</a>
+  </nav>
+  <nav class="nav-section">
+    <div class="nav-label">Governance</div>
+    <a class="nav-link" href="#gates"><span class="nav-num">§4.4</span> Human Gates</a>
+    <a class="nav-link" href="#standards"><span class="nav-num">§6</span> Standards Register</a>
+  </nav>
+  <nav class="nav-section">
+    <div class="nav-label">History</div>
+    <a class="nav-link" href="#build"><span class="nav-num">§9</span> Build Timeline</a>
+    <a class="nav-link" href="#v1"><span class="nav-num">—</span> v1.0 Release</a>
+    <a class="nav-link" href="#roadmap"><span class="nav-num">—</span> v1.1 Roadmap</a>
+    <a class="nav-link" href="#resume"><span class="nav-num">§12</span> How to Resume</a>
+  </nav>
+
+  <div class="sb-footer">
+    <div class="sb-owner-label">Owner</div>
+    <div class="sb-owner">Mohd Saif Hussain</div>
+    <div class="sb-role">Designer · Specifier · Governor<br>Built directing Claude as AI collaborator</div>
+  </div>
+</aside>
+
+<!-- ────────────────── MAIN ────────────────── -->
+<main class="main">
+
+<!-- HERO -->
+<div class="hero" id="overview">
+  <div class="hero-eyebrow">Constitutional Document · All Sessions Start Here</div>
+  <h1 class="hero-title">Delivery<br><em>Engine</em></h1>
+  <p class="hero-sub">Agent proposes, deterministic tools dispose, human governs, every claim traceable. Founded 9 July 2026 — v1.0 released 22 July 2026.</p>
+
+  <div class="badge-row">
+    <span class="badge badge-blue">v1.0.0 Released</span>
+    <span class="badge badge-green">367 Tests Green in Docker</span>
+    <span class="badge badge-green">7 Verified Examples</span>
+    <span class="badge badge-blue">CI Green Since Step 4</span>
+    <span class="badge badge-amber">Charter v0.19</span>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat-card">
+      <span class="stat-num">23</span>
+      <div class="stat-label">Build Steps</div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num">368</span>
+      <div class="stat-label">Tests at Step 23</div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num">6.36M</span>
+      <div class="stat-label">Rows · Largest Run</div>
+    </div>
+  </div>
+</div>
+
+<!-- THESIS -->
+<section class="section" id="thesis">
+  <div class="section-header">
+    <span class="section-num">§ 2</span>
+    <h2>The One-Line Thesis</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="thesis">
+    <p>Encode professional project patterns as executable, governed workflows: agent proposes, deterministic tools dispose, human governs, every claim traceable.</p>
+  </div>
+
+  <p>The Delivery Engine takes a dataset and a plain-English goal and produces a complete, professional project package — notebook, report, presentation, workpaper, README — where every artifact meets an evidence standard, not just a plausibility standard.</p>
+
+  <div class="ai-callout">
+    <div class="ai-callout-icon">🤝</div>
+    <div>
+      <h4>Built by directing Claude as AI collaborator</h4>
+      <p>Mohd Saif Hussain — a data annotation and operations specialist — directed Claude across 23 documented build steps. The AI wrote code. The human governed every decision: setting the scope, approving each step, declining wrong runs before they became evidence. Every architectural and security decision is human-made and source-verified. The build record is public, timestamped, and re-performable in this charter.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRINCIPLES -->
+<section class="section" id="principles">
+  <div class="section-header">
+    <span class="section-num">§ 4</span>
+    <h2>Architecture Principles</h2>
+  </div>
+  <div class="section-divider"></div>
+  <p>These are not preferences. Each is stated with its rationale. Violating any of them means the build has failed regardless of how well it demos.</p>
+
+  <div class="principles">
+    <div class="principle blue" data-section="4.1">
+      <span class="principle-tag">§ 4.1 — The Injected-Numbers Rule</span>
+      <h3>AI never writes a number</h3>
+      <p>The AI never computes, estimates, or writes a number. Every figure in every generated artifact is injected from the Findings Store and carries its hash. AI writes prose, structure, and code — never facts.</p>
+      <p class="rationale">A report where the AI wrote "churn is 23.4%" and nobody verified it is worse than no report, because it looks professional. This rule must be architecturally enforced, not enforced by prompt instruction.</p>
+    </div>
+
+    <div class="principle blue" data-section="4.2">
+      <span class="principle-tag">§ 4.2 — Deterministic Quality Gates</span>
+      <h3>A failed gate stops everything</h3>
+      <p>AnalystKit and OpsKit run as must-pass gates. A failed gate stops the pipeline. No AI stage may override, soften, or route around a failed gate.</p>
+      <p class="rationale">A control that cannot fail is not a control.</p>
+    </div>
+
+    <div class="principle blue" data-section="4.3">
+      <span class="principle-tag">§ 4.3 — The Findings Store is the Audit Boundary</span>
+      <h3>Same findings → same hash → re-performable evidence</h3>
+      <p>All deterministic outputs land in canonical JSON (sort_keys), SHA-256 hashed. These are the only numbers any AI stage may consume.</p>
+      <p class="rationale">Pattern proven at small scale in AnalystKit v2.0. This project scales it up; it does not reinvent it.</p>
+    </div>
+
+    <div class="principle amber" data-section="4.4">
+      <span class="principle-tag">§ 4.4 — Two Human Gates, Architecturally Placed</span>
+      <h3>Human judgment cannot be bypassed</h3>
+      <p><strong>Gate 1:</strong> The Planner's selected playbook and execution plan are shown for approval before anything executes.<br>
+      <strong>Gate 2:</strong> Any AI-authored content that feeds back into the deterministic layer requires explicit approval by SHA-256 before use.</p>
+      <p class="rationale">Gate 2 exists because AI-authored rules feeding the deterministic layer is the one place the audit boundary could be poisoned. The highest-risk architectural point.</p>
+    </div>
+
+    <div class="principle blue" data-section="4.5">
+      <span class="principle-tag">§ 4.5 — Playbooks, Not Code</span>
+      <h3>Adding an archetype never modifies the engine</h3>
+      <p>Project archetypes are declared as TOML playbooks. Adding a new project type means writing a new playbook. The engine stays small, tested, gated; the pattern library grows.</p>
+      <p class="rationale">Users can encode their own professional patterns as playbooks. The product is not just our patterns — it is a format for professionals to encode theirs.</p>
+    </div>
+
+    <div class="principle blue" data-section="4.6">
+      <span class="principle-tag">§ 4.6 — The Planner is 80% Deterministic</span>
+      <h3>LLM resolves only genuine ambiguity</h3>
+      <p>Project-type classification is decided by rules over the AnalystKit profile output. The LLM resolves only genuine ambiguity in goal wording, and its decision plus rationale is logged.</p>
+      <p class="rationale">"Decide the project type" is a deterministic problem wearing an AI costume.</p>
+    </div>
+
+    <div class="principle blue" data-section="4.8">
+      <span class="principle-tag">§ 4.8 — The Success Test</span>
+      <h3>A reviewer who was never in the room can re-perform any stage</h3>
+      <p>A reviewer who was never in the room can re-perform any stage from the delivery package alone and get the same hashes.</p>
+      <p class="rationale">If they can, it is evidence. If they cannot, it is just output.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HUMAN GATES -->
+<section class="section" id="gates">
+  <div class="section-header">
+    <span class="section-num">§ 4.4</span>
+    <h2>Human Gates</h2>
+  </div>
+  <div class="section-divider"></div>
+  <div class="gates">
+    <div class="gate gate-1">
+      <div class="gate-icon">🔒</div>
+      <div>
+        <div class="gate-label">Human Gate 1 · Plan Approval</div>
+        <h3>Before anything executes</h3>
+        <p>The Planner's selected playbook and execution plan are shown to the human for approval. Declining stops the run with an audit entry before any stage runs. The rendered preview is written to <code>execution_preview.md</code> and hashed — what the human was shown is itself evidence.</p>
+      </div>
+    </div>
+    <div class="gate gate-2">
+      <div class="gate-icon">🔐</div>
+      <div>
+        <div class="gate-label">Human Gate 2 · Content-Bound Approval</div>
+        <h3>Before AI content enters the deterministic layer</h3>
+        <p>Engine-drafted validation rules await approval before feeding back into the deterministic pipeline. Approval quotes the draft's exact SHA-256 — you cannot approve a version you have not seen. The examples auto-approve for demo purposes. Real use requires a human to open <code>rules_draft.json</code>, read the proposed rules, verify they match the domain, and re-run with the approved hash.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STANDARDS -->
+<section class="section" id="standards">
+  <div class="section-header">
+    <span class="section-num">§ 6</span>
+    <h2>Standards Register</h2>
+  </div>
+  <div class="section-divider"></div>
+  <p>Every component is designed against a primary source, fetched and verified at build time. No generic blog posts. If a component's design cannot cite its source, it does not ship.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Component</th><th>Governing Source</th></tr></thead>
+      <tbody>
+        <tr><td>Tool exposure</td><td>Model Context Protocol specification — modelcontextprotocol.io</td></tr>
+        <tr><td>Agent orchestration</td><td>Anthropic official agent design documentation / docs.claude.com</td></tr>
+        <tr><td>Data quality gates</td><td>DAMA-DMBOK six dimensions (as implemented in AnalystKit)</td></tr>
+        <tr><td>Deterministic engine</td><td>DuckDB official documentation</td></tr>
+        <tr><td>Packaging</td><td>PyPA Python Packaging User Guide (src layout, PEP 621)</td></tr>
+        <tr><td>Statistical methods</td><td>Wilson (Brown et al 2001) · BH FDR (Benjamini & Hochberg 1995) · Lilliefors 1967 · ASA Statement on p-values 2016</td></tr>
+        <tr><td>Distribution fitting</td><td>KS p-value invalid when params estimated from same sample (Lilliefors 1967) — Weibull KS distance reported without p-value, reason in findings</td></tr>
+        <tr><td>Outlier detection</td><td>MAD modified z-score, scale 0.6745, threshold 3.5 (Iglewicz & Hoban 1993; NIST)</td></tr>
+        <tr><td>Typing standards</td><td>Python 3.12+, PEP 695, mypy --strict, ruff</td></tr>
+        <tr><td>Versioning</td><td>Semantic Versioning 2.0.0 · Keep a Changelog 1.1.0 (ISO 8601)</td></tr>
+        <tr><td>Provenance</td><td>W3C PROV (PROV-DM / PROV-O) — Entity, Activity, Agent</td></tr>
+        <tr><td>Project lifecycle</td><td>PMBOK (charter, deliverables, gates) — vocabulary, not bureaucracy</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- BUILD TIMELINE -->
+<section class="section" id="build">
+  <div class="section-header">
+    <span class="section-num">§ 9</span>
+    <h2>Build Timeline</h2>
+  </div>
+  <div class="section-divider"></div>
+  <p>Click any step to read the full amendment record. Every step is dated, tested, and gated before the next begins.</p>
+
+  <div class="timeline">
+
+    <div class="tl-item">
+      <div class="tl-dot current">1.0</div>
+      <div class="tl-card">
+        <div class="tl-header" onclick="toggleStep(this)">
+          <span class="tl-version">v1.0.0</span>
+          <span class="tl-step">Production-Ready Release — 22 July 2026</span>
+          <span class="tl-tests">367/368 ✓</span>
+          <svg class="tl-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div class="tl-body">
+          Phase A: 7 verified examples with Step 21 visual reports — <strong>audit_data_quality</strong> (planted null found 8.3%, rendered amber), <strong>churn_analysis</strong> (Kaggle Telco 7,043 rows, ROC-AUC 0.845 recall 0.546, leakage sentinel clean), <strong>customer_profiling</strong> (descriptive audit, normal fits), <strong>paysim_fraud</strong> (6.36M rows, ROC-AUC 0.989, wrong-target run declined), <strong>segment_comparison</strong> (ASA-compliant stats, organic 30% vs paid 60% vs referral 80%), <strong>transaction_monitoring</strong> (89.7% completeness amber, real nulls found, multi-format docs), <strong>universal_audit</strong> (3 honest refusals-to-overclaim). W3C PROV-aligned historical archive. Phase B: docs updated. Phase C: Dockerfile (Python 3.12 + Node 24) — 367/368 tests green in clean container. Repo root cleaned. CHANGELOG.md + RELEASE_v1.0.md written to 2026 standards. Built directing Claude as AI collaborator — the AI wrote code, the human governed every decision.
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot done">23</div>
+      <div class="tl-card">
+        <div class="tl-header" onclick="toggleStep(this)">
+          <span class="tl-version">v0.19</span>
+          <span class="tl-step">Step 23 — Deterministic Across-Runs Trend Report</span>
+          <span class="tl-tests">368 ✓</span>
+          <svg class="tl-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div class="tl-body">
+          Reads run_NNN lineage and renders ONE picture of the remediation journey. <strong>THE GOVERNING CONSTRAINT:</strong> the report reads and draws VALUES — it NEVER computes a delta, percentage improvement, or "23% better" claim, because computing a cross-run difference would be the AI authoring a figure. The improvement is VISUAL (bars move across attempts), not an authored number. Proven by test — the exception-difference 1312−312=1000 is asserted ABSENT from the output. A mirror not a cheerleader. Verified end-to-end on REAL engine output. 368 tests.
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot done">22</div>
+      <div class="tl-card">
+        <div class="tl-header" onclick="toggleStep(this)">
+          <span class="tl-version">v0.18</span>
+          <span class="tl-step">Step 22 — Run Lineage</span>
+          <span class="tl-tests">347 ✓</span>
+          <svg class="tl-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div class="tl-body">
+          Sequenced, immutable run_NNN folders. <strong>THE ANCHOR IS THE RUN SEQUENCE NUMBER, NOT THE DATE.</strong> THE FILESYSTEM IS THE LEDGER. A deleted middle run is NEVER refilled — a missing run_002 is visible history, evidence something was removed. An existing run is NEVER overwritten. Ordering is numeric not lexical (run_100 never sorts before run_009). Lineage is opt-in via --lineage flag so no existing workflow changes silently. 347 tests.
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot done">21</div>
+      <div class="tl-card">
+        <div class="tl-header" onclick="toggleStep(this)">
+          <span class="tl-version">v0.17</span>
+          <span class="tl-step">Step 21 — Deterministic Visual Report</span>
+          <span class="tl-tests">331 ✓</span>
+          <svg class="tl-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div class="tl-body">
+          Self-contained HTML report drawing hashed findings as charts. Charts are <strong>COGNITIVE SCAFFOLDING, NOT CONCLUSIONS</strong> — they show the shape of the data so a reviewer decides where to look, never what to conclude. build_report_html is a PURE FUNCTION — same findings → byte-identical HTML. Colour is honest: green at high scores, amber below — a messy dataset renders amber automatically. Accuracy and timeliness with no score render as dashed "not scored" outlines, NEVER as a 0% bar. THE REPORT IS A MIRROR, NOT A TARGET. 331 tests.
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot done">20</div>
+      <div class="tl-card">
+        <div class="tl-header" onclick="toggleStep(this)">
+          <span class="tl-version">v0.16</span>
+          <span class="tl-step">Step 20 — Source Adapters + Single-Reader Principle</span>
+          <span class="tl-tests">310 ✓</span>
+          <svg class="tl-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div class="tl-body">
+          delivery_engine.sources is now the ONLY loading path for computational stages. Whatever the gate saw, the stages see — closing the two-parser divergence risk. Formats: .parquet (Apache Parquet spec), .xlsx (DuckDB excel extension, documented defaults as disclosed rules), .xls refused cleanly, .db/.sqlite via ATTACH. FORMAT PARITY claimed honestly and scoped. AnalystKit v2.1.0 ships alongside (75 tests). 310 tests.
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot done">18</div>
+      <div class="tl-card">
+        <div class="tl-header" onclick="toggleStep(this)">
+          <span class="tl-version">v0.14</span>
+          <span class="tl-step">Step 18 — Analyst-Error Guardrails G1–G6</span>
+          <span class="tl-tests">272 ✓</span>
+          <svg class="tl-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div class="tl-body">
+          Six controls, each traceable to published research on how analysts actually fail, several motivated by failures observed first-hand in this engine's own production runs.<br><br>
+          <strong>G1 Leakage Sentinel</strong> — per-feature association with target; flags possible leakage, NEVER gates.<br>
+          <strong>G2 Pseudoreplication Disclosure</strong> — flags unaccounted non-independence (Forstmeier et al 2017).<br>
+          <strong>G3 Minimum Detectable Effect</strong> — "not significant" can never silently mean "no effect."<br>
+          <strong>G4 Analyst-Bias Checklist</strong> — selection/survivorship, denominators, mixed granularity.<br>
+          <strong>G5 Source Fingerprint</strong> — SHA-256 of the INPUT dataset before any stage runs.<br>
+          <strong>G6 Limitations & Assumptions</strong> — assembled from caveats in hashed findings, NEVER fabricated. 272 tests.
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot done">17</div>
+      <div class="tl-card">
+        <div class="tl-header" onclick="toggleStep(this)">
+          <span class="tl-version">v0.13</span>
+          <span class="tl-step">Steps 15–17 — Stats Stage, Preview+Handoff, Math Stage</span>
+          <span class="tl-tests">257 ✓</span>
+          <svg class="tl-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div class="tl-body">
+          <strong>Stats:</strong> Wilson score intervals, Fisher exact, Pearson chi-square, Mann-Whitney U. Effect sizes ALWAYS alongside p-values (ASA Statement 2016, principle 5). BH FDR control. Alpha PRE-REGISTERED in the playbook before any p-value exists. SIGNIFICANCE NEVER GATES.<br><br>
+          <strong>Math:</strong> Distribution fitting with Lilliefors correction — a KS p-value is INVALID when parameters were estimated from the same sample (Lilliefors 1967). The Weibull candidate reports KS distance without a p-value, reason recorded in findings. Best fit is the smallest KS distance — a disclosed selection rule, not a significance claim.<br><br>
+          <strong>Preview+Handoff:</strong> Pre-flight preview as a pure function of the loaded playbook. The rendered preview is hashed — what the human was shown is evidence. 257 tests.
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot early">9</div>
+      <div class="tl-card">
+        <div class="tl-header" onclick="toggleStep(this)">
+          <span class="tl-version" style="color:var(--muted)">v0.1–0.9</span>
+          <span class="tl-step">Steps 1–14 — Foundation: MCP, Planner, Executor, Gates, Archetypes, CI</span>
+          <span class="tl-tests">177 ✓</span>
+          <svg class="tl-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div class="tl-body">
+          analystkit-mcp and opskit-mcp. Playbook schema (constitutional rules V1–V11). Planner (80/20 deterministic/LLM, Human Gate 1). Executor with Findings Store (canonical JSON + SHA-256). rules_draft slot with content-bound Human Gate 2 (approval quotes the draft's SHA-256). OpsKit engine wiring. ops_report AI slot under injected-numbers rule (inject_from_findings proves verbatim existence before token registration). transaction_monitoring_review archetype — both kits + Human Gate 2 + dual narratives, ZERO engine changes. Deterministic baseline model (fixed-seed sklearn, NO code generated). Deterministic PPT builder (pptxgenjs). GitHub Actions CI green from first commit. Playbook Compatibility Report. /examples/ with end-to-end runs. v0.1 thin slice COMPLETE by its own stated criteria. 177 tests.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- V1.0 RELEASE -->
+<section class="section" id="v1">
+  <div class="section-header">
+    <span class="section-num">Amendment</span>
+    <h2>v1.0 Release</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="v1-banner">
+    <div class="v1-badge">Released · 22 July 2026</div>
+    <h3>The v1.0 production-ready milestone is recorded as complete.</h3>
+    <p>Phase A: 7 verified examples with Step 21 visual reports. W3C PROV-aligned historical archive. Scoped .gitignore exception so curated example outputs ship to visitors without running anything. Phase B: examples index, learning arc, and churn README updated. Phase C: Dockerfile mirroring CI exactly — 367/368 tests pass in a clean container (1 skipped: PaySim source not committed by design). Repo root cleaned: 8 dev scripts preserved in historical/, 18 STEP decision files moved to docs/decisions/. CHANGELOG.md written per Keep a Changelog 1.1.0. RELEASE_v1.0.md includes the AI-collaboration framing and the unknown-knowns operational guide.<br><br>
+    The v1.0 claim is honest: <strong>portfolio-grade, fully-tested, reproducible — not an enterprise-SLA product.</strong> Built by Mohd Saif Hussain directing Claude as AI collaborator. Every architectural decision human-made. Build record public and re-performable.</p>
+  </div>
+
+  <div class="inline-note"><strong>Open item carried forward:</strong> human-declared-final — the all-green signal must be a named human's decision, not the engine's. Small self-contained follow-on, deferred to v1.1.</div>
+</section>
+
+<!-- ROADMAP -->
+<section class="section" id="roadmap">
+  <div class="section-header">
+    <span class="section-num">v1.1</span>
+    <h2>Roadmap</h2>
+  </div>
+  <div class="section-divider"></div>
+  <p>Deliberate scope decisions. Each ships in its own release with its own gates, tests, and determinism proof.</p>
+  <div class="table-wrap">
+    <div style="padding:0">
+      <div class="roadmap-item">
+        <div><div class="roadmap-label">Step 21 math charts</div><div class="roadmap-tag">v1.1</div></div>
+        <div class="roadmap-desc">Extend the visual report to chart distribution fit, outliers, entropy, and temporal findings — currently visible in math.json and narrative_report.md but not visualized in report.html.</div>
+      </div>
+      <div class="roadmap-item">
+        <div><div class="roadmap-label">Python-docx/pptx migration</div><div class="roadmap-tag">v1.1</div></div>
+        <div class="roadmap-desc">Replace Node (pptxgenjs, docx) with pure Python (python-docx, python-pptx, openpyxl). Drops Node from Docker, simplifies the image. Requires re-proving the determinism guarantee before shipping.</div>
+      </div>
+      <div class="roadmap-item">
+        <div><div class="roadmap-label">Human-declared-final</div><div class="roadmap-tag">v1.1</div></div>
+        <div class="roadmap-desc">Engine reports green state as fact; a named human declares a run final — same pattern as Human Gate 2 and null signatures.</div>
+      </div>
+      <div class="roadmap-item">
+        <div><div class="roadmap-label">G2/G3 for model playbooks</div><div class="roadmap-tag">v1.1</div></div>
+        <div class="roadmap-desc">Pseudoreplication and minimum detectable effect guardrails currently skip model-only playbooks. Planned fix.</div>
+      </div>
+      <div class="roadmap-item">
+        <div><div class="roadmap-label">Timeliness metric</div><div class="roadmap-tag">investigate</div></div>
+        <div class="roadmap-desc">Shows 0.0% on some no-date-column examples where "not scored" may be the more honest rendering. Under investigation.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESUME -->
+<section class="section" id="resume">
+  <div class="section-header">
+    <span class="section-num">§ 12</span>
+    <h2>How to Resume</h2>
+  </div>
+  <div class="section-divider"></div>
+  <p>Upload two files: <code>PROJECT_CHARTER.md</code> and <code>delivery-engine-architecture.png</code>. State which build-sequence step is active. That is the complete context package.</p>
+  <p>Any decision made in a session that amends this charter gets written back into it with a version bump. Where a future decision conflicts with this charter, the charter is either consciously amended or the decision is wrong.</p>
+</section>
+
+<!-- CLOSING -->
+<div class="closing-section">
+  <div class="closing-quote">
+    A stage that cannot fail is not a gate.<br>
+    A number without a hash does not enter a deliverable.<br>
+    <strong>A project that cannot be re-performed is just output.</strong>
+  </div>
+  <div class="closing-source">Project Charter, Delivery Engine, founding principle</div>
+</div>
+
+</main>
+</div>
+
+<script>
+// Progress bar
+window.addEventListener('scroll', () => {
+  const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+  document.getElementById('progress').style.width = scrolled + '%';
+});
+
+// Active nav link
+const navLinks = document.querySelectorAll('.nav-link');
+const sections = document.querySelectorAll('.section, .hero, .closing-section');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id;
+      navLinks.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+      });
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+
+sections.forEach(s => s.id && observer.observe(s));
+
+// Timeline toggle
+function toggleStep(header) {
+  const body = header.nextElementSibling;
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  header.classList.toggle('open', !isOpen);
+}
+</script>
+</body>
+</html>

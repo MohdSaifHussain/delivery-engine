@@ -1,0 +1,71 @@
+{
+  "approved": true,
+  "approved_at_ist": "2026-07-22T09:56:45+05:30",
+  "approved_by": "Example Analyst",
+  "candidates_considered": [
+    "churn_analysis",
+    "data_quality_review",
+    "healthcare_claims_audit",
+    "segment_comparison",
+    "supplychain_audit",
+    "universal_audit"
+  ],
+  "column_kinds": [
+    [
+      "channel",
+      "categorical_column"
+    ],
+    [
+      "converted",
+      "binary_target"
+    ],
+    [
+      "customer_id",
+      "id_column"
+    ],
+    [
+      "days_active",
+      "numeric_column"
+    ]
+  ],
+  "created_at_ist": "2026-07-22T09:56:45+05:30",
+  "decision_rationale": "highest goal-keyword overlap (score 5) among 6 qualified playbooks",
+  "decision_source": "deterministic",
+  "goal": "segment comparison with statistical significance: does conversion rate differ by acquisition channel?",
+  "plan_sha256": "2419c7ef749f422bd9aaed9ee57496c7d74dd97b5dcb82452a81d130433938b1",
+  "playbook_name": "segment_comparison",
+  "playbook_path": "C:\\Users\\mohds\\delivery-engine\\playbooks\\segment_comparison.toml",
+  "playbook_version": "1.0.0",
+  "requirement_results": [
+    [
+      "min_rows >= 100",
+      true,
+      "source has 300 rows"
+    ],
+    [
+      "required kind 'binary_target'",
+      true,
+      "found in: converted"
+    ],
+    [
+      "required kind 'id_column'",
+      true,
+      "found in: customer_id"
+    ],
+    [
+      "source type 'csv' accepted",
+      true,
+      "playbook accepts: csv, parquet, excel, sqlite"
+    ]
+  ],
+  "source": "C:\\Users\\mohds\\delivery-engine\\examples\\segment_comparison\\signup_conversion.csv",
+  "stage_ids": [
+    "dq_profile",
+    "dq_validate",
+    "plan_approval",
+    "stats",
+    "report",
+    "readme",
+    "package"
+  ]
+}

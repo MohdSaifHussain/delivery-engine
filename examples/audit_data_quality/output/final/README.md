@@ -1,7 +1,7 @@
 # Delivery Package
 
 **Goal:** data quality review of this extract
-**Source:** `/home/claude/repo/delivery-engine/examples/audit_data_quality/audit_issues.csv`
+**Source:** `C:\Users\mohds\delivery-engine\examples\audit_data_quality\audit_issues.csv`
 
 Produced by the Delivery Engine: agent proposes, deterministic tools dispose, human governs, every claim traceable.
 

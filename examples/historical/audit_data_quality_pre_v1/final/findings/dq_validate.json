@@ -1,0 +1,74 @@
+{
+  "findings": {
+    "results": [
+      {
+        "column": "issue_id",
+        "detail": "value must not be null",
+        "failures": 0,
+        "rule": "not_null",
+        "rule_id": "R01",
+        "sample": []
+      },
+      {
+        "column": "issue_id",
+        "detail": "value must be unique",
+        "failures": 0,
+        "rule": "unique",
+        "rule_id": "R02",
+        "sample": []
+      },
+      {
+        "column": "raised_at",
+        "detail": "value must not be null",
+        "failures": 0,
+        "rule": "not_null",
+        "rule_id": "R03",
+        "sample": []
+      },
+      {
+        "column": "raised_at",
+        "detail": "timestamp is in the future",
+        "failures": 0,
+        "rule": "not_future",
+        "rule_id": "R04",
+        "sample": []
+      },
+      {
+        "column": "business_line",
+        "detail": "value must not be null",
+        "failures": 0,
+        "rule": "not_null",
+        "rule_id": "R05",
+        "sample": []
+      },
+      {
+        "column": "severity",
+        "detail": "value must not be null",
+        "failures": 0,
+        "rule": "not_null",
+        "rule_id": "R06",
+        "sample": []
+      },
+      {
+        "column": "status",
+        "detail": "value must not be null",
+        "failures": 0,
+        "rule": "not_null",
+        "rule_id": "R07",
+        "sample": []
+      },
+      {
+        "column": "days_open",
+        "detail": "value must not be null",
+        "failures": 0,
+        "rule": "not_null",
+        "rule_id": "R08",
+        "sample": []
+      }
+    ],
+    "rules_evaluated": 8,
+    "total_exceptions": 0
+  },
+  "sha256": "5e9577e803d37cc40a14eb8838fbf7774f702f798d6138e59bc8d92b4890cd64",
+  "stage": "dq_validate"
+}

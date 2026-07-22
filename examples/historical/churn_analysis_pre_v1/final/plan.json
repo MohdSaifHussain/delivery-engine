@@ -1,0 +1,74 @@
+{
+  "approved": true,
+  "approved_at_ist": "2026-07-14T14:07:13+05:30",
+  "approved_by": "Example Analyst",
+  "candidates_considered": [
+    "churn_analysis",
+    "data_quality_review"
+  ],
+  "column_kinds": [
+    [
+      "churned",
+      "binary_target"
+    ],
+    [
+      "customer_id",
+      "id_column"
+    ],
+    [
+      "monthly_spend",
+      "numeric_column"
+    ],
+    [
+      "plan_type",
+      "categorical_column"
+    ],
+    [
+      "tenure_months",
+      "numeric_column"
+    ]
+  ],
+  "created_at_ist": "2026-07-14T14:07:13+05:30",
+  "decision_rationale": "highest goal-keyword overlap (score 2) among 2 qualified playbooks",
+  "decision_source": "deterministic",
+  "goal": "churn analysis for the retention team",
+  "plan_sha256": "d379dbbbc1050c4218d1c0eff005692e44595faedba0284257842e5817a5253d",
+  "playbook_name": "churn_analysis",
+  "playbook_path": "/home/claude/repo/delivery-engine/playbooks/churn_analysis.toml",
+  "playbook_version": "1.2.0",
+  "requirement_results": [
+    [
+      "min_rows >= 100",
+      true,
+      "source has 400 rows"
+    ],
+    [
+      "required kind 'binary_target'",
+      true,
+      "found in: churned"
+    ],
+    [
+      "required kind 'id_column'",
+      true,
+      "found in: customer_id"
+    ],
+    [
+      "source type 'csv' accepted",
+      true,
+      "playbook accepts: csv, excel, sqlite, postgres, mysql"
+    ]
+  ],
+  "source": "/home/claude/repo/delivery-engine/examples/churn_analysis/customers.csv",
+  "stage_ids": [
+    "dq_profile",
+    "dq_validate",
+    "dq_dedupe",
+    "plan_approval",
+    "baseline",
+    "eda",
+    "report",
+    "readme",
+    "presentation",
+    "package"
+  ]
+}

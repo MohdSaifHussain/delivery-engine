@@ -1,19 +1,26 @@
 {
   "files": {
-    "README.md": "fa9f4de1ad8f01f6d983be1fecb5a62380055166297ee939512b4fbf537e86c5",
-    "audit_log.jsonl": "37e0a1a0808ebdf55d74ca9c2d91ea7f0fac55b9cc6bc5799438b524eb66c78e",
-    "findings/dq_dedupe.json": "bfcbaa66577547bc38235011e1b8c2af144ce67e934aca8eab78e4bde39d661a",
-    "findings/dq_profile.json": "ee01bf871dcb7a86a5f373046c6cf2c48c342f30fb21038f1cb4558c47989930",
-    "findings/dq_validate.json": "d22862953877958a337b22674b9e878ef95f3db7579f3fbd69c2f57fd4a0c781",
-    "narrative_report.md": "6e30497a9415ff57cbd9a4fbc9c6a86b781ba9cd0053d98525cfd8bc4f257547",
-    "plan.json": "080872376837989d399e10c25049a3806c21710f960ff1c885115dcfa6dca346",
-    "rules_draft.json": "b6335204f4207f64bd78de7779dd2b6bcc0e14d3809489626bd04ddf3a8be2cd"
+    "README.md": "7839cba5fcf2dd38645fa9fac8c17360e326b4a6b82848d4d8a6cceb988c30c2",
+    "audit_log.jsonl": "3fec4d11f04988009b4e96b9b638b2bba7de6f95ad5f4dba692c88894cb92ff3",
+    "execution_preview.md": "f813eb26ed952edfb5929d74de87aa6ce709985d1a0c9f82f244a9c1e05de70c",
+    "findings\\dq_dedupe.json": "955270cc19bfed4e170b359803b2e5da05d0a3f966db7323109f01cda7a95606",
+    "findings\\dq_profile.json": "4d7b62848b25ea6e734cdacd2a371707e84fa9b745c34cf09b5dee8717e6c255",
+    "findings\\dq_validate.json": "1590c4cd1b831c74621614691338dd5feb119056612943a17b1c7b25417d4789",
+    "handoff_manifest.json": "2124ca25738f67ed9c76d73878f60c6aadede98ed97284525d5ae859460f5a32",
+    "narrative_report.md": "c45291ce4e1ff3a7935110e3e908184b94172e3a79c672a77ce7aaddce63d7f4",
+    "plan.json": "c271e82ada6c827ebd77e9dc372db4d99dbadb0360b112ac9a9e9523fed30938",
+    "rules_draft.json": "2d49087b4b85392fb44e508863f71a987548ebc5de3cdac0c9b4cd06a3bd8ed3"
   },
   "findings": {
     "dq_dedupe": "c304c11a27d5fb7382e933d1a3fbbd8c35889137dc46ba87d42c3c953f426953",
-    "dq_profile": "939fcbc84af20676e1daa3e04f1546e780ba8aca605e503b8bb0463e3f00f65b",
+    "dq_profile": "0ce27a87632a7e77bd5a649354e28c3bed79225a37638d8893b3ecee76849765",
     "dq_validate": "5e9577e803d37cc40a14eb8838fbf7774f702f798d6138e59bc8d92b4890cd64"
   },
   "note": "Verify each file's SHA-256 against this manifest. Matching hashes = unaltered evidence. The audit log records when and why each entry came to exist.",
-  "plan_sha256": "bedcd21b6da39418be5b4699098b7f28124c9682adb35820784769145181574f"
+  "plan_sha256": "72ca76e3819d39a062507edb7b8c1e225169849771179657595436680067eac1",
+  "source_fingerprint": {
+    "bytes": 52691,
+    "path": "C:\\Users\\mohds\\delivery-engine\\examples\\audit_data_quality\\audit_issues.csv",
+    "sha256": "72a66344ea2cc40cab2f9f5fd886307b23afb8cf6fc52aa2487867b725af1e8e"
+  }
 }

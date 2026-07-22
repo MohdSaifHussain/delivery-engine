@@ -1,0 +1,87 @@
+{
+  "findings": {
+    "accuracy_note": "Accuracy is never scored from the dataset alone \u2014 that would be fabrication. Use analystkit_reconcile against an authoritative source.",
+    "columns": [
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 793,
+        "dtype": "VARCHAR",
+        "name": "issue_id",
+        "nulls": 0,
+        "total": 793,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 366,
+        "dtype": "TIMESTAMP",
+        "name": "raised_at",
+        "nulls": 0,
+        "total": 793,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 6,
+        "dtype": "VARCHAR",
+        "name": "business_line",
+        "nulls": 0,
+        "total": 793,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 3,
+        "dtype": "VARCHAR",
+        "name": "severity",
+        "nulls": 0,
+        "total": 793,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 2,
+        "dtype": "VARCHAR",
+        "name": "status",
+        "nulls": 0,
+        "total": 793,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 172,
+        "dtype": "BIGINT",
+        "name": "days_open",
+        "nulls": 0,
+        "total": 793,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 0.9167717528373266,
+        "distinct": 9,
+        "dtype": "VARCHAR",
+        "name": "owner_team",
+        "nulls": 66,
+        "total": 793,
+        "valid_ratio": 1.0
+      }
+    ],
+    "dama_scores": {
+      "accuracy": null,
+      "completeness": 0.9881102504053324,
+      "consistency": 1.0,
+      "timeliness": 0.8444444444444444,
+      "uniqueness": 1.0,
+      "validity": 1.0
+    }
+  },
+  "sha256": "939fcbc84af20676e1daa3e04f1546e780ba8aca605e503b8bb0463e3f00f65b",
+  "stage": "dq_profile"
+}

@@ -20,7 +20,7 @@
       "  \u00b7 [INFO] No exact duplicate rows found.",
       "Step 4/7 \u2014 What period does this cover?",
       "  why: A perfect analysis of stale data is a perfectly wrong answer.",
-      "  \u25b2 [NOTABLE] Data spans 01 Jan 2010 to 05 Feb 2012 (newest record is 5272 day(s) old).",
+      "  \u25b2 [NOTABLE] Data spans 01 Jan 2010 to 05 Feb 2012 (newest record is 5280 day(s) old).",
       "Step 5/7 \u2014 Did volume move \u2014 and what drove it?",
       "  why: Never report a delta without its driver; the drill-down conditions on each winner and recurses.",
       "  \u00b7 [INFO] Record count fell 0% window over window (19 \u2192 19).",
@@ -91,7 +91,7 @@
         "schema": "opskit.finding/v1",
         "severity": "NOTABLE",
         "step": "time_coverage",
-        "text": "Data spans 01 Jan 2010 to 05 Feb 2012 (newest record is 5272 day(s) old)."
+        "text": "Data spans 01 Jan 2010 to 05 Feb 2012 (newest record is 5280 day(s) old)."
       },
       {
         "evidence": "windowed aggregate anchored at newest timestamp",
@@ -135,6 +135,6 @@
     "source_sha256": "f0a39e6710b294a9d442e5cc1c575189a46eb9c41006c47b185b807ac5e77598",
     "table": null
   },
-  "sha256": "aa5d2eb5f24f42767e9ac2d54e736d47b35d1a9267cfc45cfd62d179cc7bd2e5",
+  "sha256": "5ba482894b474b5dc7870877805b8002030c1d968fa4f4e9dac10a05b669da49",
   "stage": "ops_review"
 }

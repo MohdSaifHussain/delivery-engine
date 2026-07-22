@@ -5,11 +5,31 @@
       {
         "case_variants": 0,
         "completeness": 1.0,
-        "distinct": 400,
+        "distinct": 7043,
         "dtype": "VARCHAR",
-        "name": "customer_id",
+        "name": "customerID",
         "nulls": 0,
-        "total": 400,
+        "total": 7043,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 2,
+        "dtype": "VARCHAR",
+        "name": "gender",
+        "nulls": 0,
+        "total": 7043,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 2,
+        "dtype": "BIGINT",
+        "name": "SeniorCitizen",
+        "nulls": 0,
+        "total": 7043,
         "valid_ratio": 1.0
       },
       {
@@ -17,19 +37,39 @@
         "completeness": 1.0,
         "distinct": 2,
         "dtype": "BOOLEAN",
-        "name": "churned",
+        "name": "Partner",
         "nulls": 0,
-        "total": 400,
+        "total": 7043,
         "valid_ratio": 1.0
       },
       {
         "case_variants": 0,
         "completeness": 1.0,
-        "distinct": 60,
-        "dtype": "BIGINT",
-        "name": "tenure_months",
+        "distinct": 2,
+        "dtype": "BOOLEAN",
+        "name": "Dependents",
         "nulls": 0,
-        "total": 400,
+        "total": 7043,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 73,
+        "dtype": "BIGINT",
+        "name": "tenure",
+        "nulls": 0,
+        "total": 7043,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 2,
+        "dtype": "BOOLEAN",
+        "name": "PhoneService",
+        "nulls": 0,
+        "total": 7043,
         "valid_ratio": 1.0
       },
       {
@@ -37,19 +77,139 @@
         "completeness": 1.0,
         "distinct": 3,
         "dtype": "VARCHAR",
-        "name": "plan_type",
+        "name": "MultipleLines",
         "nulls": 0,
-        "total": 400,
+        "total": 7043,
         "valid_ratio": 1.0
       },
       {
         "case_variants": 0,
         "completeness": 1.0,
-        "distinct": 50,
-        "dtype": "DOUBLE",
-        "name": "monthly_spend",
+        "distinct": 3,
+        "dtype": "VARCHAR",
+        "name": "InternetService",
         "nulls": 0,
-        "total": 400,
+        "total": 7043,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 3,
+        "dtype": "VARCHAR",
+        "name": "OnlineSecurity",
+        "nulls": 0,
+        "total": 7043,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 3,
+        "dtype": "VARCHAR",
+        "name": "OnlineBackup",
+        "nulls": 0,
+        "total": 7043,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 3,
+        "dtype": "VARCHAR",
+        "name": "DeviceProtection",
+        "nulls": 0,
+        "total": 7043,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 3,
+        "dtype": "VARCHAR",
+        "name": "TechSupport",
+        "nulls": 0,
+        "total": 7043,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 3,
+        "dtype": "VARCHAR",
+        "name": "StreamingTV",
+        "nulls": 0,
+        "total": 7043,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 3,
+        "dtype": "VARCHAR",
+        "name": "StreamingMovies",
+        "nulls": 0,
+        "total": 7043,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 3,
+        "dtype": "VARCHAR",
+        "name": "Contract",
+        "nulls": 0,
+        "total": 7043,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 2,
+        "dtype": "BOOLEAN",
+        "name": "PaperlessBilling",
+        "nulls": 0,
+        "total": 7043,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 4,
+        "dtype": "VARCHAR",
+        "name": "PaymentMethod",
+        "nulls": 0,
+        "total": 7043,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 1585,
+        "dtype": "DOUBLE",
+        "name": "MonthlyCharges",
+        "nulls": 0,
+        "total": 7043,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 6531,
+        "dtype": "VARCHAR",
+        "name": "TotalCharges",
+        "nulls": 0,
+        "total": 7043,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 2,
+        "dtype": "BOOLEAN",
+        "name": "Churn",
+        "nulls": 0,
+        "total": 7043,
         "valid_ratio": 1.0
       }
     ],
@@ -62,6 +222,6 @@
       "validity": 1.0
     }
   },
-  "sha256": "4fcc9974835b83c035bfda05c99af8712a1b73681cff725e5c963ee8e862897d",
+  "sha256": "851b1ea2b88e9cd8c649a7f44e2e51bfd3511a93dfeb5c89707a91cb6f18f8c2",
   "stage": "dq_profile"
 }

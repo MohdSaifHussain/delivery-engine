@@ -1,0 +1,106 @@
+{
+  "findings": {
+    "results": [
+      {
+        "column": "id",
+        "detail": "value must not be null",
+        "failures": 0,
+        "rule": "not_null",
+        "rule_id": "R01",
+        "sample": []
+      },
+      {
+        "column": "id",
+        "detail": "value must be unique",
+        "failures": 0,
+        "rule": "unique",
+        "rule_id": "R02",
+        "sample": []
+      },
+      {
+        "column": "date",
+        "detail": "value must not be null",
+        "failures": 0,
+        "rule": "not_null",
+        "rule_id": "R03",
+        "sample": []
+      },
+      {
+        "column": "date",
+        "detail": "value must be unique",
+        "failures": 0,
+        "rule": "unique",
+        "rule_id": "R04",
+        "sample": []
+      },
+      {
+        "column": "date",
+        "detail": "timestamp is in the future",
+        "failures": 0,
+        "rule": "not_future",
+        "rule_id": "R05",
+        "sample": []
+      },
+      {
+        "column": "client_id",
+        "detail": "value must not be null",
+        "failures": 0,
+        "rule": "not_null",
+        "rule_id": "R06",
+        "sample": []
+      },
+      {
+        "column": "card_id",
+        "detail": "value must not be null",
+        "failures": 0,
+        "rule": "not_null",
+        "rule_id": "R07",
+        "sample": []
+      },
+      {
+        "column": "amount",
+        "detail": "value must not be null",
+        "failures": 0,
+        "rule": "not_null",
+        "rule_id": "R08",
+        "sample": []
+      },
+      {
+        "column": "use_chip",
+        "detail": "value must not be null",
+        "failures": 0,
+        "rule": "not_null",
+        "rule_id": "R09",
+        "sample": []
+      },
+      {
+        "column": "merchant_id",
+        "detail": "value must not be null",
+        "failures": 0,
+        "rule": "not_null",
+        "rule_id": "R10",
+        "sample": []
+      },
+      {
+        "column": "merchant_city",
+        "detail": "value must not be null",
+        "failures": 0,
+        "rule": "not_null",
+        "rule_id": "R11",
+        "sample": []
+      },
+      {
+        "column": "mcc",
+        "detail": "value must not be null",
+        "failures": 0,
+        "rule": "not_null",
+        "rule_id": "R12",
+        "sample": []
+      }
+    ],
+    "rules_evaluated": 12,
+    "total_exceptions": 0
+  },
+  "sha256": "04f02808a4e7231e6a6412424c8058a176c8f2ea0210ffa64154d599524f7cf5",
+  "stage": "dq_validate"
+}

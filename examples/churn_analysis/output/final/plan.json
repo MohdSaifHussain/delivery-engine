@@ -1,56 +1,128 @@
 {
   "approved": true,
-  "approved_at_ist": "2026-07-14T14:07:13+05:30",
+  "approved_at_ist": "2026-07-22T10:14:54+05:30",
   "approved_by": "Example Analyst",
   "candidates_considered": [
     "churn_analysis",
-    "data_quality_review"
+    "data_quality_review",
+    "healthcare_claims_audit",
+    "segment_comparison",
+    "supplychain_audit",
+    "universal_audit"
   ],
   "column_kinds": [
     [
-      "churned",
+      "Churn",
       "binary_target"
     ],
     [
-      "customer_id",
-      "id_column"
-    ],
-    [
-      "monthly_spend",
-      "numeric_column"
-    ],
-    [
-      "plan_type",
+      "Contract",
       "categorical_column"
     ],
     [
-      "tenure_months",
+      "Dependents",
+      "binary_target"
+    ],
+    [
+      "DeviceProtection",
+      "categorical_column"
+    ],
+    [
+      "InternetService",
+      "categorical_column"
+    ],
+    [
+      "MonthlyCharges",
+      "numeric_column"
+    ],
+    [
+      "MultipleLines",
+      "categorical_column"
+    ],
+    [
+      "OnlineBackup",
+      "categorical_column"
+    ],
+    [
+      "OnlineSecurity",
+      "categorical_column"
+    ],
+    [
+      "PaperlessBilling",
+      "binary_target"
+    ],
+    [
+      "Partner",
+      "binary_target"
+    ],
+    [
+      "PaymentMethod",
+      "categorical_column"
+    ],
+    [
+      "PhoneService",
+      "binary_target"
+    ],
+    [
+      "SeniorCitizen",
+      "binary_target"
+    ],
+    [
+      "SeniorCitizen",
+      "numeric_column"
+    ],
+    [
+      "StreamingMovies",
+      "categorical_column"
+    ],
+    [
+      "StreamingTV",
+      "categorical_column"
+    ],
+    [
+      "TechSupport",
+      "categorical_column"
+    ],
+    [
+      "customerID",
+      "id_column"
+    ],
+    [
+      "gender",
+      "binary_target"
+    ],
+    [
+      "gender",
+      "categorical_column"
+    ],
+    [
+      "tenure",
       "numeric_column"
     ]
   ],
-  "created_at_ist": "2026-07-14T14:07:13+05:30",
-  "decision_rationale": "highest goal-keyword overlap (score 2) among 2 qualified playbooks",
+  "created_at_ist": "2026-07-22T10:14:54+05:30",
+  "decision_rationale": "highest goal-keyword overlap (score 2) among 6 qualified playbooks",
   "decision_source": "deterministic",
   "goal": "churn analysis for the retention team",
-  "plan_sha256": "d379dbbbc1050c4218d1c0eff005692e44595faedba0284257842e5817a5253d",
+  "plan_sha256": "950b79b93b78ad9a93abef70cd5b8354acead1c4ce5030a5d55afe5ff1bb726a",
   "playbook_name": "churn_analysis",
-  "playbook_path": "/home/claude/repo/delivery-engine/playbooks/churn_analysis.toml",
+  "playbook_path": "C:\\Users\\mohds\\delivery-engine\\playbooks\\churn_analysis.toml",
   "playbook_version": "1.2.0",
   "requirement_results": [
     [
       "min_rows >= 100",
       true,
-      "source has 400 rows"
+      "source has 7,043 rows"
     ],
     [
       "required kind 'binary_target'",
       true,
-      "found in: churned"
+      "found in: gender, SeniorCitizen, Partner, Dependents, PhoneService, PaperlessBilling, Churn"
     ],
     [
       "required kind 'id_column'",
       true,
-      "found in: customer_id"
+      "found in: customerID"
     ],
     [
       "source type 'csv' accepted",
@@ -58,7 +130,7 @@
       "playbook accepts: csv, excel, sqlite, postgres, mysql"
     ]
   ],
-  "source": "/home/claude/repo/delivery-engine/examples/churn_analysis/customers.csv",
+  "source": "C:\\Users\\mohds\\delivery-engine\\examples\\churn_analysis\\WA_Fn-UseC_-Telco-Customer-Churn.csv",
   "stage_ids": [
     "dq_profile",
     "dq_validate",

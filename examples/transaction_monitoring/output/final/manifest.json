@@ -1,25 +1,32 @@
 {
   "files": {
-    "README.md": "cd1db573eef16509898bd7cc0d8da515eba42c931fe549a5ee7b84ab7c50de65",
-    "audit_log.jsonl": "98edc6e3ba77c14636b1180216ce630509b224808c369a0d14e2b4ce9cbe0656",
-    "delivery_package.docx": "84ff5bb104cd1ef76af4add425eb2a9fc6c1cdcc71390bb07214965d63024db4",
-    "delivery_package.pptx": "83f960953d082476ad6e990e08c17aaf11b1b34721f1f856844bd268cb47f269",
-    "delivery_package.xlsx": "84ac8c9dd41605f1bc9add1ec028a83ac796272e78ff288368940a951845f11e",
-    "findings/dq_dedupe.json": "bfcbaa66577547bc38235011e1b8c2af144ce67e934aca8eab78e4bde39d661a",
-    "findings/dq_profile.json": "f843f2b5724b950e16d3807a4df0ca74d1490ec4330617a9e3afeba56efed075",
-    "findings/dq_validate.json": "fbeeee1b44baebbd81f1d235e5f83bedb69c2b15042e0dab0c6a211d372281e2",
-    "findings/ops_review.json": "6ea35f7ecb755c5c49f294a5785c3c7f01da4b9d99d3ce111578bd5f80745912",
-    "narrative_report.md": "cfb295d159ec62a765e0254a42bc254e74d47937ec7c0dfa678c43922d975cc7",
-    "ops_report.md": "d94475fabbe5ab71f6658a3b96ba907a5c29c14bce41d467ef0acabfd0129651",
-    "plan.json": "55cd513399a32b134b95c57910a8971413e49e00bb0e9833fbdfcc6a9d7f4116",
-    "rules_draft.json": "671e79952007104346a7c11dcc763bd42e2250bf74aaf758dabec20a83744a1e"
+    "README.md": "9ae0a9ddfc8e7768398f686db735c8e39da597d5ba219a9a39276e81da1de25c",
+    "audit_log.jsonl": "49b94ea8962c5d7d93ab2bd7e53c6da871880e2df0d2a0861ff448edb0a2cba9",
+    "delivery_package.docx": "e7523c1dcae20c6931850134d1a61a07681525b90bd6fe3044d29a8a74c23119",
+    "delivery_package.pptx": "347c6f181c56b55cdd32955a6a8719aef6004a2496960de2fbe585c84db62fdd",
+    "delivery_package.xlsx": "3ccda18c4a863b64059127d5c0ee821fb34f7db9afb5d817227f21dec7e18ba1",
+    "execution_preview.md": "e2ceffd43328a391f9f065c719ed37f7a346a7b9d82e7cbb4774bfa1fa8f72a0",
+    "findings\\dq_dedupe.json": "955270cc19bfed4e170b359803b2e5da05d0a3f966db7323109f01cda7a95606",
+    "findings\\dq_profile.json": "6b327f6c2c99cc57c5030c49b47c7a12629b2fb10cdefc7ab7ac4a7fb219d56d",
+    "findings\\dq_validate.json": "e8d7ee10c0dd0544bf32283ba1af52544f49b885e2c9fc92e03fbc3785a3dda9",
+    "findings\\ops_review.json": "bc6e503aef8696d161fecd22049789c8ffdafdf66ea3cb17a0f75bdc7fda2783",
+    "handoff_manifest.json": "9b6ae4999f3bbde5e27ecfe4e09b20679945797bae010733059eee56488694f8",
+    "narrative_report.md": "e8d311bfb04c295634999f1c57c27be2f014ed6e087c59039b6663957f0886cf",
+    "ops_report.md": "43f15b912c1cd9d51d393135d1a4a58869d8fbbfc6172ed92da47dee8f88df29",
+    "plan.json": "895749e35af6ec539dde322b2c04902b9a065b2dd46947378bd6105767d501ee",
+    "rules_draft.json": "898ad39b7c5677343d8ad13f07e9767c2f155a305ead089888955359cdc790b6"
   },
   "findings": {
     "dq_dedupe": "c304c11a27d5fb7382e933d1a3fbbd8c35889137dc46ba87d42c3c953f426953",
     "dq_profile": "a4102b3062665b939af807b981c999201fae4fe25eb4cb0db3256cf726881d1e",
     "dq_validate": "04f02808a4e7231e6a6412424c8058a176c8f2ea0210ffa64154d599524f7cf5",
-    "ops_review": "aa5d2eb5f24f42767e9ac2d54e736d47b35d1a9267cfc45cfd62d179cc7bd2e5"
+    "ops_review": "5ba482894b474b5dc7870877805b8002030c1d968fa4f4e9dac10a05b669da49"
   },
   "note": "Verify each file's SHA-256 against this manifest. Matching hashes = unaltered evidence. The audit log records when and why each entry came to exist.",
-  "plan_sha256": "6de1ee63989031157e6c159342929dc1fcdc031cc29a46427d960fcd1474a9bc"
+  "plan_sha256": "8bf0456af8d415bcfe47f666d786add88833dd45537c607b524afa2cd65f8146",
+  "source_fingerprint": {
+    "bytes": 186769,
+    "path": "C:\\Users\\mohds\\delivery-engine\\examples\\transaction_monitoring\\transactions_sample.csv",
+    "sha256": "f0a39e6710b294a9d442e5cc1c575189a46eb9c41006c47b185b807ac5e77598"
+  }
 }

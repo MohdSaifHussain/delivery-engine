@@ -1,0 +1,153 @@
+{
+  "findings": {
+    "categorical": {
+      "plan_type": {
+        "distinct": 3,
+        "entropy_bits": 1.584953,
+        "entropy_normalized": 0.999994,
+        "entropy_source": "Shannon 1948, base 2",
+        "n": 400,
+        "n_dropped_nan": 0,
+        "rare_categories": [],
+        "rare_count": 0,
+        "rare_threshold": 0.01
+      }
+    },
+    "column_selection": "numeric, categorical, and timestamp kinds from the plan approved at Human Gate 1; id columns excluded; two-valued (binary_target) columns excluded from the numeric suite - shape statistics on 0/1 data are noise, and inference on them belongs to the stats stage",
+    "constants": {
+      "ci_confidence": 0.95,
+      "mad_scale": 0.6745,
+      "mad_threshold": 3.5,
+      "min_n": 8,
+      "note": "all thresholds are fixed constants of the method, declared here and never chosen after seeing results",
+      "rare_frequency": 0.01
+    },
+    "distribution_fit": {
+      "monthly_spend": {
+        "best_fit": "normal",
+        "best_fit_rule": "smallest KS distance among the fitted candidates - a disclosed selection rule, not a significance claim",
+        "candidates": {
+          "lognormal": {
+            "ks_distance": 0.077592,
+            "lilliefors_p": 0.001,
+            "note": "Lilliefors applied to log(x) (x strictly positive)",
+            "params": {
+              "log_loc": 5.639036,
+              "log_scale": 0.181028
+            }
+          },
+          "normal": {
+            "ks_distance": 0.066957,
+            "lilliefors_p": 0.001,
+            "params": {
+              "loc": 285.75,
+              "scale": 50.571298
+            }
+          },
+          "weibull": {
+            "ks_distance": 0.074231,
+            "p_value_omitted_reason": "KS p-values are invalid when parameters are estimated from the same sample (Lilliefors 1967) and no standard Lilliefors table exists for the Weibull; the distance is reported as a fit-quality metric only",
+            "params": {
+              "loc": 0.0,
+              "scale": 307.050438,
+              "shape": 6.459903
+            }
+          }
+        }
+      },
+      "tenure_months": {
+        "best_fit": "normal",
+        "best_fit_rule": "smallest KS distance among the fitted candidates - a disclosed selection rule, not a significance claim",
+        "candidates": {
+          "lognormal": {
+            "ks_distance": 0.143168,
+            "lilliefors_p": 0.001,
+            "note": "Lilliefors applied to log(x) (x strictly positive)",
+            "params": {
+              "log_loc": 3.139742,
+              "log_scale": 0.895336
+            }
+          },
+          "normal": {
+            "ks_distance": 0.065295,
+            "lilliefors_p": 0.001,
+            "params": {
+              "loc": 30.4,
+              "scale": 17.337574
+            }
+          },
+          "weibull": {
+            "ks_distance": 0.085037,
+            "p_value_omitted_reason": "KS p-values are invalid when parameters are estimated from the same sample (Lilliefors 1967) and no standard Lilliefors table exists for the Weibull; the distance is reported as a fit-quality metric only",
+            "params": {
+              "loc": 0.0,
+              "scale": 33.776948,
+              "shape": 1.694227
+            }
+          }
+        }
+      }
+    },
+    "math_checks": "all",
+    "numeric": {
+      "monthly_spend": {
+        "excess_kurtosis_g2_adjusted": -1.200957,
+        "mean": 285.75,
+        "mean_ci_confidence": 0.95,
+        "mean_ci_high": 290.720975,
+        "mean_ci_low": 280.779025,
+        "mean_ci_method": "t-interval (NIST/SEMATECH e-Handbook 7.2.2.1)",
+        "median": 285.75,
+        "n": 400,
+        "n_dropped_nan": 0,
+        "p95": 364.5,
+        "p99": 371.5,
+        "percentile_method": "linear (numpy documented default, pinned)",
+        "skewness_g1_adjusted": 0.0,
+        "std_sample": 50.571298,
+        "tail_note": "p95/p99 are empirical tail percentiles; in risk contexts these are the historical-simulation VaR levels (Jorion)"
+      },
+      "tenure_months": {
+        "excess_kurtosis_g2_adjusted": -1.19623,
+        "mean": 30.4,
+        "mean_ci_confidence": 0.95,
+        "mean_ci_high": 32.104221,
+        "mean_ci_low": 28.695779,
+        "mean_ci_method": "t-interval (NIST/SEMATECH e-Handbook 7.2.2.1)",
+        "median": 30.0,
+        "n": 400,
+        "n_dropped_nan": 0,
+        "p95": 57.05,
+        "p99": 60.0,
+        "percentile_method": "linear (numpy documented default, pinned)",
+        "skewness_g1_adjusted": 0.012253,
+        "std_sample": 17.337574,
+        "tail_note": "p95/p99 are empirical tail percentiles; in risk contexts these are the historical-simulation VaR levels (Jorion)"
+      }
+    },
+    "outliers": {
+      "monthly_spend": {
+        "mad": 43.75,
+        "median": 285.75,
+        "method": "MAD modified z-score (Iglewicz & Hoban 1993; NIST)",
+        "outlier_count": 0,
+        "outlier_share": 0.0,
+        "scale_factor": 0.6745,
+        "threshold": 3.5
+      },
+      "tenure_months": {
+        "mad": 15.0,
+        "median": 30.0,
+        "method": "MAD modified z-score (Iglewicz & Hoban 1993; NIST)",
+        "outlier_count": 0,
+        "outlier_share": 0.0,
+        "scale_factor": 0.6745,
+        "threshold": 3.5
+      }
+    },
+    "skipped": [],
+    "temporal": {}
+  },
+  "sha256": "047a37def98c2d5e655e8b97f5f115cee522f24ab3f95c49e6120e667edbaa6c",
+  "stage": "math"
+}

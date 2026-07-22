@@ -1,0 +1,140 @@
+{
+  "findings": {
+    "assumptions": [
+      "[assumption] time column     : date",
+      "[assumption] category columns: ['use_chip', 'errors']",
+      "[assumption] numeric columns : ['id', 'client_id', 'card_id', 'amount', 'merchant_id', 'zip', 'mcc']",
+      "PLAYBOOK: Weekly Operations Review",
+      "The Monday-morning checklist, with the drill-down reflex built in.",
+      "================================================================",
+      "Step 1/7 \u2014 How much data am I looking at?",
+      "  why: Volume context frames everything; zero rows means stop.",
+      "  \u00b7 [INFO] 2,000 rows in scope.",
+      "Step 2/7 \u2014 Is anything missing?",
+      "  why: Gaps bias every downstream number; find them first.",
+      "  \u25b2 [NOTABLE] Column 'merchant_state' has 250 nulls (12.5%).",
+      "  \u25b2 [NOTABLE] Column 'zip' has 261 nulls (13.1%).",
+      "  \u25b2 [NOTABLE] Column 'errors' has 1,967 nulls (98.4%).",
+      "Step 3/7 \u2014 Is anything counted twice?",
+      "  why: Duplicates inflate totals; dedupe before summing.",
+      "  \u00b7 [INFO] No exact duplicate rows found.",
+      "Step 4/7 \u2014 What period does this cover?",
+      "  why: A perfect analysis of stale data is a perfectly wrong answer.",
+      "  \u25b2 [NOTABLE] Data spans 01 Jan 2010 to 05 Feb 2012 (newest record is 5272 day(s) old).",
+      "Step 5/7 \u2014 Did volume move \u2014 and what drove it?",
+      "  why: Never report a delta without its driver; the drill-down conditions on each winner and recurses.",
+      "  \u00b7 [INFO] Record count fell 0% window over window (19 \u2192 19).",
+      "Step 6/7 \u2014 Point spike or level shift?",
+      "  why: Robust baselines keep one bad day from hiding itself; run-length separates spike from shift.",
+      "  \u00b7 [INFO] No day breached the robust baseline in the last 28 days.",
+      "Step 7/7 \u2014 Is one category carrying the load?",
+      "  why: 40%+ concentration is an ownership conversation.",
+      "  \u25b2 [NOTABLE] 'Swipe Transaction' accounts for 88% of all records in 'use_chip' \u2014 a concentration worth an ownership conversation.",
+      "  \u25b2 [NOTABLE] 'None' accounts for 98% of all records in 'errors' \u2014 a concentration worth an ownership conversation.",
+      "Summary: \u25b2 Notable findings to remediate in the normal cycle: missing; time_coverage; concentration."
+    ],
+    "config": {
+      "file_sha256": null,
+      "resolved": {
+        "anomaly_mad_k": 3.0,
+        "concentration_share": 0.4,
+        "drill_depth": 2,
+        "drill_threshold": 0.2,
+        "max_cardinality": 30,
+        "metric": "count",
+        "null_notable_share": 0.05,
+        "sustained_run": 4,
+        "time_cast_ratio": 0.9,
+        "window_days": 7
+      },
+      "source": "defaults"
+    },
+    "critical_findings": 0,
+    "findings": [
+      {
+        "evidence": "SELECT COUNT(*) FROM t",
+        "schema": "opskit.finding/v1",
+        "severity": "INFO",
+        "step": "shape",
+        "text": "2,000 rows in scope."
+      },
+      {
+        "evidence": "COUNT(*) - COUNT(\"merchant_state\")",
+        "schema": "opskit.finding/v1",
+        "severity": "NOTABLE",
+        "step": "missing",
+        "text": "Column 'merchant_state' has 250 nulls (12.5%)."
+      },
+      {
+        "evidence": "COUNT(*) - COUNT(\"zip\")",
+        "schema": "opskit.finding/v1",
+        "severity": "NOTABLE",
+        "step": "missing",
+        "text": "Column 'zip' has 261 nulls (13.1%)."
+      },
+      {
+        "evidence": "COUNT(*) - COUNT(\"errors\")",
+        "schema": "opskit.finding/v1",
+        "severity": "NOTABLE",
+        "step": "missing",
+        "text": "Column 'errors' has 1,967 nulls (98.4%)."
+      },
+      {
+        "evidence": "GROUP BY all columns HAVING COUNT(*) > 1",
+        "schema": "opskit.finding/v1",
+        "severity": "INFO",
+        "step": "duplicates",
+        "text": "No exact duplicate rows found."
+      },
+      {
+        "evidence": "min/max of \"date\"",
+        "schema": "opskit.finding/v1",
+        "severity": "NOTABLE",
+        "step": "time_coverage",
+        "text": "Data spans 01 Jan 2010 to 05 Feb 2012 (newest record is 5272 day(s) old)."
+      },
+      {
+        "evidence": "windowed aggregate anchored at newest timestamp",
+        "schema": "opskit.finding/v1",
+        "severity": "INFO",
+        "step": "volume_change",
+        "text": "Record count fell 0% window over window (19 \u2192 19)."
+      },
+      {
+        "evidence": "median + 3 x MAD",
+        "schema": "opskit.finding/v1",
+        "severity": "INFO",
+        "step": "anomaly_days",
+        "text": "No day breached the robust baseline in the last 28 days."
+      },
+      {
+        "evidence": "GROUP BY \"use_chip\" with window share",
+        "schema": "opskit.finding/v1",
+        "severity": "NOTABLE",
+        "step": "concentration",
+        "text": "'Swipe Transaction' accounts for 88% of all records in 'use_chip' \u2014 a concentration worth an ownership conversation."
+      },
+      {
+        "evidence": "GROUP BY \"errors\" with window share",
+        "schema": "opskit.finding/v1",
+        "severity": "NOTABLE",
+        "step": "concentration",
+        "text": "'None' accounts for 98% of all records in 'errors' \u2014 a concentration worth an ownership conversation."
+      },
+      {
+        "evidence": "",
+        "schema": "opskit.finding/v1",
+        "severity": "NOTABLE",
+        "step": "recommendations",
+        "text": "Notable findings to remediate in the normal cycle: missing; time_coverage; concentration."
+      }
+    ],
+    "gate": "pass",
+    "playbook": "weekly-review",
+    "source_name": "transactions_sample.csv",
+    "source_sha256": "f0a39e6710b294a9d442e5cc1c575189a46eb9c41006c47b185b807ac5e77598",
+    "table": null
+  },
+  "sha256": "aa5d2eb5f24f42767e9ac2d54e736d47b35d1a9267cfc45cfd62d179cc7bd2e5",
+  "stage": "ops_review"
+}
