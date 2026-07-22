@@ -1,7 +1,48 @@
 # PROJECT CHARTER — Delivery Engine
 
-**Version:** 0.19
-**Date:** 9 July 2026 (v0.1 founding) · amended 11-19 July 2026 (v0.2 through v0.19)
+**Version:** 1.0
+**Date:** 9 July 2026 (v0.1 founding) · amended 11-22 July 2026 (v0.2 through v1.0)
+### Amendment record (v1.0) — 22 July 2026
+
+The v1.0 production-ready milestone is recorded as complete. Built by
+Mohd Saif Hussain directing Claude as AI collaborator across 23 build
+steps — the AI wrote code, the human governed every decision: setting
+scope, approving each step, declining wrong runs before they became
+evidence. The build record is public, timestamped, and re-performable
+in this charter.
+
+PHASE A (examples): 7 complete, verified example packages with Step 21
+visual reports committed to the repo so visitors see results on first
+click without running anything. Examples: audit_data_quality (planted
+owner_team null 8.3% found, rendered amber); churn_analysis (Kaggle
+Telco Customer Churn, 7,043 rows, ROC-AUC 0.845 recall 0.546, leakage
+sentinel clean, target guard added from PaySim lesson); customer_profiling
+(new 7th example, descriptive audit via universal_audit, 400 rows, normal
+fits on spend/tenure, plan entropy 1.585 bits); paysim_fraud (6.36M rows,
+report.html added); segment_comparison (stub built into complete example,
+300 rows, ASA-compliant stats, organic 30% vs paid 60% vs referral 80%
+conversion, chi2 significant Cramer's V 0.41); transaction_monitoring
+(re-run, Gate-2 fired 12 rules, all 3 documents docx/pptx/xlsx
+regenerated, 89.7% completeness amber from real nulls); universal_audit
+(stub built into complete example, 300 rows, lognormal fit, MAD outliers,
+entropy, 3 explicit refusals-to-overclaim). W3C PROV-aligned historical
+archive in examples/historical/. Scoped .gitignore exception
+(!examples/*/output/**) so curated example outputs ship to visitors.
+PHASE B (structure): examples README updated (badge 6->7, stubs marked
+complete, historical section added). docs/how-the-examples-grew-up.md
+restructured into 4 stages. churn_analysis README updated for Telco
+dataset. PHASE C (Docker): Dockerfile mirroring CI exactly (python:3.12-
+slim + Node 24 + analystkit from GitHub). 367/368 tests pass in a clean
+container (1 skipped: PaySim source not committed by design).
+CLEANUP: 8 local-only dev scripts moved to historical/ via git mv. 18
+STEP*_DECISIONS.md files moved to docs/decisions/ via git mv. Root now
+shows only the shipped surface. DOCS: CHANGELOG.md per Keep a Changelog
+1.1.0. RELEASE_v1.0.md with AI-collaboration framing. docs/
+PROJECT_CHARTER.html: interactive charter with scroll-progress, active
+nav, collapsible timeline, WCAG AA. HONEST CLAIM: v1.0 is portfolio-
+grade, fully-tested, reproducible — not an enterprise-SLA product. Open
+item carried forward: human-declared-final. 367 tests in container.
+
 **Amendment record (v0.19):** Build-sequence step 23 recorded as built:
 THE DETERMINISTIC ACROSS-RUNS TREND REPORT. Step 22 preserves the
 iterative cleaning lifecycle as an ordered chain of sealed runs
