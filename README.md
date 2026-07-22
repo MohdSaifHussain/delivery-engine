@@ -189,6 +189,15 @@ Implementation is AI-directed; every architectural and security decision is
 human-made and source-verified.
 
 
+## Project Charter
+
+The constitutional document governing all sessions — architecture principles, build timeline, human gates, and the v1.0 release record.
+
+- 📋 [Interactive Charter](docs/PROJECT_CHARTER.html) — scroll-progress, collapsible build timeline, WCAG AA
+- 📄 [Markdown source](PROJECT_CHARTER.md) — for the "upload two files to resume" workflow
+
+---
+
 ## Run with Docker
 
 ```bash
