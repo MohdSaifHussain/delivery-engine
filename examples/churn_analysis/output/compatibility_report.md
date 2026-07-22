@@ -1,7 +1,7 @@
 # Playbook Compatibility Report
 
-**Source:** `/home/claude/repo/delivery-engine/examples/churn_analysis/customers.csv`
-**Rows:** 400  |  **Columns:** 5
+**Source:** `C:\Users\mohds\delivery-engine\examples\churn_analysis\WA_Fn-UseC_-Telco-Customer-Churn.csv`
+**Rows:** 7,043  |  **Columns:** 21
 
 Deterministic pre-flight: for each playbook in the library, the exact requirement checks the planner will enforce, and their verdicts on this dataset. Nothing here is advisory prose - these are the same functions the planner runs, so this report cannot disagree with it.
 
@@ -11,9 +11,9 @@ Deterministic pre-flight: for each playbook in the library, the exact requiremen
 
 | Check | Result | Detail |
 |---|---|---|
-| min_rows >= 100 | PASS | source has 400 rows |
-| required kind 'binary_target' | PASS | found in: churned |
-| required kind 'id_column' | PASS | found in: customer_id |
+| min_rows >= 100 | PASS | source has 7,043 rows |
+| required kind 'binary_target' | PASS | found in: gender, SeniorCitizen, Partner, Dependents, PhoneService, PaperlessBilling, Churn |
+| required kind 'id_column' | PASS | found in: customerID |
 | source type 'csv' accepted | PASS | playbook accepts: csv, excel, sqlite, postgres, mysql |
 
 Deliverable formats: markdown
@@ -24,8 +24,20 @@ Deliverable formats: markdown
 
 | Check | Result | Detail |
 |---|---|---|
-| min_rows >= 1 | PASS | source has 400 rows |
+| min_rows >= 1 | PASS | source has 7,043 rows |
 | source type 'csv' accepted | PASS | playbook accepts: csv, excel, sqlite, postgres, mysql |
+
+Deliverable formats: markdown
+
+## healthcare_claims_audit v1.0.0 — QUALIFIES
+
+*Healthcare claims audit: age, BMI, ICU, claim amount profiling with financial and clinical risk checks*
+
+| Check | Result | Detail |
+|---|---|---|
+| min_rows >= 100 | PASS | source has 7,043 rows |
+| required kind 'id_column' | PASS | found in: customerID |
+| source type 'csv' accepted | PASS | playbook accepts: csv |
 
 Deliverable formats: markdown
 
@@ -35,22 +47,59 @@ Deliverable formats: markdown
 
 | Check | Result | Detail |
 |---|---|---|
-| min_rows >= 1 | PASS | source has 400 rows |
+| min_rows >= 1 | PASS | source has 7,043 rows |
 | required kind 'timestamp_column' | FAIL | no column qualifies |
 | source type 'csv' accepted | PASS | playbook accepts: csv, excel, sqlite |
 
 Deliverable formats: markdown
 
-## transaction_monitoring_review v1.0.0 — DOES NOT QUALIFY
+## segment_comparison v1.0.0 — QUALIFIES
+
+*Segment comparison with statistical significance inference: rates, group differences, effect sizes, FDR-corrected evidence*
+
+| Check | Result | Detail |
+|---|---|---|
+| min_rows >= 100 | PASS | source has 7,043 rows |
+| required kind 'binary_target' | PASS | found in: gender, SeniorCitizen, Partner, Dependents, PhoneService, PaperlessBilling, Churn |
+| required kind 'id_column' | PASS | found in: customerID |
+| source type 'csv' accepted | PASS | playbook accepts: csv, parquet, excel, sqlite |
+
+Deliverable formats: markdown
+
+## supplychain_audit v1.0.0 — QUALIFIES
+
+*Supply chain order audit: DQ-gated profiling, dedupe, narrative, packaged as evidence*
+
+| Check | Result | Detail |
+|---|---|---|
+| min_rows >= 100 | PASS | source has 7,043 rows |
+| required kind 'id_column' | PASS | found in: customerID |
+| source type 'csv' accepted | PASS | playbook accepts: csv, excel, sqlite, postgres, mysql |
+
+Deliverable formats: markdown
+
+## transaction_monitoring_review v1.1.0 — DOES NOT QUALIFY
 
 *Transaction monitoring feed review: completeness gated, engine-drafted rules approved at Human Gate 2, volume trends and drivers from OpsKit, dual narratives packaged as re-performable evidence*
 
 | Check | Result | Detail |
 |---|---|---|
-| min_rows >= 100 | PASS | source has 400 rows |
-| required kind 'id_column' | PASS | found in: customer_id |
+| min_rows >= 100 | PASS | source has 7,043 rows |
+| required kind 'id_column' | PASS | found in: customerID |
 | required kind 'timestamp_column' | FAIL | no column qualifies |
 | source type 'csv' accepted | PASS | playbook accepts: csv, excel, sqlite |
+
+Deliverable formats: markdown, docx, pptx, xlsx
+
+## universal_audit v1.0.0 — QUALIFIES
+
+*Universal descriptive audit of any dataset: distribution shape, outliers, entropy, temporal structure, quantitative profile for every approved column*
+
+| Check | Result | Detail |
+|---|---|---|
+| min_rows >= 100 | PASS | source has 7,043 rows |
+| required kind 'id_column' | PASS | found in: customerID |
+| source type 'csv' accepted | PASS | playbook accepts: csv, parquet, excel, sqlite |
 
 Deliverable formats: markdown
 
@@ -58,14 +107,30 @@ Deliverable formats: markdown
 
 | Column | Kind(s) |
 |---|---|
-| churned | binary_target |
-| customer_id | id_column |
-| monthly_spend | numeric_column |
-| plan_type | categorical_column |
-| tenure_months | numeric_column |
+| Churn | binary_target |
+| Contract | categorical_column |
+| Dependents | binary_target |
+| DeviceProtection | categorical_column |
+| InternetService | categorical_column |
+| MonthlyCharges | numeric_column |
+| MultipleLines | categorical_column |
+| OnlineBackup | categorical_column |
+| OnlineSecurity | categorical_column |
+| PaperlessBilling | binary_target |
+| Partner | binary_target |
+| PaymentMethod | categorical_column |
+| PhoneService | binary_target |
+| SeniorCitizen | binary_target, numeric_column |
+| StreamingMovies | categorical_column |
+| StreamingTV | categorical_column |
+| TechSupport | categorical_column |
+| TotalCharges | (none) |
+| customerID | id_column |
+| gender | binary_target, categorical_column |
+| tenure | numeric_column |
 
 ## Verdict
 
-2 of 4 playbook(s) qualify on this dataset: churn_analysis, data_quality_review.
+6 of 8 playbook(s) qualify on this dataset: churn_analysis, data_quality_review, healthcare_claims_audit, segment_comparison, supplychain_audit, universal_audit.
 
 State a goal and run the planner to select among the qualifying playbooks; a failed check above cannot be overridden by goal wording or by the LLM.

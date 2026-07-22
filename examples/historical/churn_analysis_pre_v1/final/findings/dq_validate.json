@@ -2,7 +2,7 @@
   "findings": {
     "results": [
       {
-        "column": "customerID",
+        "column": "customer_id",
         "detail": "value must be unique",
         "failures": 0,
         "rule": "unique",
@@ -13,6 +13,6 @@
     "rules_evaluated": 1,
     "total_exceptions": 0
   },
-  "sha256": "b422f2ebd2aad9b20e122af7c3e7efeffc25e94cdbbd6105cf7d6386776396a3",
+  "sha256": "ade7b1f24789740aa19355c00c832f5b7cc44235f9800ea0cc70790905c2fe83",
   "stage": "dq_validate"
 }

@@ -1,37 +1,57 @@
 {
   "findings": {
     "categorical_features": [
-      "plan_type"
+      "Contract",
+      "DeviceProtection",
+      "InternetService",
+      "MultipleLines",
+      "OnlineBackup",
+      "OnlineSecurity",
+      "PaymentMethod",
+      "StreamingMovies",
+      "StreamingTV",
+      "TechSupport",
+      "gender"
     ],
-    "class_balance_positive": 0.185,
+    "class_balance_positive": 0.26537,
+    "leakage_check": "per-feature association with the target (Cram\u00e9r's V for categoricals, absolute point-biserial for numerics); associations at or above the fixed threshold are flagged possible_target_leakage - a warning for human judgment, never a gate. Motivated by a production run where a post-hoc label column produced a perfect score.",
+    "leakage_threshold": 0.95,
+    "leakage_warnings": [],
     "library": "scikit-learn",
     "metrics": {
-      "accuracy": 1.0,
-      "f1": 1.0,
-      "precision": 1.0,
-      "recall": 1.0,
-      "roc_auc": 1.0
+      "accuracy": 0.805224,
+      "f1": 0.59789,
+      "precision": 0.660622,
+      "recall": 0.546039,
+      "roc_auc": 0.845464
     },
     "model": "LogisticRegression(max_iter=1000)",
     "n_rows_dropped_nulls": 0,
-    "n_test": 100,
-    "n_train": 300,
-    "negative_class": "no",
+    "n_test": 1761,
+    "n_train": 5282,
+    "negative_class": "False",
     "note": "Deterministic baseline: fixed integer seeds on splitter and estimator per scikit-learn's controlling-randomness guidance; metrics rounded to 6 decimals as a declared contract. This is a reference point for human modeling work, not a delivered model.",
     "numeric_features": [
-      "monthly_spend",
-      "tenure_months"
+      "MonthlyCharges",
+      "SeniorCitizen",
+      "tenure"
     ],
-    "positive_class": "yes",
+    "positive_class": "True",
     "random_seed": 42,
     "split": "stratified",
-    "target": "churned",
+    "target": "Churn",
     "target_candidates": [
-      "churned"
+      "Churn",
+      "Dependents",
+      "PaperlessBilling",
+      "Partner",
+      "PhoneService",
+      "SeniorCitizen",
+      "gender"
     ],
     "target_selection": "first binary_target in plan column order (plan approved at Human Gate 1); candidates listed under target_candidates",
     "test_size": 0.25
   },
-  "sha256": "2e7a710a26705b3b75b04bc5ab96636830a4c7e08ca127db88e824598dd6b67b",
+  "sha256": "32a8b0ba55be097273b3a915bd394fb1b956f0090789f081232b81a8859b6529",
   "stage": "baseline"
 }

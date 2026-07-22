@@ -1,7 +1,7 @@
 # Delivery Package
 
 **Goal:** churn analysis for the retention team
-**Source:** `C:\Users\mohds\delivery-engine\examples\churn_analysis\WA_Fn-UseC_-Telco-Customer-Churn.csv`
+**Source:** `/home/claude/repo/delivery-engine/examples/churn_analysis/customers.csv`
 
 Produced by the Delivery Engine: agent proposes, deterministic tools dispose, human governs, every claim traceable.
 
