@@ -1,0 +1,124 @@
+{
+  "findings": {
+    "alpha": 0.05,
+    "alpha_provenance": "pre-registered in the playbook [stats] table; approved with the plan at Human Gate 1, before any p-value was computed",
+    "bh_family_size": 2,
+    "bh_note": "significance flags use Benjamini-Hochberg-adjusted p-values across the full family of tests this stage ran; raw p-values are reported for re-performance, never for the flag. A reported 0.0 means the value is below the 6-decimal rounding contract's resolution (p < 1e-06), not literally zero.",
+    "independence": {
+      "assumption": "every hypothesis test above treats rows as independent observations",
+      "grouping_candidates": [],
+      "scan_rule": "profiled columns outside the analysis with >= 20 distinct values and >= 5.0 average rows per value",
+      "warning": null
+    },
+    "methods": {
+      "contingency_2x2": "Fisher exact test (scipy.stats.fisher_exact)",
+      "contingency_rxc": "Pearson chi-square, correction=False (scipy.stats.chi2_contingency); validity per Cochran's rule (NIST/SEMATECH e-Handbook)",
+      "effect_sizes": "Cramer's V (contingency), rank-biserial r (Mann-Whitney; Kerby 2014) - always reported alongside p (ASA Statement on p-values, 2016, principle 5)",
+      "multiple_comparisons": "Benjamini-Hochberg FDR across all hypothesis tests in this stage (Benjamini & Hochberg 1995; statsmodels multipletests fdr_bh)",
+      "numeric_two_group": "Mann-Whitney U, two-sided, method='auto' (scipy.stats.mannwhitneyu); parametric t-test refused in v1 - normality is an assumption this engine cannot certify",
+      "proportion_interval": "Wilson score (Brown, Cai & DasGupta 2001; NIST/SEMATECH e-Handbook 7.2.4.1; statsmodels proportion_confint)"
+    },
+    "positive_class": "True",
+    "positive_class_rule": "lexicographically last of the two observed levels - a disclosed deterministic rule, not a guess",
+    "proportions": [
+      {
+        "ci_high": 0.621549,
+        "ci_low": 0.510099,
+        "confidence": 0.95,
+        "count_positive": 170,
+        "n": 300,
+        "rate": 0.566667,
+        "scope": "overall"
+      },
+      {
+        "ci_high": 0.395849,
+        "ci_low": 0.218949,
+        "confidence": 0.95,
+        "count_positive": 30,
+        "n": 100,
+        "rate": 0.3,
+        "scope": "channel=organic"
+      },
+      {
+        "ci_high": 0.690599,
+        "ci_low": 0.502003,
+        "confidence": 0.95,
+        "count_positive": 60,
+        "n": 100,
+        "rate": 0.6,
+        "scope": "channel=paid"
+      },
+      {
+        "ci_high": 0.866633,
+        "ci_low": 0.711171,
+        "confidence": 0.95,
+        "count_positive": 80,
+        "n": 100,
+        "rate": 0.8,
+        "scope": "channel=referral"
+      }
+    ],
+    "proportions_note": "intervals are INDIVIDUAL (per-estimate) Wilson intervals, not simultaneous confidence bands - declared, not hidden",
+    "skipped": [],
+    "stat_test": "full_inference",
+    "target": "converted",
+    "target_candidates": [
+      "converted"
+    ],
+    "target_levels": [
+      "False",
+      "True"
+    ],
+    "target_selection": "first binary_target in plan column order (plan approved at Human Gate 1); candidates listed under target_candidates",
+    "tests": [
+      {
+        "chi2": 51.58371,
+        "cochran_rule_met": true,
+        "columns": [
+          "converted",
+          "channel"
+        ],
+        "dof": 2,
+        "effect_size_cramers_v": 0.414663,
+        "kind": "independence",
+        "method": "pearson_chi2_no_correction",
+        "n_dropped_nan": 0,
+        "n_used": 300,
+        "p_adjusted_bh": 0.0,
+        "p_value": 0.0,
+        "significant_at_alpha": true,
+        "table_shape": [
+          3,
+          2
+        ]
+      },
+      {
+        "columns": [
+          "converted",
+          "days_active"
+        ],
+        "effect_size_rank_biserial": 1.0,
+        "groups": {
+          "False": 130,
+          "True": 170
+        },
+        "kind": "mann_whitney",
+        "mde": {
+          "note": "smallest effect this test could reliably detect at the pre-registered alpha and the declared power; a non-significant result rules out effects above this size, not the existence of an effect",
+          "power": 0.8,
+          "rank_biserial": 0.188769
+        },
+        "median_False": 16.0,
+        "median_True": 53.0,
+        "method": "mann_whitney_u_two_sided_auto",
+        "n_dropped_nan": 0,
+        "p_adjusted_bh": 0.0,
+        "p_value": 0.0,
+        "significant_at_alpha": true,
+        "u_statistic": 0.0
+      }
+    ]
+  },
+  "sha256": "e68673493e90ff0076ea815b2fe7033bd33d372b8bac112819a749826190c28e",
+  "stage": "stats"
+}

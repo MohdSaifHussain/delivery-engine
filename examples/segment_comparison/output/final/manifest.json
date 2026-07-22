@@ -1,0 +1,25 @@
+{
+  "files": {
+    "README.md": "cd561cafd8a65b90e8b1733072ba170cbc8094a22c6e0942a58823b323b72108",
+    "audit_log.jsonl": "d7e417405c783e97f6119e5dba491e87f87a541ecc9a66c458c5d95f090b99ba",
+    "execution_preview.md": "0d6dadd15ee1dbf8cb44c58bf1f3976ec18208d323ac460cfbd903ad4035c65c",
+    "findings\\dq_profile.json": "57b2648201050eadebdef59b5d5e920c6274e70073be97276f1f973737ef8d8c",
+    "findings\\dq_validate.json": "e354bdd0675aa890a70f06195fd4cf171b4f6d5be7efaa24930322aed59ca5f9",
+    "findings\\stats.json": "3aaf277ad3bbd37434619a1b0c2088d03ebd73df09e773480a34713cfa99a6e8",
+    "handoff_manifest.json": "03332f1c8a42b1a37b66adb746a390d40d59de5b2c7b6d6e9bfe71dfe0f664b4",
+    "narrative_report.md": "2fa3343ea2971e90521e21cf81d19e3652170c419148429edc34bf281faab463",
+    "plan.json": "c493ee4b3a14e2602ee9461874db4a3fdd05d8bce534d1dc36ea166127d1c1d3"
+  },
+  "findings": {
+    "dq_profile": "b8a253a436c31641f7b4dc4163fbcf17c72028fdc024dd3dd725e5d5e0639772",
+    "dq_validate": "ade7b1f24789740aa19355c00c832f5b7cc44235f9800ea0cc70790905c2fe83",
+    "stats": "e68673493e90ff0076ea815b2fe7033bd33d372b8bac112819a749826190c28e"
+  },
+  "note": "Verify each file's SHA-256 against this manifest. Matching hashes = unaltered evidence. The audit log records when and why each entry came to exist.",
+  "plan_sha256": "2419c7ef749f422bd9aaed9ee57496c7d74dd97b5dcb82452a81d130433938b1",
+  "source_fingerprint": {
+    "bytes": 6903,
+    "path": "C:\\Users\\mohds\\delivery-engine\\examples\\segment_comparison\\signup_conversion.csv",
+    "sha256": "3bf10114753bd5c78a4c4a4d06d1f1286f6e086062de0525f2ae3e5dcdeccc69"
+  }
+}
