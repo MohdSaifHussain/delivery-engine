@@ -187,3 +187,20 @@ documentation (the deterministic query layer). Python 3.12+, `mypy --strict`,
 Designed, specified, and governed by **Mohd Saif Hussain**.
 Implementation is AI-directed; every architectural and security decision is
 human-made and source-verified.
+
+
+## Run with Docker
+
+```bash
+# Build the image (first build: ~2-5 min)
+docker build -t delivery-engine .
+
+# Run the full test suite inside the container
+docker run --rm delivery-engine
+
+# Run a specific example inside the container
+docker run --rm delivery-engine python examples/audit_data_quality/run_example.py
+```
+
+The container mirrors CI exactly: Python 3.12 + Node 24 + all dependencies.
+367 tests pass in a clean environment with no local setup required.
