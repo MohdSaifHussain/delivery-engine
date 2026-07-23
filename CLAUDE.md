@@ -187,3 +187,13 @@ Each must pass the full gate before merging:
 The context package is `PROJECT_CHARTER.md` + this file.
 State which v1.1 item is active. Every decision that amends the
 charter gets written back with a version bump.
+ 
+## End of every session 
+ 
+Always finish by giving the user the exact Windows CMD commands to sync 
+their local machine. Run these in your delivery-engine folder in CMD: 
+git pull 
+If conflict on generated files (report.html etc), run instead: 
+git stash 
+git pull 
+git stash drop 
