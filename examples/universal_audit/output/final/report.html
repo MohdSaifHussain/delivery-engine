@@ -92,13 +92,21 @@ found.</p>
 <table><thead><tr><th>Column</th><th>Type</th><th>Rows</th><th>Nulls</th><th>Distinct</th><th>Validity</th></tr></thead><tbody><tr><td>record_id</td><td>VARCHAR</td><td class='num'>300</td><td class='num'>0</td><td class='num'>300</td><td class='num'>100.0%</td></tr><tr><td>amount</td><td>DOUBLE</td><td class='num'>300</td><td class='num'>0</td><td class='num'>47</td><td class='num'>100.0%</td></tr><tr><td>region</td><td>VARCHAR</td><td class='num'>300</td><td class='num'>0</td><td class='num'>5</td><td class='num'>100.0%</td></tr><tr><td>event_date</td><td>DATE</td><td class='num'>300</td><td class='num'>0</td><td class='num'>75</td><td class='num'>100.0%</td></tr></tbody></table>
 </section>
 
+<section>
+<h2>Descriptive statistics</h2>
+<p class="note">Distribution summary from the math-stage findings.
+Every value traces to math.json in the findings store.</p>
+<p class="note">Numeric columns — bar shows mean scaled to the column with the largest mean; dark band marks the 95% confidence interval from the findings store. Dashed rows were omitted from analysis.</p><svg viewBox="0 0 640 42" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Numeric column means with 95% confidence interval" class="chart"><title>Numeric column means with 95% confidence interval</title><text x="0" y="22" class="lbl">amount</text><rect x="150" y="8" width="420" height="18" fill="#e8edf3" rx="3"/><rect x="150" y="8" width="420" height="18" fill="#2b5c8a" rx="3"/><rect x="542" y="12" width="28" height="10" fill="#1a2b4a" opacity="0.30" rx="1"/><text x="580" y="22" class="val">153.1 (n=300)</text></svg><p class="note">Categorical columns — normalized Shannon entropy (0 = one category dominates, 1 = fully uniform). Dashed rows were omitted from analysis.</p><svg viewBox="0 0 640 42" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Categorical column Shannon entropy, normalized" class="chart"><title>Categorical column Shannon entropy, normalized</title><text x="0" y="22" class="lbl">region</text><rect x="150" y="8" width="420" height="18" fill="#e8edf3" rx="3"/><rect x="150" y="8" width="420" height="18" fill="#2b5c8a" rx="3"/><text x="580" y="22" class="val">2.32 bits / 5 cat.</text></svg>
+</section>
+
 <footer>
-<p>Report generated: 21 July 2026</p>
+<p>Report generated: 23 July 2026</p>
 <p>Provenance and verification. Recompute the SHA-256 of each findings
 file and compare against these digests; every number in this report
 traces to them.</p>
 <p>dq_profile: <code>1ed426a2984404dc90b5d8434c44979fd5b7b0993faddc287aa8a7eb71b1e4a3</code></p>
 <p>dq_validate: <code>6fcc04565dab76168bec4cc2f695fdfa43cd4e8fe34c9165d13b060a4cdf05c0</code></p>
+<p>math: <code>cfc93b23736a4af03b6f0c259670146ce5feca3935ac0d30d7400d682c25fb15</code></p>
 <p class="sig">Rendered deterministically by the Delivery Engine from
 the hashed findings store. No figure was computed, estimated, or
 authored by an AI - the report draws the evidence, the reader supplies
