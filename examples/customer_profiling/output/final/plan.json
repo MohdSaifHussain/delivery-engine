@@ -1,6 +1,6 @@
 {
   "approved": true,
-  "approved_at_ist": "2026-07-21T22:37:31+05:30",
+  "approved_at_ist": "2026-07-24T03:33:25+05:30",
   "approved_by": "Example Analyst",
   "candidates_considered": [
     "churn_analysis",
@@ -32,7 +32,7 @@
       "numeric_column"
     ]
   ],
-  "created_at_ist": "2026-07-21T22:37:31+05:30",
+  "created_at_ist": "2026-07-24T03:33:25+05:30",
   "decision_rationale": "highest goal-keyword overlap (score 5) among 6 qualified playbooks",
   "decision_source": "deterministic",
   "goal": "descriptive profile of the customer base: distribution shape of spend and tenure, plan mix, outliers",

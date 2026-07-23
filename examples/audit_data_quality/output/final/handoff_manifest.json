@@ -27,14 +27,14 @@
         {
           "check": "Verify the loaded row count matches 793 (source: C:\\Users\\mohds\\delivery-engine\\examples\\audit_data_quality\\audit_issues.csv).",
           "evidence": {
-            "sha256": "0ce27a87632a7e77bd5a649354e28c3bed79225a37638d8893b3ecee76849765",
+            "sha256": "9cea5738e8ab8a722555b2392fe65e2e56b43fb257a95f5e20c5bca597b20a95",
             "stage": "dq_profile"
           }
         },
         {
           "check": "Confirm uniqueness/null status of id column(s) ['issue_id'] before loading to staging.",
           "evidence": {
-            "sha256": "0ce27a87632a7e77bd5a649354e28c3bed79225a37638d8893b3ecee76849765",
+            "sha256": "9cea5738e8ab8a722555b2392fe65e2e56b43fb257a95f5e20c5bca597b20a95",
             "stage": "dq_profile"
           }
         }

@@ -28,7 +28,7 @@ Every finding below was computed deterministically by OpsKit and is quoted verba
 -   · [INFO] No exact duplicate rows found.
 - Step 4/7 — What period does this cover?
 -   why: A perfect analysis of stale data is a perfectly wrong answer.
--   ▲ [NOTABLE] Data spans 01 Jan 2010 to 05 Feb 2012 (newest record is 5280 day(s) old).
+-   ▲ [NOTABLE] Data spans 01 Jan 2010 to 05 Feb 2012 (newest record is 5282 day(s) old).
 - Step 5/7 — Did volume move — and what drove it?
 -   why: Never report a delta without its driver; the drill-down conditions on each winner and recurses.
 -   · [INFO] Record count fell 0% window over window (19 → 19).
@@ -50,7 +50,7 @@ Every finding below was computed deterministically by OpsKit and is quoted verba
 - **missing**: Column 'merchant_state' has 250 nulls (12.5%).
 - **missing**: Column 'zip' has 261 nulls (13.1%).
 - **missing**: Column 'errors' has 1,967 nulls (98.4%).
-- **time_coverage**: Data spans 01 Jan 2010 to 05 Feb 2012 (newest record is 5280 day(s) old).
+- **time_coverage**: Data spans 01 Jan 2010 to 05 Feb 2012 (newest record is 5282 day(s) old).
 - **concentration**: 'Swipe Transaction' accounts for 88% of all records in 'use_chip' — a concentration worth an ownership conversation.
 - **concentration**: 'None' accounts for 98% of all records in 'errors' — a concentration worth an ownership conversation.
 - **recommendations**: Notable findings to remediate in the normal cycle: missing; time_coverage; concentration.
@@ -64,7 +64,7 @@ Every finding below was computed deterministically by OpsKit and is quoted verba
 
 ## Evidence trail
 
-- ops_review findings: `5ba482894b474b5dc7870877805b8002030c1d968fa4f4e9dac10a05b669da49`
+- ops_review findings: `ece72a6b3b19018f284fcc37bc7c00c2c3a22285e294645a1937c27a32703f34`
 - source sha256: `f0a39e6710b294a9d442e5cc1c575189a46eb9c41006c47b185b807ac5e77598`
 
 Re-run the same OpsKit playbook on the same source: matching hashes prove the findings; a mismatch proves the data changed.
