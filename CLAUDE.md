@@ -104,7 +104,7 @@ src/delivery_engine/
   planner.py      — 80% deterministic project-type classification
   executor.py     — runs stages, enforces gates, manages findings store
   store.py        — canonical JSON + SHA-256 hashing
-  baseline.py     — deterministic sklearn model (fixed seeds)
+  model.py     — deterministic sklearn model (fixed seeds)
   stats.py        — Wilson CIs, Fisher, Mann-Whitney, BH FDR
   math_stage.py   — distribution fitting, MAD outliers, entropy
   report.py       — deterministic HTML visual report (pure function)
