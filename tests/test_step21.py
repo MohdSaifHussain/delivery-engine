@@ -639,6 +639,15 @@ class TestHuntRegressions:
         assert "Data review" in html
         assert "</html>" in html
 
+    def test_h5_timeliness_zero_shows_not_scored(self) -> None:
+        """Timeliness 0.0 is the profiler's sentinel for 'no date column',
+        not a genuine measurement — must render as 'not scored', never 0%."""
+        prof = _clean_profile()
+        prof["dama_scores"]["timeliness"] = 0.0
+        html = build_report_html(prof, _clean_validate(), "s", "h", "v")
+        assert 'class="val muted">not scored' in html
+        assert ">0.0%<" not in html
+
     def test_h4_out_of_range_scores_clamp_to_valid_bars(self) -> None:
         """Malformed scores (>1 or <0) never produce negative or
         overflowing bar widths - the display fraction is clamped."""

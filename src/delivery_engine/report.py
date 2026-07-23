@@ -112,7 +112,9 @@ def _dama_chart(dama: dict[str, float | None]) -> str:
     y = 8
     for dim in sorted(dama):
         val = dama[dim]
-        if val is None:
+        # 0.0 timeliness is the profiler's sentinel for "no date column" —
+        # treat it as not scored rather than drawing a misleading 0% bar.
+        if val is None or (dim == "timeliness" and val == 0.0):
             rows += (
                 f'<text x="0" y="{y + _BAR_H - 4}" class="lbl">'
                 f"{_esc(dim)}</text>"
