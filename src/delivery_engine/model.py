@@ -28,6 +28,7 @@ BLAS builds so same-environment re-performance reproduces the findings
 hash exactly. The rounding is part of the declared contract, not a
 hidden truncation.
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -39,7 +40,13 @@ RANDOM_SEED: Final[int] = 42
 TEST_SIZE: Final[float] = 0.25
 METRIC_DECIMALS: Final[int] = 6
 MIN_ROWS_PER_CLASS: Final[int] = 10
-LEAKAGE_THRESHOLD: Final[float] = 0.95   # step 18: fixed, disclosed
+LEAKAGE_THRESHOLD: Final[float] = 0.95  # step 18: fixed, disclosed
+
+# G3 fixed parameters — Cohen (1988) at power=0.8, alpha=0.05 two-tailed
+G3_POWER: Final[float] = 0.8
+G3_ALPHA: Final[float] = 0.05
+G3_Z_ALPHA_HALF: Final[float] = 1.959963984540054  # norm.ppf(0.975)
+G3_Z_BETA: Final[float] = 0.8416212335729143  # norm.ppf(0.8)
 
 
 class ModelError(Exception):
@@ -172,22 +179,26 @@ def train_baseline(
         k = min(obs.shape) - 1
         v = float((chi2 / (n_tot * k)) ** 0.5) if k > 0 else 0.0
         if v >= LEAKAGE_THRESHOLD:
-            leakage_warnings.append({
-                "feature": col,
-                "measure": "cramers_v",
-                "association": round(v, 6),
-            })
+            leakage_warnings.append(
+                {
+                    "feature": col,
+                    "measure": "cramers_v",
+                    "association": round(v, 6),
+                }
+            )
     for col in numeric_features:
         x = df[col].astype(float).to_numpy()
         if np.std(x) == 0.0 or np.std(y_bin) == 0.0:
             continue
         r = abs(float(np.corrcoef(x, y_bin)[0, 1]))
         if r >= LEAKAGE_THRESHOLD:
-            leakage_warnings.append({
-                "feature": col,
-                "measure": "abs_point_biserial",
-                "association": round(r, 6),
-            })
+            leakage_warnings.append(
+                {
+                    "feature": col,
+                    "measure": "abs_point_biserial",
+                    "association": round(r, 6),
+                }
+            )
     counts = y.value_counts()
     if int(counts.min()) < MIN_ROWS_PER_CLASS:
         raise ModelError(
@@ -198,20 +209,25 @@ def train_baseline(
 
     x = df[features]
     x_train, x_test, y_train, y_test = train_test_split(
-        x, y, test_size=TEST_SIZE, random_state=RANDOM_SEED, stratify=y,
+        x,
+        y,
+        test_size=TEST_SIZE,
+        random_state=RANDOM_SEED,
+        stratify=y,
     )
 
     pre = ColumnTransformer(
         transformers=[
-            ("cat", OneHotEncoder(handle_unknown="ignore"),
-             categorical_features),
+            ("cat", OneHotEncoder(handle_unknown="ignore"), categorical_features),
         ],
-        remainder="passthrough",   # numerics pass through untouched
+        remainder="passthrough",  # numerics pass through untouched
     )
-    clf = Pipeline([
-        ("prep", pre),
-        ("model", LogisticRegression(max_iter=1000, random_state=RANDOM_SEED)),
-    ])
+    clf = Pipeline(
+        [
+            ("prep", pre),
+            ("model", LogisticRegression(max_iter=1000, random_state=RANDOM_SEED)),
+        ]
+    )
     clf.fit(x_train, y_train)
     y_pred = clf.predict(x_test)
     y_prob = clf.predict_proba(x_test)[:, 1]
@@ -230,9 +246,7 @@ def train_baseline(
         "negative_class": classes[0],
         "numeric_features": sorted(numeric_features),
         "leakage_threshold": LEAKAGE_THRESHOLD,
-        "leakage_warnings": sorted(
-            leakage_warnings, key=lambda w: str(w["feature"])
-        ),
+        "leakage_warnings": sorted(leakage_warnings, key=lambda w: str(w["feature"])),
         "leakage_check": (
             "per-feature association with the target (Cramér's V for "
             "categoricals, absolute point-biserial for numerics); "
@@ -260,4 +274,53 @@ def train_baseline(
             "a reference point for human modeling work, not a delivered "
             "model."
         ),
+        # ── G2: pseudoreplication disclosure (Forstmeier et al. 2017) ────────
+        # The stratified split assumes row independence. If rows share a
+        # grouping structure (repeated measures, clustered sampling,
+        # autocorrelated time series) the effective sample size is smaller
+        # than n_test and reported metrics overstate generalisation. The
+        # engine cannot detect grouping from a flat source; human judgment
+        # is required. Disclosure only — never a gate.
+        "g2_pseudoreplication": {
+            "warning": "pseudoreplication_risk",
+            "reference": ("Forstmeier, Wagenmakers & Parker (2017) Proc. R. Soc. B 284:20152463"),
+            "assumed_independent_units": len(x_test),
+            "detail": (
+                "The stratified split treats each row as an independent "
+                "statistical unit. If rows share grouping structure "
+                "(repeated measures, clustered sampling, time-series "
+                "autocorrelation) the effective sample size is smaller "
+                "than n_test and reported metrics will overstate "
+                "generalisation. The engine cannot detect grouping from "
+                "a flat source; the human reviewer must confirm "
+                "independence."
+            ),
+            "gate": False,
+        },
+        # ── G3: minimum detectable effect (Cohen 1988, power=0.8, alpha=0.05) ──
+        # One-sample formula: h = (z_alpha/2 + z_beta) / sqrt(n_test). Effect
+        # sizes smaller than mde_cohen_h cannot be reliably distinguished from
+        # chance at the given test-set size. Disclosure only — never a gate.
+        "g3_minimum_detectable_effect": {
+            "disclosure": "minimum_detectable_effect",
+            "reference": (
+                "Cohen, J. (1988) Statistical Power Analysis for the Behavioral Sciences (2nd ed.)."
+            ),
+            "power": G3_POWER,
+            "alpha": G3_ALPHA,
+            "formula": "h = (z_alpha_half + z_beta) / sqrt(n_test)",
+            "z_alpha_half": G3_Z_ALPHA_HALF,
+            "z_beta": G3_Z_BETA,
+            "n_test": len(x_test),
+            "mde_cohen_h": _r((G3_Z_ALPHA_HALF + G3_Z_BETA) / (len(x_test) ** 0.5)),
+            "detail": (
+                "With n_test independent observations the minimum "
+                "Cohen's h detectable at power=0.8 and alpha=0.05 "
+                "(two-tailed) is mde_cohen_h. Effect sizes smaller "
+                "than this threshold cannot be reliably distinguished "
+                "from chance at the given sample size. "
+                "Disclosure only — never a gate."
+            ),
+            "gate": False,
+        },
     }
