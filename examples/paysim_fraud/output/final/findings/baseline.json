@@ -1,0 +1,64 @@
+{
+  "findings": {
+    "categorical_features": [
+      "type"
+    ],
+    "class_balance_positive": 0.001291,
+    "g2_pseudoreplication": {
+      "assumed_independent_units": 1590655,
+      "detail": "The stratified split treats each row as an independent statistical unit. If rows share grouping structure (repeated measures, clustered sampling, time-series autocorrelation) the effective sample size is smaller than n_test and reported metrics will overstate generalisation. The engine cannot detect grouping from a flat source; the human reviewer must confirm independence.",
+      "gate": false,
+      "reference": "Forstmeier, Wagenmakers & Parker (2017) Proc. R. Soc. B 284:20152463",
+      "warning": "pseudoreplication_risk"
+    },
+    "g3_minimum_detectable_effect": {
+      "alpha": 0.05,
+      "detail": "With n_test independent observations the minimum Cohen's h detectable at power=0.8 and alpha=0.05 (two-tailed) is mde_cohen_h. Effect sizes smaller than this threshold cannot be reliably distinguished from chance at the given sample size. Disclosure only \u2014 never a gate.",
+      "disclosure": "minimum_detectable_effect",
+      "formula": "h = (z_alpha_half + z_beta) / sqrt(n_test)",
+      "gate": false,
+      "mde_cohen_h": 0.002221,
+      "n_test": 1590655,
+      "power": 0.8,
+      "reference": "Cohen, J. (1988) Statistical Power Analysis for the Behavioral Sciences (2nd ed.).",
+      "z_alpha_half": 1.959963984540054,
+      "z_beta": 0.8416212335729143
+    },
+    "leakage_check": "per-feature association with the target (Cram\u00e9r's V for categoricals, absolute point-biserial for numerics); associations at or above the fixed threshold are flagged possible_target_leakage - a warning for human judgment, never a gate. Motivated by a production run where a post-hoc label column produced a perfect score.",
+    "leakage_threshold": 0.95,
+    "leakage_warnings": [],
+    "library": "scikit-learn",
+    "metrics": {
+      "accuracy": 0.999266,
+      "f1": 0.62612,
+      "precision": 0.913165,
+      "recall": 0.476376,
+      "roc_auc": 0.989545
+    },
+    "model": "LogisticRegression(max_iter=1000)",
+    "n_rows_dropped_nulls": 0,
+    "n_test": 1590655,
+    "n_train": 4771965,
+    "negative_class": "0",
+    "note": "Deterministic baseline: fixed integer seeds on splitter and estimator per scikit-learn's controlling-randomness guidance; metrics rounded to 6 decimals as a declared contract. This is a reference point for human modeling work, not a delivered model.",
+    "numeric_features": [
+      "amount",
+      "newbalanceDest",
+      "newbalanceOrig",
+      "oldbalanceDest",
+      "oldbalanceOrg",
+      "step"
+    ],
+    "positive_class": "1",
+    "random_seed": 42,
+    "split": "stratified",
+    "target": "isFraud",
+    "target_candidates": [
+      "isFraud"
+    ],
+    "target_selection": "first binary_target in plan column order (plan approved at Human Gate 1); candidates listed under target_candidates",
+    "test_size": 0.25
+  },
+  "sha256": "2abcfa8367583c954578bb8ad17110c1290ad05a9785de841e0b8aaa15c5c727",
+  "stage": "baseline"
+}

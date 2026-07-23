@@ -1,6 +1,6 @@
 # Playbook Compatibility Report
 
-**Source:** `C:\Users\mohds\delivery-engine\data\fraud_model.csv`
+**Source:** `data\fraud_model.csv`
 **Rows:** 6,362,620  |  **Columns:** 11
 
 Deterministic pre-flight: for each playbook in the library, the exact requirement checks the planner will enforce, and their verdicts on this dataset. Nothing here is advisory prose - these are the same functions the planner runs, so this report cannot disagree with it.
