@@ -13,7 +13,7 @@
         {
           "check": "Review flagged operational findings (drivers, concentrations) against policy thresholds.",
           "evidence": {
-            "sha256": "5ba482894b474b5dc7870877805b8002030c1d968fa4f4e9dac10a05b669da49",
+            "sha256": "ece72a6b3b19018f284fcc37bc7c00c2c3a22285e294645a1937c27a32703f34",
             "stage": "ops_review"
           }
         },

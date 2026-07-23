@@ -1,0 +1,42 @@
+{
+  "findings": {
+    "results": [
+      {
+        "column": "row_id",
+        "detail": "value must be unique",
+        "failures": 0,
+        "rule": "unique",
+        "rule_id": "R01",
+        "sample": []
+      },
+      {
+        "column": "row_id",
+        "detail": "value must not be null",
+        "failures": 0,
+        "rule": "not_null",
+        "rule_id": "R02",
+        "sample": []
+      },
+      {
+        "column": "type",
+        "detail": "value must not be null",
+        "failures": 0,
+        "rule": "not_null",
+        "rule_id": "R03",
+        "sample": []
+      },
+      {
+        "column": "isFraud",
+        "detail": "value must not be null",
+        "failures": 0,
+        "rule": "not_null",
+        "rule_id": "R04",
+        "sample": []
+      }
+    ],
+    "rules_evaluated": 4,
+    "total_exceptions": 0
+  },
+  "sha256": "61f85ad8b78327eb7e9a19a0d87c7f491037b97558cbd224e582073d066aa853",
+  "stage": "dq_validate"
+}

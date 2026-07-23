@@ -28,6 +28,6 @@ Every caveat above is read from the hashed findings - nothing is inferred at wri
 
 - dq_profile findings: `851b1ea2b88e9cd8c649a7f44e2e51bfd3511a93dfeb5c89707a91cb6f18f8c2`
 - dq_validate findings: `b422f2ebd2aad9b20e122af7c3e7efeffc25e94cdbbd6105cf7d6386776396a3`
-- baseline findings: `32a8b0ba55be097273b3a915bd394fb1b956f0090789f081232b81a8859b6529`
+- baseline findings: `fa91e8be93470199a86eec2f10849336f9252cfc2c4a1ab6ffdcf213f6f6bd40`
 
 Re-run the same commands on the same source: matching hashes prove the findings; a mismatch proves the data changed.

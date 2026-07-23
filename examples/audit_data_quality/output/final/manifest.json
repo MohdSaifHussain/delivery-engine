@@ -1,19 +1,19 @@
 {
   "files": {
     "README.md": "7839cba5fcf2dd38645fa9fac8c17360e326b4a6b82848d4d8a6cceb988c30c2",
-    "audit_log.jsonl": "3fec4d11f04988009b4e96b9b638b2bba7de6f95ad5f4dba692c88894cb92ff3",
+    "audit_log.jsonl": "39be25d36bd012307abe186d61b3f3640db585ec33ce35827616351c5a8f815d",
     "execution_preview.md": "f813eb26ed952edfb5929d74de87aa6ce709985d1a0c9f82f244a9c1e05de70c",
     "findings\\dq_dedupe.json": "955270cc19bfed4e170b359803b2e5da05d0a3f966db7323109f01cda7a95606",
-    "findings\\dq_profile.json": "4d7b62848b25ea6e734cdacd2a371707e84fa9b745c34cf09b5dee8717e6c255",
+    "findings\\dq_profile.json": "0e66b98761c2a51377e9738b0c834b5d789e1b8a97138c799a81ddeb6a39df74",
     "findings\\dq_validate.json": "1590c4cd1b831c74621614691338dd5feb119056612943a17b1c7b25417d4789",
-    "handoff_manifest.json": "2124ca25738f67ed9c76d73878f60c6aadede98ed97284525d5ae859460f5a32",
-    "narrative_report.md": "c45291ce4e1ff3a7935110e3e908184b94172e3a79c672a77ce7aaddce63d7f4",
-    "plan.json": "c271e82ada6c827ebd77e9dc372db4d99dbadb0360b112ac9a9e9523fed30938",
+    "handoff_manifest.json": "f0547cdf4a1b9a1c174dd4d335659cbc1bd2937afaeaabe1a162006970a5094f",
+    "narrative_report.md": "60c8c6e6b89f55c1628014b88a69aafa49bab4889b63f8f83a39588eedf9363e",
+    "plan.json": "d3b52d2b74d7d35cb66dd089eaa6152cc23ab503618b9e519128ffe2f6e3fe78",
     "rules_draft.json": "2d49087b4b85392fb44e508863f71a987548ebc5de3cdac0c9b4cd06a3bd8ed3"
   },
   "findings": {
     "dq_dedupe": "c304c11a27d5fb7382e933d1a3fbbd8c35889137dc46ba87d42c3c953f426953",
-    "dq_profile": "0ce27a87632a7e77bd5a649354e28c3bed79225a37638d8893b3ecee76849765",
+    "dq_profile": "9cea5738e8ab8a722555b2392fe65e2e56b43fb257a95f5e20c5bca597b20a95",
     "dq_validate": "5e9577e803d37cc40a14eb8838fbf7774f702f798d6138e59bc8d92b4890cd64"
   },
   "note": "Verify each file's SHA-256 against this manifest. Matching hashes = unaltered evidence. The audit log records when and why each entry came to exist.",

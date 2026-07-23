@@ -92,13 +92,21 @@ found.</p>
 <table><thead><tr><th>Column</th><th>Type</th><th>Rows</th><th>Nulls</th><th>Distinct</th><th>Validity</th></tr></thead><tbody><tr><td>customer_id</td><td>VARCHAR</td><td class='num'>400</td><td class='num'>0</td><td class='num'>400</td><td class='num'>100.0%</td></tr><tr><td>churned</td><td>BOOLEAN</td><td class='num'>400</td><td class='num'>0</td><td class='num'>2</td><td class='num'>100.0%</td></tr><tr><td>tenure_months</td><td>BIGINT</td><td class='num'>400</td><td class='num'>0</td><td class='num'>60</td><td class='num'>100.0%</td></tr><tr><td>plan_type</td><td>VARCHAR</td><td class='num'>400</td><td class='num'>0</td><td class='num'>3</td><td class='num'>100.0%</td></tr><tr><td>monthly_spend</td><td>DOUBLE</td><td class='num'>400</td><td class='num'>0</td><td class='num'>50</td><td class='num'>100.0%</td></tr></tbody></table>
 </section>
 
+<section>
+<h2>Descriptive statistics</h2>
+<p class="note">Distribution summary from the math-stage findings.
+Every value traces to math.json in the findings store.</p>
+<p class="note">Numeric columns — bar shows mean scaled to the column with the largest mean; dark band marks the 95% confidence interval from the findings store. Dashed rows were omitted from analysis.</p><svg viewBox="0 0 640 72" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Numeric column means with 95% confidence interval" class="chart"><title>Numeric column means with 95% confidence interval</title><text x="0" y="22" class="lbl">monthly_spend</text><rect x="150" y="8" width="420" height="18" fill="#e8edf3" rx="3"/><rect x="150" y="8" width="420" height="18" fill="#2b5c8a" rx="3"/><rect x="563" y="12" width="7" height="10" fill="#1a2b4a" opacity="0.30" rx="1"/><text x="580" y="22" class="val">285.8 (n=400)</text><text x="0" y="52" class="lbl">tenure_months</text><rect x="150" y="38" width="420" height="18" fill="#e8edf3" rx="3"/><rect x="150" y="38" width="45" height="18" fill="#2b5c8a" rx="3"/><rect x="192" y="42" width="5" height="10" fill="#1a2b4a" opacity="0.30" rx="1"/><text x="580" y="52" class="val">30.4 (n=400)</text></svg><p class="note">Categorical columns — normalized Shannon entropy (0 = one category dominates, 1 = fully uniform). Dashed rows were omitted from analysis.</p><svg viewBox="0 0 640 42" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Categorical column Shannon entropy, normalized" class="chart"><title>Categorical column Shannon entropy, normalized</title><text x="0" y="22" class="lbl">plan_type</text><rect x="150" y="8" width="420" height="18" fill="#e8edf3" rx="3"/><rect x="150" y="8" width="420" height="18" fill="#2b5c8a" rx="3"/><text x="580" y="22" class="val">1.58 bits / 3 cat.</text></svg>
+</section>
+
 <footer>
-<p>Report generated: 21 July 2026</p>
+<p>Report generated: 24 July 2026</p>
 <p>Provenance and verification. Recompute the SHA-256 of each findings
 file and compare against these digests; every number in this report
 traces to them.</p>
 <p>dq_profile: <code>4fcc9974835b83c035bfda05c99af8712a1b73681cff725e5c963ee8e862897d</code></p>
 <p>dq_validate: <code>ade7b1f24789740aa19355c00c832f5b7cc44235f9800ea0cc70790905c2fe83</code></p>
+<p>math: <code>047a37def98c2d5e655e8b97f5f115cee522f24ab3f95c49e6120e667edbaa6c</code></p>
 <p class="sig">Rendered deterministically by the Delivery Engine from
 the hashed findings store. No figure was computed, estimated, or
 authored by an AI - the report draws the evidence, the reader supplies

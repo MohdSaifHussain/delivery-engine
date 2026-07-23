@@ -1,0 +1,127 @@
+{
+  "findings": {
+    "accuracy_note": "Accuracy is never scored from the dataset alone \u2014 that would be fabrication. Use analystkit_reconcile against an authoritative source.",
+    "columns": [
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 6362620,
+        "dtype": "BIGINT",
+        "name": "row_id",
+        "nulls": 0,
+        "total": 6362620,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 743,
+        "dtype": "BIGINT",
+        "name": "step",
+        "nulls": 0,
+        "total": 6362620,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 5,
+        "dtype": "VARCHAR",
+        "name": "type",
+        "nulls": 0,
+        "total": 6362620,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 5316900,
+        "dtype": "DOUBLE",
+        "name": "amount",
+        "nulls": 0,
+        "total": 6362620,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 6353307,
+        "dtype": "VARCHAR",
+        "name": "nameOrig",
+        "nulls": 0,
+        "total": 6362620,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 1845844,
+        "dtype": "DOUBLE",
+        "name": "oldbalanceOrg",
+        "nulls": 0,
+        "total": 6362620,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 2682586,
+        "dtype": "DOUBLE",
+        "name": "newbalanceOrig",
+        "nulls": 0,
+        "total": 6362620,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 2722362,
+        "dtype": "VARCHAR",
+        "name": "nameDest",
+        "nulls": 0,
+        "total": 6362620,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 3614697,
+        "dtype": "DOUBLE",
+        "name": "oldbalanceDest",
+        "nulls": 0,
+        "total": 6362620,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 3555499,
+        "dtype": "DOUBLE",
+        "name": "newbalanceDest",
+        "nulls": 0,
+        "total": 6362620,
+        "valid_ratio": 1.0
+      },
+      {
+        "case_variants": 0,
+        "completeness": 1.0,
+        "distinct": 2,
+        "dtype": "BIGINT",
+        "name": "isFraud",
+        "nulls": 0,
+        "total": 6362620,
+        "valid_ratio": 1.0
+      }
+    ],
+    "dama_scores": {
+      "accuracy": null,
+      "completeness": 1.0,
+      "consistency": 1.0,
+      "timeliness": null,
+      "uniqueness": 1.0,
+      "validity": 1.0
+    }
+  },
+  "sha256": "4e9922d8774997e6c7ccd3e151cd9d82290e6e93213d2cc58a81f4386523c41e",
+  "stage": "dq_profile"
+}

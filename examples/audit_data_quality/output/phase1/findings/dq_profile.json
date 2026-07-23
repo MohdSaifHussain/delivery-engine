@@ -77,11 +77,11 @@
       "accuracy": null,
       "completeness": 0.9881102504053324,
       "consistency": 1.0,
-      "timeliness": 0.7666666666666666,
+      "timeliness": 0.7333333333333334,
       "uniqueness": 1.0,
       "validity": 1.0
     }
   },
-  "sha256": "0ce27a87632a7e77bd5a649354e28c3bed79225a37638d8893b3ecee76849765",
+  "sha256": "9cea5738e8ab8a722555b2392fe65e2e56b43fb257a95f5e20c5bca597b20a95",
   "stage": "dq_profile"
 }

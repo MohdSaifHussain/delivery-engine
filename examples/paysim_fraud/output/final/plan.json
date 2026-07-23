@@ -1,0 +1,102 @@
+{
+  "approved": true,
+  "approved_at_ist": "2026-07-24T03:44:38+05:30",
+  "approved_by": "Example Analyst",
+  "candidates_considered": [
+    "churn_analysis",
+    "data_quality_review",
+    "healthcare_claims_audit",
+    "segment_comparison",
+    "supplychain_audit",
+    "universal_audit"
+  ],
+  "column_kinds": [
+    [
+      "amount",
+      "numeric_column"
+    ],
+    [
+      "isFraud",
+      "binary_target"
+    ],
+    [
+      "isFraud",
+      "numeric_column"
+    ],
+    [
+      "newbalanceDest",
+      "numeric_column"
+    ],
+    [
+      "newbalanceOrig",
+      "numeric_column"
+    ],
+    [
+      "oldbalanceDest",
+      "numeric_column"
+    ],
+    [
+      "oldbalanceOrg",
+      "numeric_column"
+    ],
+    [
+      "row_id",
+      "id_column"
+    ],
+    [
+      "row_id",
+      "numeric_column"
+    ],
+    [
+      "step",
+      "numeric_column"
+    ],
+    [
+      "type",
+      "categorical_column"
+    ]
+  ],
+  "created_at_ist": "2026-07-24T03:44:38+05:30",
+  "decision_rationale": "highest goal-keyword overlap (score 2) among 6 qualified playbooks",
+  "decision_source": "deterministic",
+  "goal": "churn analysis and binary classification baseline for fraud detection: predict isFraud using transaction features",
+  "plan_sha256": "2ecef7a8c470e0f7e8f564e0fd3594d0c85ba6dce29c8db3c8724a616294108e",
+  "playbook_name": "churn_analysis",
+  "playbook_path": "C:\\Users\\mohds\\delivery-engine\\playbooks\\churn_analysis.toml",
+  "playbook_version": "1.2.0",
+  "requirement_results": [
+    [
+      "min_rows >= 100",
+      true,
+      "source has 6,362,620 rows"
+    ],
+    [
+      "required kind 'binary_target'",
+      true,
+      "found in: isFraud"
+    ],
+    [
+      "required kind 'id_column'",
+      true,
+      "found in: row_id"
+    ],
+    [
+      "source type 'csv' accepted",
+      true,
+      "playbook accepts: csv, excel, sqlite, postgres, mysql"
+    ]
+  ],
+  "source": "C:\\Users\\mohds\\delivery-engine\\data\\fraud_model.csv",
+  "stage_ids": [
+    "dq_profile",
+    "dq_validate",
+    "dq_dedupe",
+    "plan_approval",
+    "baseline",
+    "eda",
+    "report",
+    "readme",
+    "presentation",
+    "package"
+  ]
+}

@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Examples — Delivery Engine v1.0.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,300&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --white: #FFFFFF;
+  --surface: #F8F9FC;
+  --border: #E5E7EB;
+  --text: #0D1117;
+  --text2: #374151;
+  --muted: #6B7280;
+  --accent: #1A56DB;
+  --accent-light: #EBF1FF;
+  --green: #059669;
+  --green-light: #ECFDF5;
+  --amber: #D97706;
+  --amber-light: #FFFBEB;
+  --red: #DC2626;
+  --red-light: #FEF2F2;
+  --purple: #7C3AED;
+  --purple-light: #F5F3FF;
+  --sans: 'Inter', system-ui, sans-serif;
+  --serif: 'Fraunces', Georgia, serif;
+  --mono: 'JetBrains Mono', monospace;
+  --radius: 14px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-lg: 0 10px 30px rgba(0,0,0,0.1), 0 4px 8px rgba(0,0,0,0.05);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--white); color: var(--text); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+
+/* NAV */
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255,255,255,0.92); backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2.5rem; height: 58px;
+  display: flex; align-items: center; gap: 1.5rem;
+}
+.nav-brand { font-family: var(--serif); font-size: 17px; font-weight: 900; color: var(--text); display: flex; align-items: center; gap: 0.5rem; }
+.nav-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 2.5s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.nav-version { font-family: var(--mono); font-size: 11px; color: var(--muted); padding: 0.2rem 0.55rem; border: 1px solid var(--border); border-radius: 4px; }
+.nav-links { margin-left: auto; display: flex; gap: 1.25rem; }
+.nav-link { font-size: 13px; color: var(--muted); text-decoration: none; font-weight: 500; transition: color 0.15s; }
+.nav-link:hover { color: var(--accent); }
+
+/* HERO */
+.hero { max-width: 1100px; margin: 0 auto; padding: 5rem 2.5rem 3rem; }
+.hero-eyebrow { font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.6rem; }
+.hero-eyebrow::before { content: ''; display: block; width: 28px; height: 1.5px; background: var(--accent); }
+.hero-title { font-family: var(--serif); font-size: clamp(44px, 6vw, 72px); font-weight: 900; line-height: 1.05; letter-spacing: -1.5px; color: var(--text); margin-bottom: 1.25rem; }
+.hero-title em { font-style: italic; font-weight: 300; color: var(--accent); }
+.hero-sub { font-size: 16px; color: var(--muted); line-height: 1.7; max-width: 540px; margin-bottom: 3rem; }
+
+/* STATS */
+.stats { display: flex; gap: 0; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 3rem; max-width: 580px; box-shadow: var(--shadow); }
+.stat { flex: 1; padding: 1.5rem 1.25rem; text-align: center; border-right: 1px solid var(--border); position: relative; }
+.stat:last-child { border-right: none; }
+.stat::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+.stat:nth-child(1)::before { background: var(--accent); }
+.stat:nth-child(2)::before { background: var(--green); }
+.stat:nth-child(3)::before { background: var(--purple); }
+.stat:nth-child(4)::before { background: var(--amber); }
+.stat-n { font-family: var(--serif); font-size: 34px; font-weight: 900; color: var(--text); display: block; line-height: 1; margin-bottom: 0.3rem; }
+.stat-l { font-size: 11px; color: var(--muted); font-weight: 500; letter-spacing: 0.04em; }
+
+/* FILTERS */
+.filter-wrap { max-width: 1100px; margin: 0 auto; padding: 0 2.5rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2.5rem; }
+.filter-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-right: 0.25rem; }
+.f-btn { font-size: 13px; font-weight: 500; padding: 0.4rem 1rem; border-radius: 999px; border: 1.5px solid var(--border); background: var(--white); color: var(--muted); cursor: pointer; transition: all 0.15s; font-family: var(--sans); }
+.f-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+.f-btn.on { background: var(--accent); border-color: var(--accent); color: white; font-weight: 600; }
+
+/* GRID */
+.grid-wrap { max-width: 1100px; margin: 0 auto; padding: 0 2.5rem 5rem; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
+
+/* CARD */
+.card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; display: flex; flex-direction: column; transition: box-shadow 0.25s ease, transform 0.25s ease; }
+.card:hover { box-shadow: var(--shadow-lg); transform: translateY(-3px); }
+
+/* Accent strip */
+.strip { height: 4px; }
+.s-blue { background: linear-gradient(90deg, #1A56DB, #60A5FA); }
+.s-purple { background: linear-gradient(90deg, #7C3AED, #A78BFA); }
+.s-green { background: linear-gradient(90deg, #059669, #34D399); }
+.s-amber { background: linear-gradient(90deg, #D97706, #FCD34D); }
+.s-red { background: linear-gradient(90deg, #DC2626, #FCA5A5); }
+
+.card-body { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; gap: 1rem; }
+.card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; }
+.card-name { font-family: var(--mono); font-size: 13px; font-weight: 600; color: var(--text); }
+.tag { font-family: var(--mono); font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.25rem 0.6rem; border-radius: 5px; white-space: nowrap; flex-shrink: 0; }
+.tag-dq { color: var(--accent); background: var(--accent-light); }
+.tag-model { color: var(--purple); background: var(--purple-light); }
+.tag-stats { color: var(--green); background: var(--green-light); }
+.tag-desc { color: var(--amber); background: var(--amber-light); }
+.tag-ops { color: var(--red); background: var(--red-light); }
+
+.dataset { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 0.4rem; }
+.dataset::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+
+/* Completeness dots */
+.dots-section { }
+.dots-label { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; }
+.dots { display: flex; gap: 4px; flex-wrap: wrap; }
+.dot { width: 11px; height: 11px; border-radius: 3px; cursor: default; position: relative; transition: transform 0.15s; }
+.dot:hover { transform: scale(1.5); z-index: 5; }
+.dot::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: var(--text); color: white; font-family: var(--mono); font-size: 10px; padding: 0.25rem 0.5rem; border-radius: 5px; white-space: nowrap; opacity: 0; transition: opacity 0.15s; pointer-events: none; z-index: 10; }
+.dot:hover::after { opacity: 1; }
+.dot.g { background: var(--green); }
+.dot.a { background: var(--amber); }
+.dot.r { background: var(--red); }
+
+/* Finding */
+.finding { background: var(--surface); border-radius: 8px; padding: 0.875rem 1rem; flex: 1; }
+.finding-lbl { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; }
+.finding-txt { font-size: 13.5px; color: var(--text2); line-height: 1.55; }
+.finding-txt strong { color: var(--text); font-weight: 600; }
+
+/* Metrics */
+.metrics { display: flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.m { flex: 1; padding: 0.65rem 0.5rem; text-align: center; border-right: 1px solid var(--border); }
+.m:last-child { border-right: none; }
+.mv { font-family: var(--mono); font-size: 14px; font-weight: 700; color: var(--text); display: block; line-height: 1; margin-bottom: 0.2rem; }
+.mv.g { color: var(--green); }
+.mv.a { color: var(--amber); }
+.mv.r { color: var(--red); }
+.ml { font-size: 9px; color: var(--muted); font-weight: 500; }
+
+/* Footer */
+.card-foot { padding: 1rem 1.5rem 1.4rem; display: flex; gap: 0.65rem; }
+.btn-main { flex: 1; background: var(--accent); color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; font-family: var(--sans); padding: 0.6rem 1rem; cursor: pointer; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 0.4rem; transition: all 0.15s; }
+.btn-main:hover { background: #1446B8; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(26,86,219,0.3); }
+.btn-sec { background: var(--surface); color: var(--muted); border: 1px solid var(--border); border-radius: 8px; font-size: 12px; font-weight: 500; font-family: var(--sans); padding: 0.6rem 0.8rem; cursor: pointer; text-decoration: none; display: flex; align-items: center; justify-content: center; transition: all 0.15s; white-space: nowrap; }
+.btn-sec:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-light); }
+
+/* Archive */
+.archive-wrap { margin-top: 1.5rem; }
+.archive-card { display: flex; align-items: center; gap: 1.25rem; border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 2rem; text-decoration: none; transition: all 0.2s; background: var(--surface); }
+.archive-card:hover { border-color: var(--accent); box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+.archive-icon { font-size: 36px; flex-shrink: 0; }
+.archive-title { font-family: var(--serif); font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 0.3rem; }
+.archive-sub { font-size: 13px; color: var(--muted); line-height: 1.6; }
+.archive-arrow { margin-left: auto; font-size: 20px; color: var(--accent); flex-shrink: 0; transition: transform 0.2s; }
+.archive-card:hover .archive-arrow { transform: translateX(4px); }
+
+/* Verify */
+.verify-wrap { max-width: 1100px; margin: 0 auto; padding: 0 2.5rem 5rem; }
+.verify-inner { border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 2rem; display: flex; gap: 1rem; align-items: flex-start; background: var(--surface); }
+.verify-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+.verify-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 0.3rem; }
+.verify-text { font-size: 13px; color: var(--muted); line-height: 1.65; }
+code { font-family: var(--mono); font-size: 11.5px; background: var(--accent-light); color: var(--accent); padding: 0.15em 0.4em; border-radius: 4px; border: 1px solid #BFDBFE; }
+
+@media (max-width: 720px) {
+  .hero-title { font-size: 38px; }
+  .stats { flex-wrap: wrap; max-width: 100%; }
+  .nav { padding: 0 1rem; }
+  .hero, .filter-wrap, .grid-wrap, .verify-wrap { padding-left: 1rem; padding-right: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand"><span class="nav-dot"></span>Delivery Engine</div>
+  <span class="nav-version">v1.0.0</span>
+  <div class="nav-links">
+    <a class="nav-link" href="../README.md">Repo</a>
+    <a class="nav-link" href="../docs/PROJECT_CHARTER.html">Charter</a>
+    <a class="nav-link" href="../CHANGELOG.md">Changelog</a>
+    <a class="nav-link" href="historical/README.md">Historical</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-eyebrow">Verified output packages · v1.0.0</div>
+  <h1 class="hero-title">7 real runs.<br><em>Every number</em> traceable.</h1>
+  <p class="hero-sub">Each package was produced by the engine on a real dataset and committed here — open any report in your browser without running anything. Every figure traces to a SHA-256 verified finding.</p>
+  <div class="stats">
+    <div class="stat"><span class="stat-n">7</span><span class="stat-l">Examples</span></div>
+    <div class="stat"><span class="stat-n">6.36M</span><span class="stat-l">Max rows</span></div>
+    <div class="stat"><span class="stat-n">367</span><span class="stat-l">Tests green</span></div>
+    <div class="stat"><span class="stat-n">5</span><span class="stat-l">Archetypes</span></div>
+  </div>
+</div>
+
+<div class="filter-wrap">
+  <span class="filter-label">Filter</span>
+  <button class="f-btn on" onclick="filter('all',this)">All</button>
+  <button class="f-btn" onclick="filter('dq',this)">Data Quality</button>
+  <button class="f-btn" onclick="filter('model',this)">Model Baseline</button>
+  <button class="f-btn" onclick="filter('stats',this)">Statistical Inference</button>
+  <button class="f-btn" onclick="filter('desc',this)">Descriptive Audit</button>
+  <button class="f-btn" onclick="filter('ops',this)">Operations Review</button>
+</div>
+
+<div class="grid-wrap">
+<div class="grid" id="grid">
+
+  <!-- AUDIT DATA QUALITY -->
+  <div class="card" data-type="dq">
+    <div class="strip s-blue"></div>
+    <div class="card-body">
+      <div class="card-header"><span class="card-name">audit_data_quality</span><span class="tag tag-dq">Data Quality</span></div>
+      <div class="dataset">793 rows · audit-issues register · internal audit workpaper</div>
+      <div class="dots-section">
+        <div class="dots-label">Column completeness</div>
+        <div class="dots">
+          <span class="dot g" data-tip="issue_id — 100%"></span>
+          <span class="dot g" data-tip="raised_at — 100%"></span>
+          <span class="dot g" data-tip="business_line — 100%"></span>
+          <span class="dot g" data-tip="severity — 100%"></span>
+          <span class="dot g" data-tip="status — 100%"></span>
+          <span class="dot g" data-tip="days_open — 100%"></span>
+          <span class="dot a" data-tip="owner_team — 91.7% ← planted defect"></span>
+        </div>
+      </div>
+      <div class="finding">
+        <div class="finding-lbl">Key finding</div>
+        <div class="finding-txt">Planted defect surfaced exactly: <strong>owner_team null on 66/793 rows (8.3%)</strong>. Rendered amber against clean columns in green. Accuracy shown as "not scored" — never fabricated as zero.</div>
+      </div>
+      <div class="metrics">
+        <div class="m"><span class="mv a">98.8%</span><span class="ml">Completeness</span></div>
+        <div class="m"><span class="mv g">100%</span><span class="ml">Uniqueness</span></div>
+        <div class="m"><span class="mv">8</span><span class="ml">Rules</span></div>
+        <div class="m"><span class="mv g">0</span><span class="ml">Exceptions</span></div>
+      </div>
+    </div>
+    <div class="card-foot">
+      <a class="btn-main" href="audit_data_quality/output/final/report.html">⬡ Open report</a>
+      <a class="btn-sec" href="audit_data_quality/output/final/findings/dq_profile.json">findings</a>
+    </div>
+  </div>
+
+  <!-- CHURN ANALYSIS -->
+  <div class="card" data-type="model">
+    <div class="strip s-purple"></div>
+    <div class="card-body">
+      <div class="card-header"><span class="card-name">churn_analysis</span><span class="tag tag-model">Model Baseline</span></div>
+      <div class="dataset">7,043 rows · Kaggle Telco Customer Churn</div>
+      <div class="dots-section">
+        <div class="dots-label">Column completeness</div>
+        <div class="dots">
+          <span class="dot g" data-tip="customerID — 100%"></span>
+          <span class="dot g" data-tip="tenure — 100%"></span>
+          <span class="dot g" data-tip="MonthlyCharges — 100%"></span>
+          <span class="dot g" data-tip="Contract — 100%"></span>
+          <span class="dot g" data-tip="Churn — 100%"></span>
+          <span class="dot g" data-tip="TotalCharges — VARCHAR (11 blank rows)"></span>
+        </div>
+      </div>
+      <div class="finding">
+        <div class="finding-lbl">Key finding</div>
+        <div class="finding-txt">Honest real baseline: <strong>ROC-AUC 0.845, recall 0.546</strong>. Leakage sentinel clean. Target selection disclosed: Churn is first binary column in column order — a deterministic rule, not a guess.</div>
+      </div>
+      <div class="metrics">
+        <div class="m"><span class="mv">0.845</span><span class="ml">ROC-AUC</span></div>
+        <div class="m"><span class="mv">0.546</span><span class="ml">Recall</span></div>
+        <div class="m"><span class="mv g">0</span><span class="ml">Leakage</span></div>
+        <div class="m"><span class="mv">26.5%</span><span class="ml">Churn rate</span></div>
+      </div>
+    </div>
+    <div class="card-foot">
+      <a class="btn-main" href="churn_analysis/output/final/report.html">⬡ Open report</a>
+      <a class="btn-sec" href="churn_analysis/output/final/findings/baseline.json">findings</a>
+    </div>
+  </div>
+
+  <!-- PAYSIM FRAUD -->
+  <div class="card" data-type="model">
+    <div class="strip s-purple"></div>
+    <div class="card-body">
+      <div class="card-header"><span class="card-name">paysim_fraud</span><span class="tag tag-model">Model Baseline</span></div>
+      <div class="dataset">6,362,620 rows · PaySim synthetic fraud · Kaggle</div>
+      <div class="dots-section">
+        <div class="dots-label">All 11 columns complete</div>
+        <div class="dots">
+          <span class="dot g" data-tip="row_id — 100%"></span>
+          <span class="dot g" data-tip="step — 100%"></span>
+          <span class="dot g" data-tip="type — 100%"></span>
+          <span class="dot g" data-tip="amount — 100%"></span>
+          <span class="dot g" data-tip="nameOrig — 100%"></span>
+          <span class="dot g" data-tip="oldbalanceOrg — 100%"></span>
+          <span class="dot g" data-tip="newbalanceOrig — 100%"></span>
+          <span class="dot g" data-tip="nameDest — 100%"></span>
+          <span class="dot g" data-tip="oldbalanceDest — 100%"></span>
+          <span class="dot g" data-tip="newbalanceDest — 100%"></span>
+          <span class="dot g" data-tip="isFraud — 100%"></span>
+        </div>
+      </div>
+      <div class="finding">
+        <div class="finding-lbl">Governance working — wrong-target declined</div>
+        <div class="finding-txt">Plan selected isFlaggedFraud (16/6.36M rows — useless). Run <strong>declined before anything executed</strong>. Corrected run: ROC-AUC <strong>0.989</strong>, recall <strong>0.476</strong> — honest, imperfect, verifiable.</div>
+      </div>
+      <div class="metrics">
+        <div class="m"><span class="mv">0.989</span><span class="ml">ROC-AUC</span></div>
+        <div class="m"><span class="mv a">0.476</span><span class="ml">Recall</span></div>
+        <div class="m"><span class="mv g">0</span><span class="ml">Leakage</span></div>
+        <div class="m"><span class="mv">5</span><span class="ml">Rules</span></div>
+      </div>
+    </div>
+    <div class="card-foot">
+      <a class="btn-main" href="paysim_fraud/output/final/report.html">⬡ Open report</a>
+      <a class="btn-sec" href="paysim_fraud/output/final/findings/baseline.json">findings</a>
+    </div>
+  </div>
+
+  <!-- TRANSACTION MONITORING -->
+  <div class="card" data-type="ops">
+    <div class="strip s-red"></div>
+    <div class="card-body">
+      <div class="card-header"><span class="card-name">transaction_monitoring</span><span class="tag tag-ops">Operations Review</span></div>
+      <div class="dataset">2,000 rows · card transaction feed · AML/compliance</div>
+      <div class="dots-section">
+        <div class="dots-label">Column completeness</div>
+        <div class="dots">
+          <span class="dot g" data-tip="id — 100%"></span>
+          <span class="dot g" data-tip="date — 100%"></span>
+          <span class="dot g" data-tip="amount — 100%"></span>
+          <span class="dot g" data-tip="use_chip — 100%"></span>
+          <span class="dot g" data-tip="merchant_city — 100%"></span>
+          <span class="dot a" data-tip="merchant_state — 87.5%"></span>
+          <span class="dot a" data-tip="zip — 86.9%"></span>
+          <span class="dot r" data-tip="errors — 1.6% (98.4% null)"></span>
+        </div>
+      </div>
+      <div class="finding">
+        <div class="finding-lbl">Key finding</div>
+        <div class="finding-txt">Real issues found: <strong>errors 98.4% null</strong>, data 5,280 days old, Swipe 88% concentration. Gate 2 fired — 12 rules approved by SHA-256. Delivers <strong>Word, PowerPoint, Excel</strong>.</div>
+      </div>
+      <div class="metrics">
+        <div class="m"><span class="mv a">89.7%</span><span class="ml">Completeness</span></div>
+        <div class="m"><span class="mv">12</span><span class="ml">Rules</span></div>
+        <div class="m"><span class="mv g">3</span><span class="ml">Doc formats</span></div>
+      </div>
+    </div>
+    <div class="card-foot">
+      <a class="btn-main" href="transaction_monitoring/output/final/report.html">⬡ Open report</a>
+      <a class="btn-sec" href="transaction_monitoring/output/final/findings/ops_review.json">findings</a>
+    </div>
+  </div>
+
+  <!-- SEGMENT COMPARISON -->
+  <div class="card" data-type="stats">
+    <div class="strip s-green"></div>
+    <div class="card-body">
+      <div class="card-header"><span class="card-name">segment_comparison</span><span class="tag tag-stats">Statistical Inference</span></div>
+      <div class="dataset">300 rows · signup conversion by channel</div>
+      <div class="dots-section">
+        <div class="dots-label">All columns complete</div>
+        <div class="dots">
+          <span class="dot g" data-tip="customer_id — 100%"></span>
+          <span class="dot g" data-tip="converted — 100%"></span>
+          <span class="dot g" data-tip="channel — 100%"></span>
+          <span class="dot g" data-tip="days_active — 100%"></span>
+        </div>
+      </div>
+      <div class="finding">
+        <div class="finding-lbl">Key finding</div>
+        <div class="finding-txt"><strong>Organic 30% vs paid 60% vs referral 80%</strong> conversion. Chi-square significant (Cramér's V 0.41, p &lt; 1e-06). Alpha pre-registered before any p-value computed. ASA 2016 compliant.</div>
+      </div>
+      <div class="metrics">
+        <div class="m"><span class="mv">30%</span><span class="ml">Organic</span></div>
+        <div class="m"><span class="mv">60%</span><span class="ml">Paid</span></div>
+        <div class="m"><span class="mv g">80%</span><span class="ml">Referral</span></div>
+        <div class="m"><span class="mv">0.41</span><span class="ml">Cramér's V</span></div>
+      </div>
+    </div>
+    <div class="card-foot">
+      <a class="btn-main" href="segment_comparison/output/final/report.html">⬡ Open report</a>
+      <a class="btn-sec" href="segment_comparison/output/final/findings/stats.json">findings</a>
+    </div>
+  </div>
+
+  <!-- UNIVERSAL AUDIT -->
+  <div class="card" data-type="desc">
+    <div class="strip s-amber"></div>
+    <div class="card-body">
+      <div class="card-header"><span class="card-name">universal_audit</span><span class="tag tag-desc">Descriptive Audit</span></div>
+      <div class="dataset">300 rows · orders feed</div>
+      <div class="dots-section">
+        <div class="dots-label">All columns complete</div>
+        <div class="dots">
+          <span class="dot g" data-tip="record_id — 100%"></span>
+          <span class="dot g" data-tip="amount — 100%"></span>
+          <span class="dot g" data-tip="region — 100%"></span>
+          <span class="dot g" data-tip="event_date — 100%"></span>
+        </div>
+      </div>
+      <div class="finding">
+        <div class="finding-lbl">3 honest refusals-to-overclaim</div>
+        <div class="finding-txt">amount → <strong>lognormal</strong> (KS 0.091). Weibull p-value omitted (Lilliefors 1967). Temporal correlation "undefined — zero variance in y". Best-fit = selection rule, not significance claim.</div>
+      </div>
+      <div class="metrics">
+        <div class="m"><span class="mv">lognormal</span><span class="ml">Best fit</span></div>
+        <div class="m"><span class="mv">2.32</span><span class="ml">Entropy bits</span></div>
+        <div class="m"><span class="mv a">2</span><span class="ml">Outliers</span></div>
+      </div>
+    </div>
+    <div class="card-foot">
+      <a class="btn-main" href="universal_audit/output/final/report.html">⬡ Open report</a>
+      <a class="btn-sec" href="universal_audit/output/final/findings/math.json">findings</a>
+    </div>
+  </div>
+
+  <!-- CUSTOMER PROFILING -->
+  <div class="card" data-type="desc">
+    <div class="strip s-amber"></div>
+    <div class="card-body">
+      <div class="card-header"><span class="card-name">customer_profiling</span><span class="tag tag-desc">Descriptive Audit</span></div>
+      <div class="dataset">400 rows · customer base · spend + tenure + plan</div>
+      <div class="dots-section">
+        <div class="dots-label">All columns complete</div>
+        <div class="dots">
+          <span class="dot g" data-tip="customer_id — 100%"></span>
+          <span class="dot g" data-tip="monthly_spend — 100%"></span>
+          <span class="dot g" data-tip="tenure_months — 100%"></span>
+          <span class="dot g" data-tip="plan_type — 100%"></span>
+          <span class="dot g" data-tip="churned — excluded (binary, noise)"></span>
+        </div>
+      </div>
+      <div class="finding">
+        <div class="finding-lbl">Key finding</div>
+        <div class="finding-txt">Spend and tenure both fit <strong>normal distributions</strong>. plan_type Shannon entropy <strong>1.585 bits</strong>, normalized 0.9999 — three plans essentially uniform. Zero outliers.</div>
+      </div>
+      <div class="metrics">
+        <div class="m"><span class="mv g">285.75</span><span class="ml">Mean spend</span></div>
+        <div class="m"><span class="mv">30.4</span><span class="ml">Mean tenure</span></div>
+        <div class="m"><span class="mv">1.585</span><span class="ml">Entropy</span></div>
+      </div>
+    </div>
+    <div class="card-foot">
+      <a class="btn-main" href="customer_profiling/output/final/report.html">⬡ Open report</a>
+      <a class="btn-sec" href="customer_profiling/output/final/findings/math.json">findings</a>
+    </div>
+  </div>
+
+</div><!-- /grid -->
+
+<!-- ARCHIVE -->
+<div class="archive-wrap" style="margin-top:0.5rem;">
+  <a class="archive-card" href="historical/README.md">
+    <div class="archive-icon">📚</div>
+    <div>
+      <div class="archive-title">Historical archive</div>
+      <div class="archive-sub">Earlier packages preserved as the project's growth record — Steps 4, 5, 18 + pre-v1 snapshots. W3C PROV-aligned provenance index. The same discipline applied at each stage as the engine matured.</div>
+    </div>
+    <div class="archive-arrow">→</div>
+  </a>
+</div>
+
+</div><!-- /grid-wrap -->
+
+<!-- VERIFY -->
+<div class="verify-wrap">
+  <div class="verify-inner">
+    <div class="verify-icon">🔐</div>
+    <div>
+      <div class="verify-title">Verifying any package</div>
+      <div class="verify-text">Every package ships a <code>manifest.json</code> whose SHA-256 tree covers every file. Recompute any hash and compare — matching hashes prove the evidence is unaltered. <code>audit_log.jsonl</code> records every stage, decision, rationale, and timestamp. Re-run the same runner on the same source to re-perform any stage and get identical hashes.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+function filter(type, btn) {
+  document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('.card[data-type]').forEach(card => {
+    const show = type === 'all' || card.dataset.type === type;
+    if (show) {
+      card.style.display = 'flex';
+      requestAnimationFrame(() => {
+        card.style.opacity = '0'; card.style.transform = 'translateY(10px)';
+        requestAnimationFrame(() => {
+          card.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+          card.style.opacity = '1'; card.style.transform = 'translateY(0)';
+        });
+      });
+    } else {
+      card.style.transition = 'opacity 0.15s ease';
+      card.style.opacity = '0';
+      setTimeout(() => { card.style.display = 'none'; }, 160);
+    }
+  });
+}
+</script>
+</body>
+</html>

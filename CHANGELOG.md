@@ -6,7 +6,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.0.0] - 2026-07-22
+## [1.1.0] - 2026-07-24
+
+### Added
+- Step 21 math charts: Descriptive statistics section in report.html shows
+  numeric column distributions (mean, 95% CI range bar, best-fit name,
+  outlier count) and categorical entropy bars. Renders only when
+  findings/math.json is present. Pure function maintained. 9 new tests
+  including injected-numbers proof. WCAG 2.2 AA aria-labels on all charts.
+- G2 pseudoreplication disclosure in model stage (Forstmeier, Wagenmakers
+  and Parker 2017, Biol Rev 92:1941-1968): records assumed_independent_units
+  and warns that a flat CSV cannot prove row independence. Non-gating.
+  Cited reference in findings.
+- G3 minimum detectable effect in model stage (Cohen 1988, power=0.8,
+  alpha=0.05): computes mde_cohen_h from n_test. Non-gating. Cited reference
+  in findings. churn: G2 gate=False G3 mde=0.066761. paysim: G2 gate=False
+  G3 mde=0.002221 (6.36M rows gives very high power).
+- paysim_fraud run_example.py: first committed runner for the PaySim example.
+  Writes to output/final/ structure matching all other examples. isFraud
+  confirmed as target before run (isFlaggedFraud excluded). Pre-v1.1 flat
+  package preserved to examples/historical/paysim_fraud_pre_v1.1/.
+- examples/index.html: white-background interactive gallery with 7 example
+  cards, filter bar by archetype, completeness dots with hover tooltips,
+  smooth filter animations. Correct relative paths to all report.html files.
+- CLAUDE.md: constitutional governance file for Claude Code sessions.
+  Contains architecture principles, build commands, code conventions, what
+  NOT to do, v1.1 roadmap, end-of-session sync instructions for Windows.
+
+### Fixed
+- Timeliness metric: profiler sentinel value 0.0 (no date column) now renders
+  as not scored instead of a misleading amber 0% bar. Identical treatment to
+  accuracy. One regression guard added (test_h5_timeliness_zero_shows_not_scored).
+- paysim_fraud gallery links updated after output/final restructure.
+- CLAUDE.md: baseline.py corrected to model.py (actual filename).
+
+### Changed
+- All 7 examples re-run on v1.1 engine; all report.html files regenerated.
+  universal_audit now shows Descriptive statistics section with math charts.
+  churn_analysis and paysim_fraud baseline.json include G2/G3 disclosure fields.
+- paysim_fraud restructured from flat package to output/final/ subfolder,
+  consistent with all other examples.
 
 ### Added
 - 7 complete, verified example packages covering the full analyst workflow:

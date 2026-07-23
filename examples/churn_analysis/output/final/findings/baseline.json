@@ -14,6 +14,26 @@
       "gender"
     ],
     "class_balance_positive": 0.26537,
+    "g2_pseudoreplication": {
+      "assumed_independent_units": 1761,
+      "detail": "The stratified split treats each row as an independent statistical unit. If rows share grouping structure (repeated measures, clustered sampling, time-series autocorrelation) the effective sample size is smaller than n_test and reported metrics will overstate generalisation. The engine cannot detect grouping from a flat source; the human reviewer must confirm independence.",
+      "gate": false,
+      "reference": "Forstmeier, Wagenmakers & Parker (2017) Proc. R. Soc. B 284:20152463",
+      "warning": "pseudoreplication_risk"
+    },
+    "g3_minimum_detectable_effect": {
+      "alpha": 0.05,
+      "detail": "With n_test independent observations the minimum Cohen's h detectable at power=0.8 and alpha=0.05 (two-tailed) is mde_cohen_h. Effect sizes smaller than this threshold cannot be reliably distinguished from chance at the given sample size. Disclosure only \u2014 never a gate.",
+      "disclosure": "minimum_detectable_effect",
+      "formula": "h = (z_alpha_half + z_beta) / sqrt(n_test)",
+      "gate": false,
+      "mde_cohen_h": 0.066761,
+      "n_test": 1761,
+      "power": 0.8,
+      "reference": "Cohen, J. (1988) Statistical Power Analysis for the Behavioral Sciences (2nd ed.).",
+      "z_alpha_half": 1.959963984540054,
+      "z_beta": 0.8416212335729143
+    },
     "leakage_check": "per-feature association with the target (Cram\u00e9r's V for categoricals, absolute point-biserial for numerics); associations at or above the fixed threshold are flagged possible_target_leakage - a warning for human judgment, never a gate. Motivated by a production run where a post-hoc label column produced a perfect score.",
     "leakage_threshold": 0.95,
     "leakage_warnings": [],
@@ -52,6 +72,6 @@
     "target_selection": "first binary_target in plan column order (plan approved at Human Gate 1); candidates listed under target_candidates",
     "test_size": 0.25
   },
-  "sha256": "32a8b0ba55be097273b3a915bd394fb1b956f0090789f081232b81a8859b6529",
+  "sha256": "fa91e8be93470199a86eec2f10849336f9252cfc2c4a1ab6ffdcf213f6f6bd40",
   "stage": "baseline"
 }

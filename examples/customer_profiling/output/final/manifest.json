@@ -1,14 +1,14 @@
 {
   "files": {
     "README.md": "f273ebfa1b16c4063157ed8fd8ac4542071cd829f8e2f1baab34d2f6caaf3b7f",
-    "audit_log.jsonl": "d52c673b59344d186ede1838d2d518093d4868652f07ff3780a628a530154f97",
+    "audit_log.jsonl": "ddda9288a04f9f613c137b51eb1453fa45c2d5377761487fede3e0f0d29a7210",
     "execution_preview.md": "9a7cf9f67782b8a586e16f56c26d7afe87bc15c101239de62bedf11ce715ce09",
     "findings\\dq_profile.json": "27ea04c9b51415ea6e64e91541b402fedb68c1f4cb7577557054138cb32b6682",
     "findings\\dq_validate.json": "e354bdd0675aa890a70f06195fd4cf171b4f6d5be7efaa24930322aed59ca5f9",
     "findings\\math.json": "12e870c74e984d083cff0bee298ed3dd57316385961393f35cede7b8e2b5209b",
     "handoff_manifest.json": "68b32ba4bb900f37018ee848c305984e078a21d38bb00e1563aff658278ba656",
     "narrative_report.md": "016d2eae68293e7d011472737e5a9eae305b5c63485ef6264dcbf643ae3a2cde",
-    "plan.json": "998807a4d5ab5316d8ae5210a4d40b877fd51cd9c3191544e60a92cf20f029ef"
+    "plan.json": "e962978047e986751f46ddded5942a2b2d89cc87eded1e772870f1290c159a3a"
   },
   "findings": {
     "dq_profile": "4fcc9974835b83c035bfda05c99af8712a1b73681cff725e5c963ee8e862897d",
@@ -18,8 +18,8 @@
   "note": "Verify each file's SHA-256 against this manifest. Matching hashes = unaltered evidence. The audit log records when and why each entry came to exist.",
   "plan_sha256": "907b520581829411e932999b78e4437104962841282a9af50fbe92da9fa4eacd",
   "source_fingerprint": {
-    "bytes": 10473,
+    "bytes": 10874,
     "path": "C:\\Users\\mohds\\delivery-engine\\examples\\customer_profiling\\customers.csv",
-    "sha256": "fec27eecff8e0cff5e53e55cce2c4ecf23593daede02d61902f7ef434aa2cae9"
+    "sha256": "d8de3e4acbbe13f939be24bd384537f9d83cdbde6b3d84205927dcda27db376c"
   }
 }

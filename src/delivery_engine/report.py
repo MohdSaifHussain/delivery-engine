@@ -31,6 +31,7 @@ segment) are a declared future extension that first requires a
 deterministic stage to compute-and-hash those numbers - drawing them
 today would require calculation, which the constitution forbids.
 """
+
 from __future__ import annotations
 
 import html
@@ -73,9 +74,7 @@ def _pct(value: float) -> str:
 # ── charts: pure functions, findings values -> inline SVG ────────────────────
 
 
-def _bar_row(
-    y: int, label: str, value_label: str, frac: float, colour: str
-) -> str:
+def _bar_row(y: int, label: str, value_label: str, frac: float, colour: str) -> str:
     """One horizontal bar with its label and value, as SVG.
 
     frac is a display width in [0, 1]; it is taken directly from a
@@ -91,7 +90,7 @@ def _bar_row(
         f'<rect x="150" y="{y}" width="{bar_w}" height="{_BAR_H}" '
         f'fill="{colour}" rx="3"/>'
         f'<text x="{_CHART_W - 60}" y="{text_y}" class="val">'
-        f'{_esc(value_label)}</text>'
+        f"{_esc(value_label)}</text>"
     )
 
 
@@ -113,10 +112,12 @@ def _dama_chart(dama: dict[str, float | None]) -> str:
     y = 8
     for dim in sorted(dama):
         val = dama[dim]
-        if val is None:
+        # 0.0 timeliness is the profiler's sentinel for "no date column" —
+        # treat it as not scored rather than drawing a misleading 0% bar.
+        if val is None or (dim == "timeliness" and val == 0.0):
             rows += (
                 f'<text x="0" y="{y + _BAR_H - 4}" class="lbl">'
-                f'{_esc(dim)}</text>'
+                f"{_esc(dim)}</text>"
                 f'<rect x="150" y="{y}" width="{_CHART_W - 220}" '
                 f'height="{_BAR_H}" fill="none" stroke="{_GRID}" '
                 f'stroke-dasharray="4 3" rx="3"/>'
@@ -147,14 +148,128 @@ def _validation_chart(validate: dict[str, Any]) -> str:
         vlabel = "0 exceptions" if fails == 0 else f"{fails:,} exceptions"
         rows += _bar_row(y, label, vlabel, frac if fails else 0.0, colour)
         y += _ROW_H
-    caption = (
-        f"{validate['rules_evaluated']} rules evaluated, "
-        f"{total_exc:,} total exceptions"
-    )
+    caption = f"{validate['rules_evaluated']} rules evaluated, {total_exc:,} total exceptions"
     return (
         _svg(y + 4, rows, "Validation results, exceptions per rule")
         + f'<p class="caption">{_esc(caption)}</p>'
     )
+
+
+def _math_numeric_chart(numeric: dict[str, Any], skipped: list[str]) -> str:
+    """Numeric column means as bars scaled to the widest column, with a
+    95% CI overlay rect. All values injected from math-stage findings."""
+    cols = sorted(numeric)
+    max_mean = max((float(numeric[c]["mean"]) for c in cols), default=1.0) or 1.0
+    bar_area = _CHART_W - 220
+    rows = ""
+    y = 8
+    for col in cols:
+        s = numeric[col]
+        mean_v = float(s["mean"])
+        ci_lo = float(s["mean_ci_low"])
+        ci_hi = float(s["mean_ci_high"])
+        n = int(s["n"])
+        frac = max(0.0, min(1.0, mean_v / max_mean))
+        bar_w = round(frac * bar_area)
+        ci_lo_w = round(max(0.0, min(1.0, ci_lo / max_mean)) * bar_area)
+        ci_hi_w = round(min(1.0, max(0.0, ci_hi / max_mean)) * bar_area)
+        ci_w = max(ci_hi_w - ci_lo_w, 2)
+        label = col[:19] + "…" if len(col) > 20 else col
+        val_label = f"{mean_v:.4g} (n={n:,})"
+        text_y = y + _BAR_H - 4
+        rows += (
+            f'<text x="0" y="{text_y}" class="lbl">{_esc(label)}</text>'
+            f'<rect x="150" y="{y}" width="{bar_area}" height="{_BAR_H}"'
+            f' fill="{_BAR_BG}" rx="3"/>'
+            f'<rect x="150" y="{y}" width="{bar_w}" height="{_BAR_H}"'
+            f' fill="{_ACCENT}" rx="3"/>'
+            f'<rect x="{150 + ci_lo_w}" y="{y + 4}" width="{ci_w}"'
+            f' height="{_BAR_H - 8}" fill="{_INK}" opacity="0.30" rx="1"/>'
+            f'<text x="{_CHART_W - 60}" y="{text_y}" class="val">'
+            f"{_esc(val_label)}</text>"
+        )
+        y += _ROW_H
+    for col in sorted(skipped):
+        label = col[:19] + "…" if len(col) > 20 else col
+        text_y = y + _BAR_H - 4
+        rows += (
+            f'<text x="0" y="{text_y}" class="lbl">{_esc(label)}</text>'
+            f'<rect x="150" y="{y}" width="{bar_area}" height="{_BAR_H}"'
+            f' fill="none" stroke="{_GRID}" stroke-dasharray="4 3" rx="3"/>'
+            f'<text x="{_CHART_W - 90}" y="{text_y}"'
+            f' class="val muted">omitted</text>'
+        )
+        y += _ROW_H
+    if not cols and not skipped:
+        return '<p class="note">No numeric columns in this dataset.</p>'
+    return _svg(
+        y + 4,
+        rows,
+        "Numeric column means with 95% confidence interval",
+    )
+
+
+def _math_categorical_chart(categorical: dict[str, Any], skipped: list[str]) -> str:
+    """Categorical column Shannon entropy as bars. entropy_normalized is
+    already in [0, 1] from the findings store - no scaling required."""
+    cols = sorted(categorical)
+    rows = ""
+    y = 8
+    for col in cols:
+        s = categorical[col]
+        frac = max(0.0, min(1.0, float(s["entropy_normalized"])))
+        bits = float(s["entropy_bits"])
+        distinct = int(s["distinct"])
+        label = col[:19] + "…" if len(col) > 20 else col
+        val_label = f"{bits:.3g} bits / {distinct:,} cat."
+        rows += _bar_row(y, label, val_label, frac, _ACCENT)
+        y += _ROW_H
+    for col in sorted(skipped):
+        label = col[:19] + "…" if len(col) > 20 else col
+        text_y = y + _BAR_H - 4
+        rows += (
+            f'<text x="0" y="{text_y}" class="lbl">{_esc(label)}</text>'
+            f'<rect x="150" y="{y}" width="{_CHART_W - 220}"'
+            f' height="{_BAR_H}" fill="none" stroke="{_GRID}"'
+            f' stroke-dasharray="4 3" rx="3"/>'
+            f'<text x="{_CHART_W - 90}" y="{text_y}"'
+            f' class="val muted">omitted</text>'
+        )
+        y += _ROW_H
+    if not cols and not skipped:
+        return '<p class="note">No categorical columns in this dataset.</p>'
+    return _svg(
+        y + 4,
+        rows,
+        "Categorical column Shannon entropy, normalized",
+    )
+
+
+def _math_section(math: dict[str, Any]) -> str:
+    """Assemble the Descriptive statistics HTML from math-stage findings."""
+    numeric: dict[str, Any] = math.get("numeric", {})
+    categorical: dict[str, Any] = math.get("categorical", {})
+    skipped: list[str] = math.get("skipped", [])
+    parts: list[str] = []
+    if numeric or skipped:
+        parts.append(
+            '<p class="note">Numeric columns — bar shows mean scaled'
+            " to the column with the largest mean; dark band marks the"
+            " 95% confidence interval from the findings store."
+            " Dashed rows were omitted from analysis.</p>"
+        )
+        parts.append(_math_numeric_chart(numeric, skipped))
+    if categorical or skipped:
+        parts.append(
+            '<p class="note">Categorical columns — normalized Shannon'
+            " entropy (0 = one category dominates,"
+            " 1 = fully uniform)."
+            " Dashed rows were omitted from analysis.</p>"
+        )
+        parts.append(_math_categorical_chart(categorical, skipped))
+    if not parts:
+        parts.append('<p class="note">No math-stage findings in this package.</p>')
+    return "".join(parts)
 
 
 def _profile_chart(columns: list[dict[str, Any]]) -> str:
@@ -172,9 +287,7 @@ def _profile_chart(columns: list[dict[str, Any]]) -> str:
             label = label[:19] + "\u2026"
         rows += _bar_row(y, label, _pct(comp), comp, colour)
         y += _ROW_H
-    return _svg(
-        y + 4, rows, "Column completeness, share of non-null rows"
-    )
+    return _svg(y + 4, rows, "Column completeness, share of non-null rows")
 
 
 # ── page assembly ────────────────────────────────────────────────────────────
@@ -258,19 +371,24 @@ def build_report_html(
     profile_digest: str,
     validate_digest: str,
     generated_date: str = "",
+    math: dict[str, Any] | None = None,
+    math_digest: str = "",
 ) -> str:
     """Render the full self-contained HTML report from findings.
 
     A pure function: the same arguments always produce byte-identical
-    output. Every number shown is taken directly from `profile` or
-    `validate`; nothing is computed here beyond scaling values to pixel
-    widths and formatting them for display.
+    output. Every number shown is taken directly from `profile`,
+    `validate`, or `math`; nothing is computed here beyond scaling
+    values to pixel widths and formatting them for display.
 
     `generated_date` is optional display metadata for the footer. It is
     the ONLY value that varies between runs, and it lives outside the
     findings region: the report's content stays a deterministic
     function of the findings, while the date honestly records when the
     file was rendered. Pass a fixed string for byte-stable output.
+
+    `math` is the findings dict from math.json; when None the
+    Descriptive statistics section is omitted entirely.
     """
     dama = profile["dama_scores"]
     columns = profile["columns"]
@@ -324,13 +442,25 @@ found.</p>
 {_profile_table(columns)}
 </section>
 
+{
+        f'''<section>
+<h2>Descriptive statistics</h2>
+<p class="note">Distribution summary from the math-stage findings.
+Every value traces to math.json in the findings store.</p>
+{_math_section(math)}
+</section>'''
+        if math is not None
+        else ""
+    }
+
 <footer>
-{f'<p>Report generated: {_esc(generated_date)}</p>' if generated_date else ''}
+{f"<p>Report generated: {_esc(generated_date)}</p>" if generated_date else ""}
 <p>Provenance and verification. Recompute the SHA-256 of each findings
 file and compare against these digests; every number in this report
 traces to them.</p>
 <p>dq_profile: <code>{_esc(profile_digest)}</code></p>
 <p>dq_validate: <code>{_esc(validate_digest)}</code></p>
+{f"<p>math: <code>{_esc(math_digest)}</code></p>" if math_digest else ""}
 <p class="sig">Rendered deterministically by the Delivery Engine from
 the hashed findings store. No figure was computed, estimated, or
 authored by an AI - the report draws the evidence, the reader supplies
@@ -381,13 +511,29 @@ def report_from_package(package_dir: str) -> Path:
         if isinstance(fp, dict) and fp.get("path"):
             source = str(fp["path"])
 
+    # Load optional math.json — present when the math stage has run.
+    math_path = findings / "math.json"
+    math_findings: dict[str, Any] | None = None
+    math_digest = ""
+    if math_path.exists():
+        math_doc = json.loads(math_path.read_text(encoding="utf-8"))
+        math_findings = math_doc.get("findings", math_doc)
+        math_digest = str(math_doc.get("sha256", ""))
+
     # The generation date is display metadata, injected here (not in
     # the pure builder) so build_report_html stays byte-deterministic.
     from datetime import date
 
     generated = date.today().strftime("%d %B %Y")
     doc_html = build_report_html(
-        profile, validate, source, prof_digest, val_digest, generated
+        profile,
+        validate,
+        source,
+        prof_digest,
+        val_digest,
+        generated,
+        math=math_findings,
+        math_digest=math_digest,
     )
     out = pkg / "report.html"
     out.write_text(doc_html, encoding="utf-8")

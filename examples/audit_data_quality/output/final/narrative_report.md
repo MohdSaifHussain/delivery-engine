@@ -16,14 +16,14 @@ Total exceptions: 0.
 
 ## Limitations & assumptions
 
-- Data freshness: the DAMA timeliness score is 0.7666666666666666 - the source's currency is not established; confirm the extract date before relying on time-sensitive conclusions.
+- Data freshness: the DAMA timeliness score is 0.7333333333333334 - the source's currency is not established; confirm the extract date before relying on time-sensitive conclusions.
 - Accuracy is unscored: it is never inferred from the dataset alone - reconciliation against an authoritative source is a separate, human-initiated step.
 
 Every caveat above is read from the hashed findings - nothing is inferred at writing time, and absent caveats are absent because nothing was recorded, not because nothing was checked.
 
 ## Evidence trail
 
-- dq_profile findings: `0ce27a87632a7e77bd5a649354e28c3bed79225a37638d8893b3ecee76849765`
+- dq_profile findings: `9cea5738e8ab8a722555b2392fe65e2e56b43fb257a95f5e20c5bca597b20a95`
 - dq_validate findings: `5e9577e803d37cc40a14eb8838fbf7774f702f798d6138e59bc8d92b4890cd64`
 
 Re-run the same commands on the same source: matching hashes prove the findings; a mismatch proves the data changed.
