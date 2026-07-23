@@ -1,6 +1,6 @@
 {
   "approved": true,
-  "approved_at_ist": "2026-07-22T10:14:54+05:30",
+  "approved_at_ist": "2026-07-24T03:22:04+05:30",
   "approved_by": "Example Analyst",
   "candidates_considered": [
     "churn_analysis",
@@ -100,7 +100,7 @@
       "numeric_column"
     ]
   ],
-  "created_at_ist": "2026-07-22T10:14:54+05:30",
+  "created_at_ist": "2026-07-24T03:22:04+05:30",
   "decision_rationale": "highest goal-keyword overlap (score 2) among 6 qualified playbooks",
   "decision_source": "deterministic",
   "goal": "churn analysis for the retention team",
