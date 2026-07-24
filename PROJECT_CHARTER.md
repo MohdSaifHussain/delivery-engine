@@ -1,7 +1,39 @@
 # PROJECT CHARTER — Delivery Engine
 
-**Version:** 1.0
-**Date:** 9 July 2026 (v0.1 founding) · amended 11-22 July 2026 (v0.2 through v1.0)
+**Version:** 1.1
+**Date:** 9 July 2026 (v0.1 founding) · amended 11-25 July 2026 (v0.2 through v1.1)
+### Amendment record (v1.1) — 25 July 2026
+
+**Step 23: Human-Declared-Final implemented.** The open item carried
+forward from v0.18 and v0.19 is now closed. declare_final.py provides
+a Tier-2 evidence-grade declaration for sealed packages, grounded in:
+EU AI Act Article 14 (human oversight, named and timestamped); NIST AI
+RMF MANAGE-4.1 (tamper-evident human confirmation); ISO/IEC 42001:2023
+§6.1.2 (human review of AI outputs); Maker-Checker / Four-Eyes
+principle (banking and financial services governance).
+
+Design: the engine shows the reviewer a structured summary of key
+findings and disclosed limitations before accepting CONFIRMED input
+(Tier 2 — not a rubber stamp). Writes tamper-evident declaration.json
+and regenerates manifest to include it. Non-gating: packages without a
+declaration are valid. 15 planted-answer tests, loophole hunt
+documented. This is the cognitive support tool framing made explicit:
+the engine supplies evidence, the human supplies judgment.
+
+**analystkit v2.1.0 upgrade.** The pre-existing 13 test_step20 parquet
+failures are resolved. analystkit v2.1.0 adds native Apache Parquet
+support (read_parquet via DuckDB), DuckDB excel extension for .xlsx
+(retiring the pandas divergence), and .xls refusal. Full suite now
+394 passed, 1 skipped, 0 failed — the first fully green suite.
+
+**v1.1 features shipped (22-24 July 2026):** Step 21 math charts
+(Descriptive statistics section in report.html, WCAG 2.2 AA); G2
+pseudoreplication disclosure (Forstmeier et al 2017); G3 minimum
+detectable effect (Cohen 1988, power=0.8, alpha=0.05); timeliness
+not-scored fix; paysim_fraud runner; examples gallery (index.html);
+CLAUDE.md governance file for Claude Code sessions. All 7 examples
+re-run on v1.1 engine. GHCR: v1.1.0, 1.1, latest all live.
+
 ### Amendment record (v1.0) — 22 July 2026
 
 The v1.0 production-ready milestone is recorded as complete. Built by
