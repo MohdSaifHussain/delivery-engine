@@ -40,9 +40,10 @@ Design positions (all consistent with the charter):
 """
 from __future__ import annotations
 
+import contextlib
 import hashlib
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Final
 from zoneinfo import ZoneInfo
@@ -98,10 +99,8 @@ def _load_findings(package_dir: Path) -> dict[str, Any]:
     if not findings_dir.exists():
         return findings
     for f in sorted(findings_dir.glob("*.json")):
-        try:
+        with contextlib.suppress(json.JSONDecodeError):
             findings[f.stem] = json.loads(f.read_text(encoding="utf-8"))
-        except json.JSONDecodeError:
-            pass
     return findings
 
 
@@ -191,10 +190,8 @@ def build_review_summary(package_dir: Path) -> str:
     plan_info: dict[str, Any] = {}
     plan_path = package_dir / "plan.json"
     if plan_path.exists():
-        try:
+        with contextlib.suppress(json.JSONDecodeError):
             plan_info = json.loads(plan_path.read_text(encoding="utf-8"))
-        except json.JSONDecodeError:
-            pass
 
     lines: list[str] = []
     lines.append("")
@@ -304,7 +301,7 @@ def declare_final(
         response = input("> ").strip()
     except (KeyboardInterrupt, EOFError):
         print("\nDeclaration cancelled.")
-        raise SystemExit(0)
+        raise SystemExit(0) from None
 
     if response != "CONFIRMED":
         raise DeclarationError(
@@ -313,7 +310,7 @@ def declare_final(
         )
 
     # Build the declaration record
-    now_utc = datetime.now(timezone.utc)
+    now_utc = datetime.now(UTC)
     now_ist = datetime.now(IST)
 
     content_sha256 = _content_digest(
