@@ -89,7 +89,8 @@ def _load_manifest(package_dir: Path) -> dict[str, Any]:
             f"manifest.json not found in {package_dir}. "
             f"The package must be sealed before it can be declared final."
         )
-    return json.loads(manifest_path.read_text(encoding="utf-8"))
+    result: dict[str, Any] = json.loads(manifest_path.read_text(encoding="utf-8"))
+    return result
 
 
 def _load_findings(package_dir: Path) -> dict[str, Any]:
@@ -100,7 +101,8 @@ def _load_findings(package_dir: Path) -> dict[str, Any]:
         return findings
     for f in sorted(findings_dir.glob("*.json")):
         with contextlib.suppress(json.JSONDecodeError):
-            findings[f.stem] = json.loads(f.read_text(encoding="utf-8"))
+            parsed: Any = json.loads(f.read_text(encoding="utf-8"))
+            findings[f.stem] = parsed
     return findings
 
 
@@ -219,13 +221,11 @@ def build_review_summary(package_dir: Path) -> str:
     lines.append("")
 
     lines.append("--- Key findings you are declaring final ---")
-    for m in _extract_key_metrics(findings):
-        lines.append(m)
+    lines.extend(_extract_key_metrics(findings))
     lines.append("")
 
     lines.append("--- Limitations disclosed by the engine ---")
-    for lim in _extract_limitations(findings):
-        lines.append(lim)
+    lines.extend(_extract_limitations(findings))
     lines.append("")
 
     n_files = len(manifest.get("files", {}))
