@@ -2,6 +2,7 @@
   "files": {
     "README.md": "968f873f0503396b95f34464c208f59dbbf6b13d132b1529168254179a64494f",
     "audit_log.jsonl": "1ced7a81efe9d9724d8de7cee439483dcdc8ef5d67ef452900d805ec585221ad",
+    "declaration.json": "5bef1b0eb3c30c3493233021ab3b97de5aa2f422bf5f8fb38d43d8487cc9922d",
     "delivery_package.pptx": "f1af9fa723dc27718ba1e4e6676db4ad09bf663951dc04e760becc53a2b92f43",
     "eda_notebook.ipynb": "d124ab4df046191093625240181bd8cdabb230b7d251eb62dc61db3897dbddad",
     "execution_preview.md": "36c67b704e110479e09f9c3b0f2e68a7dca41659030dd039bef11fe10e29d950",
@@ -11,7 +12,8 @@
     "findings\\dq_validate.json": "ded2910ba60cc98e7e42642203e47e40f61b49bf05b7f0b45dd3d3bb052262b0",
     "handoff_manifest.json": "0295acbaee1a52198a3ff624498191cfaeec26e49f2c5fe5e8825449240b98a9",
     "narrative_report.md": "da144103f88b0ba17655074ee5df3d4fd4520eecfd908da8378bfbca10fae5d8",
-    "plan.json": "3509ea435be5325af7da2e9222d974caffe3e13bfdcb05061a69198768782ca5"
+    "plan.json": "3509ea435be5325af7da2e9222d974caffe3e13bfdcb05061a69198768782ca5",
+    "report.html": "0a348a94767f1408624b6407dca0150a46bee6059f0bbefc2e7db8bf20ea0e25"
   },
   "findings": {
     "baseline": "fa91e8be93470199a86eec2f10849336f9252cfc2c4a1ab6ffdcf213f6f6bd40",

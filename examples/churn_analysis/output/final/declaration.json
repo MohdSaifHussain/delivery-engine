@@ -1,0 +1,22 @@
+{
+  "confirmed_items": [
+    "read the key findings and metrics shown above",
+    "accepted the limitations the engine has disclosed",
+    "understood the cognitive support tool nature of this system",
+    "accepted accountability for acting on this package"
+  ],
+  "content_sha256": "159092fa7aad93697a77f1a6e5b2158534f0f4e6430acdbd42ee08c3e87cc78f",
+  "declared_at_ist": "2026-07-25T03:49:11+05:30",
+  "declared_at_utc": "2026-07-24T22:19:11+00:00",
+  "declared_by": "Mohd Saif Hussain, Architect",
+  "framework_citations": [
+    "EU AI Act Article 14 \u2014 human oversight, named and timestamped",
+    "NIST AI RMF MANAGE-4.1 \u2014 tamper-evident human confirmation",
+    "ISO/IEC 42001:2023 \u00a76.1.2 \u2014 human review of AI outputs",
+    "Maker-Checker / Four-Eyes principle \u2014 financial services governance"
+  ],
+  "note": "The content_sha256 covers declared_by, confirmed_items, manifest_sha256, framework_citations, and tool_nature \u2014 excluding timestamps so the content is independently verifiable. The manifest.json is regenerated after this file is written, so it hashes the declaration itself. Alter either file and the other's hash check fails.",
+  "package_manifest_sha256": "732bf08df4103421f551bb98322d4e9b91b88b40b89a24b5a5c5b3826c79682b",
+  "schema_version": "1.0",
+  "tool_nature": "cognitive support tool \u2014 the engine supplies evidence, the human supplies judgment"
+}

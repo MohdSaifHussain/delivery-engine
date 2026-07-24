@@ -6,6 +6,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-07-25
+
+### Added
+- Step 23 Human-Declared-Final: declare_final.py CLI entry point and
+  src/delivery_engine/declaration.py. Tier-2 evidence-grade declaration
+  grounded in EU AI Act Article 14 (human oversight, named and
+  timestamped), NIST AI RMF MANAGE-4.1 (tamper-evident human
+  confirmation), ISO/IEC 42001:2023 §6.1.2 (human review of AI
+  outputs), and Maker-Checker / Four-Eyes principle (financial services
+  governance). Shows reviewer a structured summary of key findings and
+  disclosed limitations before accepting CONFIRMED input — the
+  Northwell high-performing hospital pattern, not the Cigna rubber-stamp
+  pattern. Writes tamper-evident declaration.json and regenerates
+  manifest to include it. Non-gating: packages without a declaration
+  are valid. 15 planted-answer tests including loophole hunt.
+- churn_analysis example now includes declaration.json — first package
+  declared final by Mohd Saif Hussain, Architect on 25 July 2026.
+  Shows the feature working on real production data.
+
+### Fixed
+- analystkit v2.1.0 upgrade resolves all 13 pre-existing parquet test
+  failures in test_step20. Native Apache Parquet support via DuckDB
+  read_parquet, DuckDB excel extension for .xlsx (retiring pandas
+  divergence), .xls refusal with clean error message.
+  Full suite: 394 passed, 1 skipped, 0 failed — first fully green
+  suite in the project's history.
+
+### Changed
+- PROJECT_CHARTER.md bumped to v1.1. Amendment record (v1.1) closes
+  the human-declared-final open item carried from v0.18/v0.19.
+  Records framework citations and cognitive support tool framing.
+- CLAUDE.md updated: human-declared-final marked complete in roadmap,
+  test count updated to 394.
+
 ## [1.1.0] - 2026-07-24
 
 ### Added

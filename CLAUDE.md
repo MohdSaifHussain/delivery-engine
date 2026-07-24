@@ -180,6 +180,10 @@ Each must pass the full gate before merging:
    redesign (current version uses dark glassmorphism — good but not
    readable enough). Maintain all data, links, and filter functionality.
 
+7. **Human-Declared-Final** — COMPLETE (v1.2). declare_final.py and
+   src/delivery_engine/declaration.py. EU AI Act Art.14, NIST AI RMF
+   MANAGE-4.1, ISO/IEC 42001 §6.1.2. 15 tests. Non-gating.
+
 ---
 
 ## How to resume in a new session
