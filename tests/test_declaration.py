@@ -23,7 +23,6 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
-from typing import Any
 from unittest.mock import patch
 
 import pytest
@@ -39,19 +38,17 @@ from delivery_engine.declaration import (
     declare_final,
 )
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
 
 def _minimal_package(tmp_path: Path) -> Path:
-    """Build a minimal sealed package for testing — plan + manifest only."""
+    """Build a minimal sealed package for testing."""
     pkg = tmp_path / "final"
     pkg.mkdir(parents=True)
     findings_dir = pkg / "findings"
     findings_dir.mkdir()
 
-    # minimal dq_profile findings
     dq = {
         "stage": "dq_profile",
         "findings": {
@@ -71,7 +68,6 @@ def _minimal_package(tmp_path: Path) -> Path:
         json.dumps(dq), encoding="utf-8"
     )
 
-    # minimal plan
     plan = {
         "playbook_name": "universal_audit",
         "goal": "test declaration",
@@ -80,13 +76,11 @@ def _minimal_package(tmp_path: Path) -> Path:
     }
     (pkg / "plan.json").write_text(json.dumps(plan), encoding="utf-8")
 
-    # audit log (needed for a realistic package)
     (pkg / "audit_log.jsonl").write_text(
         json.dumps({"seq": 1, "stage": "test", "outcome": "pass"}) + "\n",
         encoding="utf-8",
     )
 
-    # minimal manifest — written last, covers all files
     files: dict[str, str] = {}
     for p in sorted(pkg.rglob("*")):
         if p.is_file() and p.name != "manifest.json":
@@ -125,9 +119,8 @@ class TestBuildReviewSummary:
     def test_summary_contains_confirmed_items(self, tmp_path: Path) -> None:
         pkg = _minimal_package(tmp_path)
         summary = build_review_summary(pkg)
-        assert "Type CONFIRMED" in summary or "accepted accountability" in summary
+        assert "accepted accountability" in summary
         for item in CONFIRMED_ITEMS:
-            # Each item appears in abbreviated form — check key words
             assert item[:30] in summary
 
     def test_summary_shows_not_scored_for_missing_dama(
@@ -135,12 +128,12 @@ class TestBuildReviewSummary:
     ) -> None:
         pkg = _minimal_package(tmp_path)
         summary = build_review_summary(pkg)
-        assert "not scored" in summary  # accuracy and timeliness
+        assert "not scored" in summary
 
     def test_summary_requires_existing_manifest(self, tmp_path: Path) -> None:
         pkg = tmp_path / "empty"
-        pkg.mkdir(parents=True)
-        with pytest.raises(DeclarationError, match="manifest.json not found"):
+        pkg.mkdir()
+        with pytest.raises(DeclarationError, match=r"manifest\.json not found"):
             build_review_summary(pkg)
 
 
@@ -164,9 +157,9 @@ class TestContentDigest:
 class TestDeclareFinal:
     def test_declaration_requires_confirmed(self, tmp_path: Path) -> None:
         pkg = _minimal_package(tmp_path)
-        with patch("builtins.input", return_value="yes"):
-            with pytest.raises(DeclarationError, match="CONFIRMED"):
-                declare_final(pkg, "Test Reviewer")
+        with patch("builtins.input", return_value="yes"), \
+             pytest.raises(DeclarationError, match="CONFIRMED"):
+            declare_final(pkg, "Test Reviewer")
 
     def test_successful_declaration_writes_file(self, tmp_path: Path) -> None:
         pkg = _minimal_package(tmp_path)
@@ -196,16 +189,18 @@ class TestDeclareFinal:
         pkg = _minimal_package(tmp_path)
         with patch("builtins.input", return_value="CONFIRMED"):
             declare_final(pkg, "Test Reviewer")
-        manifest = json.loads((pkg / "manifest.json").read_text(encoding="utf-8"))
+        manifest = json.loads(
+            (pkg / "manifest.json").read_text(encoding="utf-8")
+        )
         assert "declaration.json" in manifest["files"]
 
     def test_cannot_declare_twice(self, tmp_path: Path) -> None:
         pkg = _minimal_package(tmp_path)
         with patch("builtins.input", return_value="CONFIRMED"):
             declare_final(pkg, "Test Reviewer")
-        with patch("builtins.input", return_value="CONFIRMED"):
-            with pytest.raises(DeclarationError, match="already exists"):
-                declare_final(pkg, "Test Reviewer")
+        with patch("builtins.input", return_value="CONFIRMED"), \
+             pytest.raises(DeclarationError, match="already exists"):
+            declare_final(pkg, "Test Reviewer")
 
     def test_nonexistent_package_raises(self, tmp_path: Path) -> None:
         with pytest.raises(DeclarationError, match="not found"):
@@ -214,15 +209,12 @@ class TestDeclareFinal:
     def test_content_sha256_is_deterministic_across_calls(
         self, tmp_path: Path
     ) -> None:
-        """Same reviewer + same package content = same content_sha256.
-        This proves the content digest is not randomised."""
+        """Same reviewer + same package content = same content_sha256."""
         pkg1 = _minimal_package(tmp_path / "pkg1")
         pkg2 = _minimal_package(tmp_path / "pkg2")
-        # Get manifest sha256 for both (they are identical packages)
         from delivery_engine.audit import file_sha256
         sha1 = file_sha256(pkg1 / "manifest.json")
         sha2 = file_sha256(pkg2 / "manifest.json")
         d1 = _content_digest("Alice", CONFIRMED_ITEMS, sha1)
         d2 = _content_digest("Alice", CONFIRMED_ITEMS, sha2)
-        # Identical packages -> identical content digest
         assert d1 == d2

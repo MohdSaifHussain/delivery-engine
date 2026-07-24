@@ -153,6 +153,39 @@ Every edit is checked against the constitution (rules V1–V15 in
 the [playbook specification (PLAYBOOK_SPEC.md)](PLAYBOOK_SPEC.md)) the moment the file loads — an invalid playbook
 refuses to load with the rule number and the reason.
 
+## Declaring a package final
+
+After the package is sealed you can record your accountability as
+the human who reviewed and approved it:
+
+```bash
+python declare_final.py \
+    --package output/final \
+    --declarer "Your Name, Role"
+```
+
+The engine presents a structured review summary — playbook, goal,
+key findings (DAMA scores, model metrics, G2/G3 disclosures),
+and the limitations the engine has disclosed. Type `CONFIRMED` to
+proceed.
+
+What gets written:
+
+- `declaration.json` — your name, timestamps (UTC and IST), the
+  four items you confirmed, the manifest SHA-256 you are signing,
+  and a `content_sha256` that is independently verifiable.
+- `manifest.json` — regenerated to include `declaration.json` in
+  its hash tree. Alter either file and the other's check fails.
+
+**Framework basis:** EU AI Act Article 14 (human oversight, named
+and timestamped) · NIST AI RMF MANAGE-4.1 (tamper-evident human
+confirmation) · ISO/IEC 42001:2023 §6.1.2 (human review of AI
+outputs) · Maker-Checker / Four-Eyes principle.
+
+This is a non-gating act — packages without a declaration are
+valid. The declaration is evidence that a named human reviewed the
+package with understanding, not just that the engine ran.
+
 ## Reading the package like a reviewer
 
 - Start with `narrative_report.md` — the findings, then **Limitations

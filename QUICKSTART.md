@@ -137,6 +137,14 @@ The engine is honest about where AI sits, and you control it:
   rules, the run STOPS and prints a SHA-256. You read the draft, then
   approve that exact hash. Approving a stale or edited draft is refused.
   This is reviewer sign-off, made cryptographic.
+- **Human-Declared-Final** — after the package is sealed, declare it
+  final with your name. The engine shows you the key findings and
+  limitations before accepting your confirmation. Writes a tamper-evident
+  `declaration.json` hashed into the manifest:
+
+  ```bash
+  python declare_final.py --package output/final --declarer "Your Name, Role"
+  ```
 
 ## 7. Where things live
 

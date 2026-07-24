@@ -4,6 +4,8 @@
 ![Python](https://img.shields.io/badge/python-3.12%2B-blue)
 ![Type checked](https://img.shields.io/badge/mypy-strict-success)
 ![Lint](https://img.shields.io/badge/ruff-clean-success)
+![Tests](https://img.shields.io/badge/tests-394%20passed-brightgreen)
+![Declaration](https://img.shields.io/badge/human--declared--final-EU%20AI%20Act%20Art.14-blue)
 
 **Project patterns as governed, executable workflows.**
 Agent proposes · deterministic tools dispose · human governs · every claim traceable.
@@ -198,6 +200,23 @@ The constitutional document governing all sessions — architecture principles, 
 
 ---
 
+## Human-Declared-Final
+
+After a package is sealed, a named reviewer can declare it final —
+recording their accountability against the exact package hash:
+
+```bash
+python declare_final.py \
+    --package examples/churn_analysis/output/final \
+    --declarer "Your Name, Role"
+```
+
+The engine shows the reviewer the key findings and disclosed
+limitations. Typing `CONFIRMED` writes a tamper-evident
+`declaration.json` and regenerates `manifest.json` to include it.
+Grounded in EU AI Act Article 14, NIST AI RMF MANAGE-4.1, and
+ISO/IEC 42001:2023 §6.1.2.
+
 ## Run with Docker
 
 ```bash
@@ -212,4 +231,4 @@ docker run --rm delivery-engine python examples/audit_data_quality/run_example.p
 ```
 
 The container mirrors CI exactly: Python 3.12 + Node 24 + all dependencies.
-367 tests pass in a clean environment with no local setup required.
+394 tests pass in a clean environment with no local setup required.
