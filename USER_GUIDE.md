@@ -201,6 +201,35 @@ package with understanding, not just that the engine ran.
 - `audit_log.jsonl` — the run's full story, including anything that
   was skipped, flagged, or stopped, with reasons.
 
+## When a run fails before it starts
+
+The audit log is written by the executor, so a failure *before* the
+executor starts leaves you nothing to read — a source that will not
+load, a playbook that will not validate, a missing dependency. For
+those, the engine writes a diagnostic instead:
+
+```bash
+python diagnose.py
+```
+
+`delivery-engine-diagnostic.json` records the PEP 508 environment
+markers, the installed versions of the packages that change engine
+behaviour (analystkit, duckdb, pandas, scikit-learn, scipy), whether
+Node is on PATH, and — when it is a crash report — where the fault
+occurred, as `basename.py:LINE in function`.
+
+`run_project.py` writes this automatically on an unexpected failure and
+tells you where. Handled refusals do not trigger it: a missing rules
+file or an unapproved generated playbook is the engine working as
+designed, not a defect.
+
+What the record does **not** contain: usernames, hostnames, absolute
+paths, environment variables, dataset content, or column names. The
+source file appears by extension only (`.parquet`), because the
+extension names the reader path that failed while the path would name
+your directory structure. Nothing is transmitted; attaching it to an
+issue is your decision.
+
 ## One warning worth repeating
 
 > [!WARNING]

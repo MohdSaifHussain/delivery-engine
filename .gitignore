@@ -17,3 +17,6 @@ playbooks/generated/
 # anything. Un-ignore example outputs only; all other output/ stays ignored.
 !examples/*/output/
 !examples/*/output/**
+
+# Diagnostic records are local artifacts, never committed
+delivery-engine-diagnostic.json

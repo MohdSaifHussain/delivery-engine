@@ -6,6 +6,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-07-25
+
+### Added
+- Diagnostic record: `diagnose.py` and `src/delivery_engine/diagnostics.py`.
+  Writes `delivery-engine-diagnostic.json` describing what a bug report
+  needs and cannot be guessed from a traceback: PEP 508 environment
+  markers, versions of the packages that change engine behaviour
+  (analystkit, duckdb, pandas, scikit-learn, scipy), and whether Node is
+  on PATH. Written automatically when `run_project.py` fails with an
+  unexpected error — the class of failure that occurs *before* the
+  executor starts and therefore before any `audit_log.jsonl` exists.
+  Also available on demand: `python diagnose.py`. 20 tests.
+- Privacy by construction, not by policy: no usernames, hostnames,
+  absolute paths, environment variables, or dataset content. Traceback
+  frames are reduced to `basename.py:LINE in function` — the fault is
+  located precisely, the user's directory structure stays private. The
+  source file is recorded by extension only. Nothing is transmitted;
+  the record is written locally and attaching it is the user's decision.
+
+### Fixed
+- `pyproject.toml` still carried the `0.1.0` scaffold version through
+  v1.0.0, v1.1.0, and v1.2.0. Now 1.3.0. Found by the diagnostic on its
+  first run: every bug report would have claimed 0.1.0 regardless of the
+  release installed, making the field useless for triage.
+
 ## [1.2.0] - 2026-07-25
 
 ### Added

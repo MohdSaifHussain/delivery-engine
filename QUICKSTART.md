@@ -158,6 +158,19 @@ The engine is honest about where AI sits, and you control it:
 
 ## 8. Troubleshooting
 
+**Before opening an issue, run this:**
+
+```bash
+python diagnose.py
+```
+
+It writes `delivery-engine-diagnostic.json` — your Python version,
+package versions, and whether Node is on PATH. That is the context a
+maintainer cannot guess from a pasted traceback. `run_project.py`
+writes it automatically when a run fails unexpectedly. It contains no
+usernames, paths, environment variables, or dataset content.
+
+
 - **`pip install -e .` fails on analystkit** — you are offline or
   GitHub is unreachable; analystkit installs from its public repo.
 - **docx/pptx build fails** — run `npm install pptxgenjs docx` in the

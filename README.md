@@ -217,6 +217,27 @@ limitations. Typing `CONFIRMED` writes a tamper-evident
 Grounded in EU AI Act Article 14, NIST AI RMF MANAGE-4.1, and
 ISO/IEC 42001:2023 §6.1.2.
 
+## When something goes wrong
+
+A run that fails *inside* the executor writes `audit_log.jsonl` — every
+gate, every decision, every reason. A run that fails *before* the
+executor starts does not, because the audit log is the executor's. For
+that case:
+
+```bash
+python diagnose.py
+```
+
+This writes `delivery-engine-diagnostic.json`: PEP 508 environment
+markers, the versions of every package that changes engine behaviour,
+and whether Node is on PATH. `run_project.py` writes the same record
+automatically when it fails unexpectedly.
+
+The record carries no usernames, hostnames, absolute paths, environment
+variables, or dataset content. Traceback frames are reduced to
+`basename.py:LINE in function`. Nothing is transmitted — read it, then
+attach it to an issue if you choose to.
+
 ## Run with Docker
 
 ```bash
