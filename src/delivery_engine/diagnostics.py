@@ -48,6 +48,7 @@ Design positions:
 from __future__ import annotations
 
 import json
+import locale
 import platform
 import shutil
 import sys
@@ -62,6 +63,7 @@ __all__ = [
     "DIAGNOSTIC_FILENAME",
     "TRACKED_PACKAGES",
     "collect_diagnostic",
+    "collect_encoding",
     "collect_environment",
     "collect_package_versions",
     "write_diagnostic",
@@ -69,7 +71,7 @@ __all__ = [
 
 DIAGNOSTIC_FILENAME: Final[str] = "delivery-engine-diagnostic.json"
 
-SCHEMA_VERSION: Final[str] = "1.0"
+SCHEMA_VERSION: Final[str] = "1.1"
 
 #: Packages whose versions materially change engine behaviour. duckdb
 #: and pandas drive the reader; scikit-learn drives the deterministic
@@ -121,6 +123,41 @@ def collect_environment() -> dict[str, str]:
         except Exception:  # a diagnostic never raises
             env[key] = UNAVAILABLE
     return env
+
+
+def collect_encoding() -> dict[str, str]:
+    """Encodings that affect the engine's own I/O.
+
+    Deliberately separate from the PEP 508 block: those names are a
+    published standard, these are not, and mixing them would erode the
+    guarantee that a maintainer can read the standard names literally.
+
+    stdout_encoding is the one that actually bites. The engine prints
+    em-dashes and box-drawing characters (declare_final.py draws a
+    review summary); redirect that to a file on a system whose locale
+    is cp1252 and Python raises UnicodeEncodeError from the engine's
+    own print calls, with a traceback that looks nothing like an
+    encoding problem.
+
+    filesystem_encoding matters for non-ASCII paths. preferred_encoding
+    is what open() would default to - the engine always passes
+    encoding="utf-8" explicitly, so a surprising value here is a signal
+    that some caller did not.
+    """
+    collectors: dict[str, Any] = {
+        "stdout_encoding": lambda: sys.stdout.encoding,
+        "stderr_encoding": lambda: sys.stderr.encoding,
+        "filesystem_encoding": sys.getfilesystemencoding,
+        "preferred_encoding": locale.getpreferredencoding,
+        "default_encoding": sys.getdefaultencoding,
+    }
+    enc: dict[str, str] = {}
+    for key, fn in collectors.items():
+        try:
+            enc[key] = str(fn())
+        except Exception:  # a diagnostic never raises
+            enc[key] = UNAVAILABLE
+    return enc
 
 
 def collect_package_versions() -> dict[str, str]:
@@ -187,6 +224,7 @@ def collect_diagnostic(
         "generated_at_utc": datetime.now(UTC).isoformat(timespec="seconds"),
         "privacy_note": PRIVACY_NOTE,
         "environment": collect_environment(),
+        "encoding": collect_encoding(),
         "packages": collect_package_versions(),
         "runtime": _collect_node(),
     }

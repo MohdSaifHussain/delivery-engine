@@ -213,10 +213,21 @@ python diagnose.py
 ```
 
 `delivery-engine-diagnostic.json` records the PEP 508 environment
-markers, the installed versions of the packages that change engine
-behaviour (analystkit, duckdb, pandas, scikit-learn, scipy), whether
-Node is on PATH, and — when it is a crash report — where the fault
-occurred, as `basename.py:LINE in function`.
+markers, the encodings that affect the engine's own I/O, the installed
+versions of the packages that change engine behaviour (analystkit,
+duckdb, pandas, scikit-learn, scipy), whether Node is on PATH, and —
+when it is a crash report — where the fault occurred, as
+`basename.py:LINE in function`.
+
+The encoding block sits apart from the PEP 508 block deliberately: those
+names are a published standard, and a maintainer must be able to read
+them literally. `stdout_encoding` is the one that repays the space. The
+engine prints em-dashes and box-drawing characters — `declare_final.py`
+draws a review summary out of them — so redirecting output to a file on
+a system whose locale is cp1252 raises `UnicodeEncodeError` from the
+engine's own `print` calls. That traceback names a print statement, not
+an encoding, and is close to unreadable without knowing what stdout was
+set to.
 
 `run_project.py` writes this automatically on an unexpected failure and
 tells you where. Handled refusals do not trigger it: a missing rules

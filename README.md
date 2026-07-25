@@ -4,7 +4,7 @@
 ![Python](https://img.shields.io/badge/python-3.12%2B-blue)
 ![Type checked](https://img.shields.io/badge/mypy-strict-success)
 ![Lint](https://img.shields.io/badge/ruff-clean-success)
-![Tests](https://img.shields.io/badge/tests-414%20passed-brightgreen)
+![Tests](https://img.shields.io/badge/tests-419%20passed-brightgreen)
 ![Declaration](https://img.shields.io/badge/human--declared--final-EU%20AI%20Act%20Art.14-blue)
 
 **Project patterns as governed, executable workflows.**
@@ -229,8 +229,15 @@ python diagnose.py
 ```
 
 This writes `delivery-engine-diagnostic.json`: PEP 508 environment
-markers, the versions of every package that changes engine behaviour,
-and whether Node is on PATH. `run_project.py` writes the same record
+markers, the encodings that affect the engine's own I/O, the versions of
+every package that changes engine behaviour, and whether Node is on PATH.
+
+The encoding block is separate from the PEP 508 block on purpose — those
+eight field names are a published standard and must keep meaning exactly
+what the standard says. `stdout_encoding` is the field that earns its
+place: the engine prints em-dashes and box-drawing characters, so a
+cp1252 stdout raises `UnicodeEncodeError` from the engine's own print
+calls, with a traceback that looks nothing like an encoding problem. `run_project.py` writes the same record
 automatically when it fails unexpectedly.
 
 The record carries no usernames, hostnames, absolute paths, environment
@@ -252,4 +259,4 @@ docker run --rm delivery-engine python examples/audit_data_quality/run_example.p
 ```
 
 The container mirrors CI exactly: Python 3.12 + Node 24 + all dependencies.
-414 tests pass in a clean environment with no local setup required.
+419 tests pass in a clean environment with no local setup required.

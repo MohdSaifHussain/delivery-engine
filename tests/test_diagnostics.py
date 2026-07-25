@@ -27,6 +27,7 @@ from delivery_engine.diagnostics import (
     DIAGNOSTIC_FILENAME,
     TRACKED_PACKAGES,
     collect_diagnostic,
+    collect_encoding,
     collect_environment,
     collect_package_versions,
     write_diagnostic,
@@ -174,7 +175,7 @@ class TestWriteDiagnostic:
         path = write_diagnostic(out_dir=tmp_path)
         assert path is not None
         loaded = json.loads(path.read_text(encoding="utf-8"))
-        assert loaded["schema_version"] == "1.0"
+        assert loaded["schema_version"] == "1.1"
 
     def test_write_returns_none_on_unwritable_target(
         self, tmp_path: Path
@@ -192,3 +193,40 @@ class TestWriteDiagnostic:
         assert path is not None
         loaded = json.loads(path.read_text(encoding="utf-8"))
         assert loaded["failure"]["exception_type"] == "ValueError"
+
+
+class TestCollectEncoding:
+    """The encoding block exists because stdout_encoding is a real
+    failure mode: the engine prints em-dashes and box-drawing
+    characters, and a cp1252 stdout raises UnicodeEncodeError from the
+    engine's own print calls."""
+
+    EXPECTED = frozenset({
+        "stdout_encoding",
+        "stderr_encoding",
+        "filesystem_encoding",
+        "preferred_encoding",
+        "default_encoding",
+    })
+
+    def test_all_expected_fields_present(self) -> None:
+        assert set(collect_encoding()) == self.EXPECTED
+
+    def test_values_are_non_empty_strings(self) -> None:
+        enc = collect_encoding()
+        assert all(isinstance(v, str) and v for v in enc.values())
+
+    def test_encoding_block_reaches_the_record(self) -> None:
+        record = collect_diagnostic()
+        assert set(record["encoding"]) == self.EXPECTED
+
+    def test_pep508_block_stays_pure(self) -> None:
+        """Encoding fields must NOT leak into the PEP 508 block - those
+        names are a published standard and must keep meaning exactly
+        what the standard says."""
+        env = collect_environment()
+        assert self.EXPECTED.isdisjoint(set(env))
+
+    def test_schema_version_records_the_added_key(self) -> None:
+        """The record gained a key, so the schema version moved."""
+        assert collect_diagnostic()["schema_version"] == "1.1"
