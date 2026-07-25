@@ -213,3 +213,28 @@ git stash drop
    It changes generated document bytes, breaking the re-performability
    contract (§4.8) for packages sealed under v1.x. Requires re-running
    all 7 examples and re-proving determinism before merge.
+
+
+## Release checklist
+
+Run through this before every tag. The v1.3.0 cycle shipped with a
+stale test-count badge and a `pyproject.toml` version three releases
+out of date - both were caught after the fact, by noticing. Process
+catches what noticing misses.
+
+1. All four gates green: `pytest -q`, `mypy src/ --strict`,
+   `ruff check src/ tests/`, `ruff format --check src/ tests/`
+2. `pyproject.toml` version bumped to the release version
+3. `pip install -e . --no-deps` so installed metadata matches
+4. README test-count badge matches the current suite total
+5. README "Run with Docker" test count matches
+6. CHANGELOG `[Unreleased]` promoted to the dated version
+7. PROJECT_CHARTER amendment record added (append - never edit an
+   existing amendment to match the present)
+8. CLAUDE.md roadmap: completed items marked, new items added
+9. README / QUICKSTART / USER_GUIDE document any new command
+10. Examples re-run if engine output changed; historical archive
+    updated if packages were replaced
+11. Merge to main, push, annotated tag, push tag
+12. Publish the GitHub Release page - this triggers the Docker
+    workflow; the image is not built until the release exists
