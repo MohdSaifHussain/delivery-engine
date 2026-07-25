@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-07-25
+
 ### Added
 - Diagnostic record: `diagnose.py` and `src/delivery_engine/diagnostics.py`.
   Writes `delivery-engine-diagnostic.json` describing what a bug report
