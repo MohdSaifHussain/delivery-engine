@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "delivery-engine"
-version = "1.3.0"
+version = "1.4.0"
 description = "Project patterns as governed, executable workflows"
 requires-python = ">=3.12"
 authors = [{ name = "Mohd Saif Hussain" }]

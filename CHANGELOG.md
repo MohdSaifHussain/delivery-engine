@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Diagnostic record gains an `encoding` block: `stdout_encoding`,
+  `stderr_encoding`, `filesystem_encoding`, `preferred_encoding`, and
+  `default_encoding`. Kept separate from the PEP 508 environment block
+  so those eight standard field names keep meaning exactly what PEP 508
+  says. `stdout_encoding` is the field that earns its place — the engine
+  prints em-dashes and box-drawing characters, so a cp1252 stdout raises
+  `UnicodeEncodeError` from the engine's own `print` calls, producing a
+  traceback that names a print statement rather than an encoding.
+  Schema version moves 1.0 → 1.1. 5 new tests.
+
 ### Known limitations
 - Binary document byte-stability (`.docx` / `.pptx` / `.xlsx`) is not
   held. Two runs on identical inputs produce different container
