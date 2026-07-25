@@ -35,6 +35,18 @@ paste here
      - the relevant lines from audit_log.jsonl
      - the error from manifest.json verification (if applicable) -->
 
+## Diagnostic record
+
+<!-- Run `python diagnose.py` and attach or paste
+     delivery-engine-diagnostic.json here. It records the environment
+     and package versions needed to reproduce, and contains no
+     usernames, paths, or dataset content. If the run failed
+     unexpectedly, the file was already written for you. -->
+
+```json
+paste here
+```
+
 ## Charter section (if known)
 
 <!-- Which principle might be violated? e.g. "§4.1 injected-numbers rule" -->

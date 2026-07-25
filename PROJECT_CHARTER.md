@@ -2,6 +2,57 @@
 
 **Version:** 1.1
 **Date:** 9 July 2026 (v0.1 founding) · amended 11-25 July 2026 (v0.2 through v1.1)
+### Amendment record (v1.2) — 25 July 2026
+
+**Diagnostic record added (v1.3 development).** A failure before the
+executor starts — a source that will not load, a playbook that will not
+validate, a missing dependency — produces no audit log, because the
+audit log is written by the executor. The user is left with a terminal
+traceback; the maintainer with a bug report that cannot be reproduced.
+`src/delivery_engine/diagnostics.py` closes that gap.
+
+Grounded in: **PEP 508** (environment marker names — the Python
+packaging standard for describing an environment, so a maintainer
+reading a diagnostic knows exactly what each field means) and the
+**data-minimisation** principle (collect only what is necessary to
+diagnose the problem).
+
+Design positions: sanitised traceback (`traceback.extract_tb` frames
+reduced to basename, line, function — full debugging value, zero path
+leakage); no subprocess (a crash reporter that crashes is worse than
+none, so Node is detected by presence on PATH, not by running it);
+every collector individually guarded (one field failing records
+"unavailable" and continues); local only, never transmitted — consent
+is the act of attaching the file, exactly as it is for a pasted stack
+trace. Diagnostics are **not findings**: they describe the machine, not
+the data, and never enter the Findings Store or a manifest (§4.3).
+
+**Scope decision — telemetry declined.** Cross-run local telemetry and
+opt-in crash transmission were both considered and rejected. At zero
+package downloads and a single maintainer, an observability layer would
+instrument a population of zero and drift stale for want of a consumer;
+a phone-home path would carry privacy and consent obligations
+disproportionate to a local analytical tool. The triggers to revisit
+are concrete: a bug report that cannot be reproduced, a second
+contributor whose PRs need automated archetype and gate checks, or a
+user with a real operational dependency. Instrument for problems you
+have, not problems you can imagine.
+
+**Versioning position recorded.** The python-docx/pptx migration is
+**v2.0.0, not v1.3.0**. This project's public API is not `run()` — it
+is the re-performability contract (§4.8): same inputs → same hashes.
+Replacing the Node document builders changes the bytes of every
+generated `.docx`/`.pptx`, so a package sealed under v1.x re-performed
+under the new engine yields a manifest mismatch — which, under this
+engine's own rules, reads as *the evidence has been altered*. That is a
+breaking change to the contract the project exists to make. Dropping
+Node from the documented install procedure reinforces it.
+
+**pyproject version corrected.** `version` had remained at the `0.1.0`
+scaffold value through three releases. Corrected to 1.3.0. The
+diagnostic surfaced it on first run — three cycles of manual review had
+not.
+
 ### Amendment record (v1.1) — 25 July 2026
 
 **Step 23: Human-Declared-Final implemented.** The open item carried

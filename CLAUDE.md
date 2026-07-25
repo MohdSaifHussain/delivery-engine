@@ -110,6 +110,7 @@ src/delivery_engine/
   report.py       — deterministic HTML visual report (pure function)
   trend.py        — across-runs trend report (reads run_NNN lineage)
   lineage.py      — sequenced immutable run_NNN folders
+  diagnostics.py  — PEP 508 environment record for bug reports
   compatibility.py — playbook compatibility report
   sources.py      — single-reader principle: one loading path
   documents/      — docx, pptx, xlsx, pdf generation (Node-backed)
@@ -201,3 +202,14 @@ If conflict on generated files (report.html etc), run instead:
 git stash 
 git pull 
 git stash drop 
+
+8. **Diagnostic record** — COMPLETE (v1.3). `diagnose.py` and
+   `src/delivery_engine/diagnostics.py`. PEP 508 environment markers,
+   tracked package versions, sanitised traceback frames. Written
+   automatically by `runner.main()` on unexpected failure. 20 tests.
+   Privacy by construction — no paths, no env vars, no dataset content.
+
+9. **Python-docx/pptx migration** — this is **v2.0.0, not v1.3.x**.
+   It changes generated document bytes, breaking the re-performability
+   contract (§4.8) for packages sealed under v1.x. Requires re-running
+   all 7 examples and re-proving determinism before merge.
