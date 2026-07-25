@@ -48,6 +48,7 @@ from delivery_engine import (
     run,
 )
 from delivery_engine.compatibility import build_compatibility_report
+from delivery_engine.diagnostics import write_diagnostic
 from delivery_engine.executor import MAX_EXCEPTION_RATE
 from delivery_engine.generator import GENERATED_DIR_NAME
 from delivery_engine.preview import prompt_confirmation
@@ -92,7 +93,7 @@ def _resolve_playbook(arg: str, playbook_dir: Path) -> Path:
     )
 
 
-def main(argv: list[str] | None = None) -> Path:
+def _run(argv: list[str] | None = None) -> Path:
     ap = argparse.ArgumentParser(
         description=(
             "Run any dataset through a Delivery Engine playbook: "
@@ -246,6 +247,55 @@ def main(argv: list[str] | None = None) -> Path:
     print(f"  narrative: {final / 'narrative_report.md'}")
     print(f"  handoff:   {final / 'handoff_manifest.json'}")
     return final
+
+
+def _peek(argv: list[str] | None, flag: str) -> str | None:
+    """Read a flag value from argv without re-parsing.
+
+    The wrapper runs when _run has already failed, so its parsed args
+    are gone. A flat scan is enough to record which source type and
+    playbook were in play, and cannot itself raise.
+    """
+    if not argv:
+        return None
+    try:
+        idx = argv.index(flag)
+    except ValueError:
+        return None
+    return argv[idx + 1] if idx + 1 < len(argv) else None
+
+
+def main(argv: list[str] | None = None) -> Path:
+    """Run a project, writing a diagnostic if something unexpected fails.
+
+    Every handled refusal in this runner raises SystemExit and passes
+    through untouched. Only an unexpected exception - the kind that
+    leaves a bare traceback and an unreproducible bug report - triggers
+    the diagnostic.
+    """
+    try:
+        return _run(argv)
+    except (SystemExit, KeyboardInterrupt):
+        raise
+    except Exception as exc:
+        source = _peek(argv, "--source")
+        path = write_diagnostic(
+            exc=exc,
+            source_suffix=Path(source).suffix if source else None,
+            playbook=_peek(argv, "--playbook"),
+        )
+        if path is not None:
+            print(f"\nUnexpected error. A diagnostic was written:\n  {path}")
+            print(
+                "It records your Python and package versions and where the "
+                "fault occurred.\nIt contains no usernames, paths, or "
+                "dataset content - read it, then attach it to an issue:"
+            )
+            print(
+                "  https://github.com/MohdSaifHussain/"
+                "delivery-engine/issues/new"
+            )
+        raise
 
 
 if __name__ == "__main__":
