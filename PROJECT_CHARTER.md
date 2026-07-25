@@ -2,6 +2,62 @@
 
 **Version:** 1.1
 **Date:** 9 July 2026 (v0.1 founding) · amended 11-25 July 2026 (v0.2 through v1.1)
+### Amendment record (v1.3) — 25 July 2026
+
+**The v2.0.0 python-docx/pptx migration is withdrawn.** The position
+recorded in the v1.2 amendment — that the migration was justified and
+constituted a major version — is superseded. Recorded here rather than
+edited there: amendments are append-only.
+
+Three findings changed the decision.
+
+*First, §4.5.* Rewriting the document layer is a large change to engine
+internals producing no user-facing difference: the same .pptx, the same
+numbers, the same verification. The only beneficiaries are the
+Dockerfile and the dependency list. "The engine stays small, tested,
+gated" is not served by replacing a working subsystem for parity.
+
+*Second, the technical argument was wrong.* The migration was justified
+on the grounds that python-pptx permits control of
+`zipfile.ZipInfo.date_time` while pptxgenjs does not. Generating the
+file in Python is not required for that — an OOXML container can be
+rewritten after generation with pinned entry timestamps, the standard
+reproducible-builds pattern, roughly sixty lines and entirely additive.
+The capability was never gated on the library choice.
+
+*Third — a finding about v1.x, not about the migration — binary
+document byte-stability was never held.* Two runs of
+transaction_monitoring on identical inputs, same day, same engine
+produced `delivery_package.pptx` hashes `1064915e…` and `279f315c…`.
+OOXML containers carry two independent clocks: ZIP entry timestamps
+(JSZip stamps `new Date()` per entry) and `docProps/core.xml`
+`dcterms:created` / `dcterms:modified`. The suite did not catch this
+because every test_step13 assertion checks *content* —
+`builds_and_verifies`, `row_count_present_in_all_formats`,
+`pptx_summary_scope` — and none compares bytes across two runs, the
+assertion that does exist for HTML (`test_math_section_byte_identical`)
+and for the findings store.
+
+**What is and is not affected.** The findings store is byte-stable and
+proven so by test. The HTML report is byte-identical, proven so. Format
+parity across CSV/Parquet/SQLite is proven so. The injected-numbers
+rule holds — every figure in a generated document still traces to a
+hashed finding. Document *content* is deterministic. Only the container
+bytes are not.
+
+**Disclosure, in the engine's own idiom.** The manifest states that
+recomputing each file's SHA-256 and finding a match proves the evidence
+unaltered. For .docx / .pptx / .xlsx that is not achievable: the hash
+moves on every run while nothing about the analysis changes. Rather
+than leave an unachievable claim standing, the limitation is declared —
+the same position the engine already takes when it renders accuracy and
+timeliness as "not scored" rather than fabricating a zero. A claim that
+cannot be met is disclosed, not quietly carried.
+
+Deferred, not forgotten: OOXML timestamp normalisation remains
+available as an additive change should document byte-stability ever be
+required. It is not required today.
+
 ### Amendment record (v1.2) — 25 July 2026
 
 **Diagnostic record added (v1.3 development).** A failure before the

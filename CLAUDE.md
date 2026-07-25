@@ -209,10 +209,19 @@ git stash drop
    automatically by `runner.main()` on unexpected failure. 20 tests.
    Privacy by construction — no paths, no env vars, no dataset content.
 
-9. **Python-docx/pptx migration** — this is **v2.0.0, not v1.3.x**.
-   It changes generated document bytes, breaking the re-performability
-   contract (§4.8) for packages sealed under v1.x. Requires re-running
-   all 7 examples and re-proving determinism before merge.
+9. **Python-docx/pptx migration** — **WITHDRAWN.** A rewrite of a
+   working subsystem for no user-facing difference; §4.5 says the
+   engine stays small. The determinism argument for it was also wrong:
+   OOXML timestamps can be normalised after generation without changing
+   library. See charter amendment v1.3.
+
+10. **Known limitation — document byte-stability.** `.docx` / `.pptx` /
+    `.xlsx` hashes change on every run (ZIP entry timestamps plus
+    `docProps/core.xml` dcterms fields). Content is deterministic and
+    the injected-numbers rule holds; the container is not byte-stable.
+    Declared, not fixed. Normalisation is available if ever required.
+    Do not "fix" this by weakening the manifest's claim — the honest
+    move is disclosure, as with accuracy and timeliness.
 
 
 ## Release checklist

@@ -6,6 +6,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Known limitations
+- Binary document byte-stability (`.docx` / `.pptx` / `.xlsx`) is not
+  held. Two runs on identical inputs produce different container
+  hashes: OOXML carries ZIP entry timestamps and `docProps/core.xml`
+  `dcterms:created` / `dcterms:modified`, both of which move per run.
+  Document *content* is deterministic and every figure still traces to
+  a hashed finding — only the container bytes vary. Declared rather
+  than fixed; timestamp normalisation remains available as an additive
+  change if byte-stability is ever required. See PROJECT_CHARTER.md
+  amendment record v1.3.
+
+### Changed
+- The v2.0.0 python-docx/pptx migration is **withdrawn**. Rewriting a
+  working subsystem for no user-facing difference is not what §4.5
+  ("the engine stays small, tested, gated") is for, and the determinism
+  argument that motivated it was incorrect. See PROJECT_CHARTER.md
+  amendment record v1.3.
+
 ## [1.3.0] - 2026-07-25
 
 ### Added
