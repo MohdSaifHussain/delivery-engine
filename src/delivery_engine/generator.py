@@ -229,14 +229,34 @@ def _emit_toml(
         ]
         prior = [*prior, "stats"]
     if "model" in stages:
+        # Step 25: surface the step-24 evidence-honesty keys as fixed,
+        # commented suggestions - never active keys. A comment is
+        # invisible to tomllib, so the draft still means exactly what a
+        # step-19 draft meant; the human uncomments, which is itself the
+        # approval act (the draft principle, applied to evaluation
+        # choices the same way it applies to the stages themselves).
+        # split/n_splits are feasibility-gated on the SAME kinds dict
+        # already used above for has_id - suggesting a time-ordered
+        # split with no timestamp_column would teach users to write a
+        # playbook that refuses to run.
+        has_timestamp = any(
+            ColumnKind.TIMESTAMP_COLUMN in ks for ks in kinds.values()
+        )
         lines += [
             "[[stages]]",
             'id = "baseline"',
             'kind = "model"',
             'gate = "must_pass"',
             f"needs = {json.dumps(prior)}",
-            "",
+            "# Opt-in evidence options (see USER_GUIDE.md and PLAYBOOK_SPEC.md, V12):",
+            "# metric_ci = true          # Wilson 95% CIs on recall/precision (statsmodels/NIST)",
         ]
+        if has_timestamp:
+            lines += [
+                '# split = "walk_forward"    # time-ordered evaluation (scikit-learn TimeSeriesSplit)',
+                '# n_splits = 5              # legal only with split = "walk_forward"',
+            ]
+        lines.append("")
         prior = [*prior, "baseline"]
 
     last_analysis = prior[-1]
