@@ -25,7 +25,7 @@ constitution fails to load with a clean, numbered error. The rules:
 | V10 | Stage ids and playbook names are snake_case ASCII (max 64 chars) | ids become audit references and filenames |
 | V11 | `tool = "opskit_run_playbook"` stages declare `ops_playbook` (lowercase/hyphen key, e.g. `"weekly-review"`); no other tool accepts the key | the engine never guesses which analysis to run |
 | V13 | `[deliverables] formats` (optional) lists output formats from markdown/docx/pptx/xlsx/pdf; absent = markdown-only | per-playbook deliverable format, backward-compatible |
-| V12 | `kind = "model"` stages declare a `gate` and non-empty `needs` — a baseline never trains before the deterministic profile gate | 4.2 gates before anything |
+| V12 | `kind = "model"` stages declare a `gate` and non-empty `needs` — a baseline never trains before the deterministic profile gate. Optional, opt-in, backward-compatible (step 24): `metric_ci` (bool, default `false`) adds Wilson-interval confidence intervals for recall/precision; `split` (`"random"` \| `"time_ordered"` \| `"walk_forward"`, default `"random"`, V8-enum-validated) selects the evaluation split; `n_splits` (int >= 2, default 5) is legal only when `split = "walk_forward"` (the V11 precedent: a key legal only for the mode that accepts it). | 4.2 gates before anything |
 | V14 | `kind = "stats"` stages declare `stat_test` from a fixed sourced list, a `gate`, and non-empty `needs`; `[stats] alpha` (optional, default 0.05) is pre-registered, in (0, 1), and only legal when a stats stage exists. Significance never gates. | pre-registration; anti-p-hacking |
 | Source types | `csv`, `parquet`, `excel`, `sqlite`, `postgres`, `mysql` — declared in `[requirements] source_types`; the planner refuses a source whose type the playbook does not accept. | step 20 |
 | V15 | `kind = "math"` stages declare `math_checks` from a fixed sourced list, a `gate`, and non-empty `needs`; every method threshold is a fixed constant disclosed in the findings. Descriptive values never gate. | no improvised methods; no post-hoc thresholds |
@@ -118,6 +118,18 @@ gate = "must_pass"                    # fails on FEASIBILITY only;
                                       # descriptive values never gate
 needs = ["dq_gate"]
 
+[[stages]]                            # step 10: deterministic baseline;
+id = "baseline"                       # step 24 extends V12 with three
+kind = "model"                        # opt-in keys - absent = pre-step-24
+gate = "must_pass"                    # behaviour, byte-identical findings
+metric_ci = false                     # V12: default; true adds Wilson-
+                                      # interval CIs for recall/precision
+split = "random"                      # V12: random | time_ordered |
+                                      # walk_forward; default "random"
+# n_splits = 5                        # V12: only legal with split =
+                                      # "walk_forward" (V11 precedent)
+needs = ["dq_gate"]
+
 [deliverables]                        # V7: audit_log + manifest mandatory
 artifacts = ["eda_notebook", "readme", "workpaper", "audit_log", "manifest"]
 ```
@@ -135,16 +147,20 @@ artifacts = ["eda_notebook", "readme", "workpaper", "audit_log", "manifest"]
 4. **The engine stays small.** The loader returns frozen dataclasses. The
    executor (build step 4) consumes them. New archetypes are new TOML files.
 
-## Schema evolution note (steps 7-10)
+## Schema evolution note (steps 7-24)
 
 Step 7 added the `opskit_run_playbook` tool and the `ops_playbook` stage key;
 step 8 added the `ops_report` AI slot (its `needs` first entry names the
 OpsKit findings stage it renders - declared inputs, never guessed); step 10
 added the `model` stage kind (deterministic fixed-seed baseline; target and
 features come from the plan's classified columns; metric values never gate,
-training feasibility does). All are
+training feasibility does). Step 24 added three `model`-stage keys under V12
+- `metric_ci`, `split`, `n_splits` - each optional and each defaulting to the
+exact pre-step-24 behaviour: a playbook that declares none of them trains
+and reports byte-identical findings (proven by re-running every shipped
+example with a committed golden and comparing findings digests). All are
 **backward-compatible extensions of schema v1**: every playbook valid
-before step 7 remains valid and means the same thing. New declared values
+before step 24 remains valid and means the same thing. New declared values
 and new optional-by-tool keys extend the constitution; they do not break it.
 A change that altered the meaning of an existing playbook would require
 schema_version 2.

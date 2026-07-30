@@ -95,9 +95,19 @@ class NumberInjector:
     token the injector did not emit. Charter 4.1, enforced by construction.
     """
 
-    def __init__(self, store: FindingsStore) -> None:
+    def __init__(
+        self,
+        store: FindingsStore,
+        known_identifiers: frozenset[str] = frozenset(),
+    ) -> None:
         self._store = store
         self._emitted: set[str] = set()
+        # Step 24 (Change 3): column names from the approved plan - governed
+        # data, never inferred from artifact text. verify_artifact_numbers
+        # uses this to stop misreading a digit-bearing identifier (e.g.
+        # sensor_060) as an unprovenanced numeric claim, without loosening
+        # the number regex itself (that would stop catching bare "p95").
+        self.known_identifiers = known_identifiers
 
     def inject(self, value: float | int | None, fmt: str = "{}") -> str:
         """Formats a value from the findings store for artifact use.
@@ -178,6 +188,12 @@ _STRUCTURAL_TOKENS: Final[frozenset[str]] = frozenset({"1", "2", "3", "4"})
 _BACKTICK_RE: Final[re.Pattern[str]] = re.compile(r"`[^`]*`")
 _HEX_RE: Final[re.Pattern[str]] = re.compile(r"\b[0-9a-f]{8,64}\b")
 
+# Step 24 (Change 3): tokens considered for the known-identifier exemption.
+# Word characters only (letters, digits, underscore) - the same alphabet
+# column names are drawn from - so "sensor_060" is one token, matched
+# whole against the plan's known column names.
+_TOKEN_RE: Final[re.Pattern[str]] = re.compile(r"\w+")
+
 
 def extract_claims(artifact_text: str, kind: str) -> str:
     """Extracts the CLAIMS surface of an artifact - the prose where a
@@ -205,6 +221,31 @@ def extract_claims(artifact_text: str, kind: str) -> str:
     return text
 
 
+def _mask_known_identifiers(text: str, known_identifiers: frozenset[str]) -> str:
+    """Blanks whole tokens that are known column identifiers, so the
+    number regex cannot read their embedded digits as a claim.
+
+    A token is masked only when it EXACTLY matches a known identifier
+    AND contains at least one non-digit character. The non-digit
+    requirement closes the laundering hole where a column is literally
+    named "95": such a token is all-digit, so it is never masked and a
+    bare "95" elsewhere in the text still cannot hide behind it. This
+    narrows the exemption to the precise, provable case (STEP24_DECISIONS
+    Change 3) - it does not touch the number regex, so "p95" (not a
+    column name) is still caught exactly as step 17 intended.
+    """
+    if not known_identifiers:
+        return text
+
+    def _mask(m: re.Match[str]) -> str:
+        token = m.group(0)
+        if token in known_identifiers and not token.isdigit():
+            return "_" * len(token)
+        return token
+
+    return _TOKEN_RE.sub(_mask, text)
+
+
 def verify_artifact_numbers(
     artifact_text: str,
     injector: NumberInjector,
@@ -213,11 +254,17 @@ def verify_artifact_numbers(
 ) -> None:
     """Proves the injected-numbers rule held for an artifact.
 
-    Extracts the claims surface (extract_claims), scans it for numeric
-    tokens; every token must have been emitted by the injector (or be a
-    declared structural token). Raises StoreError naming violations.
+    Extracts the claims surface (extract_claims), masks whole tokens that
+    exactly match a known column identifier (step 24, Change 3 - governed
+    data from the approved plan, never inferred from the text), then
+    scans for numeric tokens; every remaining token must have been
+    emitted by the injector (or be a declared structural token). Raises
+    StoreError naming violations.
     """
-    found = set(_NUMBER_RE.findall(extract_claims(artifact_text, kind)))
+    claims = _mask_known_identifiers(
+        extract_claims(artifact_text, kind), injector.known_identifiers
+    )
+    found = set(_NUMBER_RE.findall(claims))
     allowed = set(injector.emitted)
     if allow_structural:
         allowed |= _STRUCTURAL_TOKENS

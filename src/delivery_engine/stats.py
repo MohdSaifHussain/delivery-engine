@@ -78,7 +78,12 @@ from typing import Any, Final
 # truth (the KNOWN_KIT_TOOLS precedent). Re-exported here for unit use.
 from delivery_engine.playbook import KNOWN_STAT_TESTS as KNOWN_STAT_TESTS
 
-__all__ = ["KNOWN_STAT_TESTS", "StatsError", "run_inference"]
+__all__ = [
+    "KNOWN_STAT_TESTS",
+    "StatsError",
+    "run_inference",
+    "wilson_interval",
+]
 
 ALPHA_DEFAULT: Final[float] = 0.05
 STAT_DECIMALS: Final[int] = 6
@@ -120,11 +125,24 @@ def _positive_class(levels: list[str]) -> str:
     return sorted(levels)[1]
 
 
-def _wilson(count: int, nobs: int, alpha: float) -> tuple[float, float]:
+def wilson_interval(count: int, nobs: int, alpha: float) -> tuple[float, float]:
+    """Wilson score interval for a binomial proportion (Brown, Cai &
+    DasGupta 2001; NIST/SEMATECH e-Handbook 7.2.4.1; statsmodels
+    proportion_confint). The single implementation - step 20's
+    Single-Reader Principle applied to a statistic instead of a file
+    parser: every caller of a Wilson interval anywhere in this engine
+    (stats stage, step 24's model-stage metric CIs) goes through here,
+    so there is exactly one place a divergence could hide.
+    """
     from statsmodels.stats.proportion import proportion_confint
 
     lo, hi = proportion_confint(count, nobs, alpha=alpha, method="wilson")
     return _round(float(lo)), _round(float(hi))
+
+
+# Step 15 internal call sites use the private name; kept as an alias so
+# none of them need to change (step 24 promoted this to public API).
+_wilson = wilson_interval
 
 
 def _cramers_v(table: Any) -> float:

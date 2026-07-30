@@ -65,6 +65,17 @@ KNOWN_MATH_CHECKS: Final[frozenset[str]] = frozenset({
     "all",
 })
 
+# Step 24 (Change 2): model stages may declare WHICH evaluation split to
+# use. "random" (default) is the pre-step-24 stratified split, byte-
+# identical when absent. "time_ordered" and "walk_forward" are honesty
+# controls for time-ordered data - never guessed, sourced from the
+# plan's classified timestamp_column.
+KNOWN_MODEL_SPLITS: Final[frozenset[str]] = frozenset({
+    "random",
+    "time_ordered",
+    "walk_forward",
+})
+
 # V11: opskit stages must name which OpsKit playbook to run. OpsKit
 # playbook keys are lowercase with hyphens (e.g. "weekly-review"),
 # distinct from V10's snake_case engine identifiers.
@@ -142,6 +153,10 @@ class Stage:
     stat_test: str | None = None       # stats stages only (V14)
     # math
     math_checks: str | None = None     # math stages only (V15)
+    # model (step 24, V12 extended): opt-in, default preserves v1.4 behaviour
+    metric_ci: bool = False            # model stages only
+    split: str = "random"              # model stages only
+    n_splits: int = 5                  # model stages only; legal only with walk_forward
     # ai
     slot: AiSlot | None = None
     numbers_from: str | None = None
@@ -241,7 +256,7 @@ _STAGE_KEYS: Final[dict[StageKind, frozenset[str]]] = {
     StageKind.KIT: _STAGE_KEYS_COMMON | {"tool", "gate", "ops_playbook"},
     StageKind.AI: _STAGE_KEYS_COMMON
     | {"slot", "numbers_from", "human_approval", "feeds_deterministic"},
-    StageKind.MODEL: _STAGE_KEYS_COMMON | {"gate"},
+    StageKind.MODEL: _STAGE_KEYS_COMMON | {"gate", "metric_ci", "split", "n_splits"},
     StageKind.STATS: _STAGE_KEYS_COMMON | {"gate", "stat_test"},
     StageKind.MATH: _STAGE_KEYS_COMMON | {"gate", "math_checks"},
     StageKind.HUMAN_GATE: _STAGE_KEYS_COMMON,
@@ -414,7 +429,50 @@ def _parse_stage(raw: dict[str, Any], index: int) -> Stage:
                 f"never trains before at least the deterministic profile "
                 f"gate has passed. (V12)"
             )
-        return Stage(stage_id=stage_id, kind=kind, needs=needs, gate=gate)
+        # Step 24 (Change 1): metric_ci is opt-in and defaults to false,
+        # so a playbook that declares nothing here trains and reports
+        # exactly as it did before this key existed. (V12 extended)
+        metric_ci_raw = raw.get("metric_ci", False)
+        if not isinstance(metric_ci_raw, bool):
+            raise PlaybookError(
+                f"{where}: metric_ci must be a boolean (true or false), "
+                f"got {type(metric_ci_raw).__name__}. (V12)"
+            )
+        # Step 24 (Change 2): split is opt-in and defaults to "random",
+        # so a playbook that declares nothing here trains and reports
+        # exactly as it did before this key existed. (V8, V12 extended)
+        split_raw = raw.get("split", "random")
+        if not isinstance(split_raw, str) or split_raw not in KNOWN_MODEL_SPLITS:
+            raise PlaybookError(
+                f"{where}: unknown split '{split_raw}'. "
+                f"Valid: {sorted(KNOWN_MODEL_SPLITS)}. (V8)"
+            )
+        # n_splits follows the V11 precedent: a key legal only for the
+        # mode that accepts it.
+        n_splits_raw = raw.get("n_splits")
+        if n_splits_raw is not None and split_raw != "walk_forward":
+            raise PlaybookError(
+                f"{where}: n_splits is only valid when split = "
+                f"'walk_forward'; split is '{split_raw}'. (V12, the V11 "
+                f"precedent: a key legal only for the mode that accepts it)"
+            )
+        if n_splits_raw is None:
+            n_splits = 5
+        else:
+            if (
+                not isinstance(n_splits_raw, int)
+                or isinstance(n_splits_raw, bool)
+                or n_splits_raw < 2
+            ):
+                raise PlaybookError(
+                    f"{where}: n_splits must be an integer >= 2, got "
+                    f"{n_splits_raw!r}. (V12)"
+                )
+            n_splits = n_splits_raw
+        return Stage(
+            stage_id=stage_id, kind=kind, needs=needs, gate=gate,
+            metric_ci=metric_ci_raw, split=split_raw, n_splits=n_splits,
+        )
 
     return Stage(stage_id=stage_id, kind=kind, needs=needs)
 

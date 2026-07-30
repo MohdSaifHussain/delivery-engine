@@ -56,6 +56,13 @@ PreviewConfirm = Callable[[str], bool]
 
 MAX_EXCEPTION_RATE: Final[float] = 0.10
 
+# Step 24 (Change 1): a model-only playbook has no [stats] table (V14
+# makes it legal only when a stats stage exists), so metric confidence
+# intervals need their own alpha. This is that fixed, disclosed
+# constant - used only when the playbook has no stats stage to
+# pre-register one instead (see _run_model_stage's alpha resolution).
+DEFAULT_METRIC_ALPHA: Final[float] = 0.05
+
 ARTIFACT_FILENAMES: Final[dict[AiSlot, str]] = {
     AiSlot.EDA_NOTEBOOK: "eda_notebook.ipynb",
     AiSlot.NARRATIVE_REPORT: "narrative_report.md",
@@ -240,7 +247,15 @@ def run(
     )
 
     store = FindingsStore()
-    injector = NumberInjector(store)
+    # Step 24 (Change 3): known identifiers come from the approved plan's
+    # classified column names - governed data approved at Human Gate 1,
+    # never inferred from artifact text. Lets verify_artifact_numbers
+    # exempt digit-bearing column names (sensor_060) without loosening
+    # the number regex that still catches bare "p95".
+    injector = NumberInjector(
+        store,
+        known_identifiers=frozenset(name for name, _kind in plan.column_kinds),
+    )
     ctx: dict[str, Any] = {
         "plan_column_kinds": tuple(plan.column_kinds),
     }  # run context: facts stages learn + integrity anchors from the plan
@@ -287,7 +302,7 @@ def run(
                 approvals, ctx,
             )
         elif stage.kind is StageKind.MODEL:
-            _run_model_stage(stage, plan, store, audit, out_dir)
+            _run_model_stage(stage, plan, playbook, store, audit, out_dir)
         elif stage.kind is StageKind.STATS:
             _run_stats_stage(stage, plan, playbook, store, audit, out_dir)
         elif stage.kind is StageKind.MATH:
@@ -537,6 +552,7 @@ def _run_presentation_stage(
 def _run_model_stage(
     stage: Stage,
     plan: Plan,
+    playbook: Playbook,
     store: FindingsStore,
     audit: AuditLog,
     out_dir: Path,
@@ -583,8 +599,51 @@ def _run_model_stage(
                    if k == "categorical_column" and c != target
                    and c not in id_cols]
 
+    # Step 24 (Change 1): alpha resolution for the model stage's optional
+    # metric confidence intervals. A model-only playbook has no [stats]
+    # table (V14 makes it legal only when a stats stage exists), so
+    # there is no pre-registered alpha to reuse in that case - the
+    # engine falls back to its own disclosed default instead of
+    # inventing one silently. Where a stats stage DOES exist, its
+    # pre-registered alpha (approved with the plan at Human Gate 1) is
+    # reused rather than a second, un-registered value.
+    has_stats_stage = any(s.kind is StageKind.STATS for s in playbook.stages)
+    if has_stats_stage:
+        metric_ci_alpha = playbook.alpha
+        metric_ci_alpha_source = "pre_registered"
+    else:
+        metric_ci_alpha = DEFAULT_METRIC_ALPHA
+        metric_ci_alpha_source = "engine_default_disclosed"
+
+    # Step 24 (Change 2): the ordering column for time_ordered/walk_forward
+    # comes from the plan's classified timestamp_column - governed data
+    # approved at Human Gate 1, never guessed and never row order. A
+    # non-random split declared with no classified timestamp_column is a
+    # clean feasibility refusal naming the remedy, not a silent fallback
+    # to row order.
+    timestamp_cols = [c for c, k in kinds if k == "timestamp_column"]
+    ordering_column = timestamp_cols[0] if timestamp_cols else None
+    if stage.split != "random" and ordering_column is None:
+        reason = (
+            f"split = '{stage.split}' requires the plan to classify a "
+            f"timestamp_column, but none was found. Re-plan against a "
+            f"source with a classified timestamp column, or declare "
+            f"split = 'random' (the default) in the playbook."
+        )
+        audit.record(stage.stage_id, "model:baseline", "fail", reason)
+        audit.write(out_dir / "audit_log.jsonl")
+        raise ExecutionStopped(stage.stage_id, reason)
+
     try:
-        findings = train_baseline(plan.source, target, numeric, categorical)
+        findings = train_baseline(
+            plan.source, target, numeric, categorical,
+            metric_ci=stage.metric_ci,
+            alpha=metric_ci_alpha,
+            alpha_source=metric_ci_alpha_source,
+            split=stage.split,
+            n_splits=stage.n_splits,
+            ordering_column=ordering_column,
+        )
         findings["target_candidates"] = sorted(set(targets))
         findings["target_selection"] = (
             "first binary_target in plan column order (plan approved at "
@@ -602,12 +661,20 @@ def _run_model_stage(
     (out_dir / "findings" / f"{stage.stage_id}.json").write_text(
         store.to_json(stage.stage_id), encoding="utf-8"
     )
+    # Step 24 (Change 2): walk_forward has per-fold sizes, not a single
+    # n_train/n_test - describe whichever shape this run actually has.
+    if "folds" in findings:
+        split_summary = (
+            f"walk_forward, {len(findings['folds'])} fold(s) "
+            f"({findings['n_splits']} declared)"
+        )
+    else:
+        split_summary = f"{findings['split']} {findings['n_train']}/{findings['n_test']} split"
     audit.record(
         stage.stage_id, "model:baseline", "pass",
         f"deterministic baseline trained on target '{target}' (selected "
         f"as first binary candidate of {sorted(set(targets))}) "
-        f"(seed {findings['random_seed']}, stratified "
-        f"{findings['n_train']}/{findings['n_test']} split); metrics "
+        f"(seed {findings['random_seed']}, {split_summary}); metrics "
         f"stored hashed - metric values never gate, training feasibility "
         f"does (declared step 10 semantics)",
         sha256=digest,
