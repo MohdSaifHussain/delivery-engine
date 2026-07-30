@@ -180,3 +180,275 @@ class TestIdentifierAwareScanningEndToEnd:
             (out / "findings" / "dq_validate.json").read_text("utf-8")
         )["findings"]
         assert validate["total_exceptions"] > 0  # the planted nulls were found
+
+
+# ── Change 1: metric confidence intervals for the model stage ───────────────
+
+
+def _model_ci_csv(path: Path, rows: int = 200) -> Path:
+    """~20% positive rate, comfortably above MIN_ROWS_PER_CLASS after a
+    stratified split - the natural case (nonzero test positives)."""
+    out = []
+    for i in range(rows):
+        label = "yes" if i % 5 == 0 else "no"
+        out.append([f"C-{i:05d}", label, float(i % 17), ("a", "b")[i % 2]])
+    return _csv(path, ["customer_id", "converted", "num", "cat"], out)
+
+
+class TestMetricCiUnit:
+    """_metric_ci_block in isolation - planted array counts, including
+    the zero-positive degenerate case a real stratified split
+    structurally avoids (MIN_ROWS_PER_CLASS keeps every class >= 10)."""
+
+    def test_known_positive_count_matches_wilson_interval_directly(self) -> None:
+        from delivery_engine.model import _metric_ci_block
+        from delivery_engine.stats import wilson_interval
+
+        # 8 actual positives in the test set, 5 of them predicted correctly
+        # (true positives); 2 false positives elsewhere.
+        y_test = [1] * 8 + [0] * 22
+        y_pred = [1] * 5 + [0] * 3 + [1] * 2 + [0] * 20
+        import numpy as np
+
+        block = _metric_ci_block(
+            np.array(y_test), np.array(y_pred), 0.05, "engine_default_disclosed"
+        )
+        assert block["n_positives_in_test"] == 8
+        tp = 5
+        n_pred_pos = 7  # 5 true positives + 2 false positives
+        expected_recall = wilson_interval(tp, 8, 0.05)
+        expected_precision = wilson_interval(tp, n_pred_pos, 0.05)
+        assert block["recall_ci95"] == {
+            "ci_low": expected_recall[0], "ci_high": expected_recall[1],
+        }
+        assert block["precision_ci95"] == {
+            "ci_low": expected_precision[0], "ci_high": expected_precision[1],
+        }
+        assert block["metric_ci_skipped"] == []
+
+    def test_disclosed_alpha_and_source_recorded(self) -> None:
+        import numpy as np
+
+        from delivery_engine.model import _metric_ci_block
+
+        block = _metric_ci_block(
+            np.array([1, 1, 0, 0]), np.array([1, 0, 0, 0]),
+            0.2, "pre_registered",
+        )
+        assert block["metric_ci_alpha"] == 0.2
+        assert block["metric_ci_alpha_source"] == "pre_registered"
+        assert "2 positive case" in block["metric_ci_caveat"]
+
+    def test_zero_positives_in_test_is_disclosed_skip_not_crash(self) -> None:
+        import numpy as np
+
+        from delivery_engine.model import _metric_ci_block
+
+        block = _metric_ci_block(
+            np.array([0, 0, 0]), np.array([0, 0, 1]), 0.05,
+            "engine_default_disclosed",
+        )
+        assert block["n_positives_in_test"] == 0
+        assert block["recall_ci95"] is None
+        reasons = {s["what"] for s in block["metric_ci_skipped"]}
+        assert "recall_ci95" in reasons
+
+    def test_zero_predicted_positives_is_disclosed_skip_not_crash(self) -> None:
+        import numpy as np
+
+        from delivery_engine.model import _metric_ci_block
+
+        block = _metric_ci_block(
+            np.array([1, 0, 0]), np.array([0, 0, 0]), 0.05,
+            "engine_default_disclosed",
+        )
+        assert block["precision_ci95"] is None
+        reasons = {s["what"] for s in block["metric_ci_skipped"]}
+        assert "precision_ci95" in reasons
+
+
+class TestMetricCiTrainBaseline:
+    def test_metric_ci_false_adds_nothing(self, tmp_path: Path) -> None:
+        from delivery_engine.model import train_baseline
+
+        src = _model_ci_csv(tmp_path / "ci.csv")
+        f_off = train_baseline(str(src), "converted", ["num"], ["cat"])
+        f_on = train_baseline(
+            str(src), "converted", ["num"], ["cat"], metric_ci=False
+        )
+        assert set(f_off) == set(f_on)  # explicit default == implicit default
+        for key in (
+            "n_positives_in_test", "recall_ci95", "precision_ci95",
+            "metric_ci_alpha", "metric_ci_alpha_source", "metric_ci_skipped",
+            "metric_ci_caveat",
+        ):
+            assert key not in f_off
+
+    def test_metric_ci_true_adds_the_declared_keys(self, tmp_path: Path) -> None:
+        from delivery_engine.model import train_baseline
+
+        src = _model_ci_csv(tmp_path / "ci.csv")
+        f = train_baseline(
+            str(src), "converted", ["num"], ["cat"],
+            metric_ci=True, alpha=0.05, alpha_source="engine_default_disclosed",
+        )
+        assert f["n_positives_in_test"] > 0
+        assert f["recall_ci95"] is not None
+        assert f["metric_ci_alpha"] == 0.05
+        assert f["metric_ci_alpha_source"] == "engine_default_disclosed"
+
+
+# ── Change 1: alpha resolution end to end through the executor ──────────────
+
+_MODEL_CI_PLAYBOOK_NO_STATS = """\
+schema_version = 1
+
+[playbook]
+name = "test_model_ci_no_stats"
+version = "1.0.0"
+description = "model stage with metric_ci and no stats stage in this playbook"
+
+[requirements]
+min_rows = 50
+required_kinds = ["binary_target", "id_column"]
+source_types = ["csv"]
+
+[[stages]]
+id = "dq_profile"
+kind = "kit"
+tool = "analystkit_profile"
+gate = "must_pass"
+
+[[stages]]
+id = "dq_validate"
+kind = "kit"
+tool = "analystkit_validate"
+gate = "must_pass"
+needs = ["dq_profile"]
+
+[[stages]]
+id = "plan_approval"
+kind = "human_gate"
+needs = ["dq_profile", "dq_validate"]
+
+[[stages]]
+id = "baseline"
+kind = "model"
+gate = "must_pass"
+metric_ci = true
+needs = ["dq_profile", "dq_validate", "plan_approval"]
+
+[[stages]]
+id = "package"
+kind = "package"
+needs = ["baseline"]
+
+[deliverables]
+artifacts = ["delivery_package", "audit_log", "manifest"]
+"""
+
+_MODEL_CI_PLAYBOOK_WITH_STATS = """\
+schema_version = 1
+
+[playbook]
+name = "test_model_ci_with_stats"
+version = "1.0.0"
+description = "model stage with metric_ci alongside a pre-registered stats stage"
+
+[requirements]
+min_rows = 50
+required_kinds = ["binary_target", "id_column"]
+source_types = ["csv"]
+
+[stats]
+alpha = 0.2
+
+[[stages]]
+id = "dq_profile"
+kind = "kit"
+tool = "analystkit_profile"
+gate = "must_pass"
+
+[[stages]]
+id = "dq_validate"
+kind = "kit"
+tool = "analystkit_validate"
+gate = "must_pass"
+needs = ["dq_profile"]
+
+[[stages]]
+id = "plan_approval"
+kind = "human_gate"
+needs = ["dq_profile", "dq_validate"]
+
+[[stages]]
+id = "stats"
+kind = "stats"
+stat_test = "proportion_ci"
+gate = "must_pass"
+needs = ["dq_profile", "dq_validate", "plan_approval"]
+
+[[stages]]
+id = "baseline"
+kind = "model"
+gate = "must_pass"
+metric_ci = true
+needs = ["dq_profile", "dq_validate", "plan_approval"]
+
+[[stages]]
+id = "package"
+kind = "package"
+needs = ["baseline", "stats"]
+
+[deliverables]
+artifacts = ["delivery_package", "audit_log", "manifest"]
+"""
+
+_MODEL_CI_RULES = [{"column": "customer_id", "rule": "unique"}]
+_MODEL_CI_APPROVALS: dict[str, Any] = {"plan_approval": "Saif"}
+
+
+def _run_model_ci_playbook(tmp_path: Path, toml_text: str, name: str) -> Path:
+    src = _model_ci_csv(tmp_path / "ci.csv")
+    pb_dir = tmp_path / "pb_dir"
+    pb_dir.mkdir()
+    (pb_dir / f"{name}.toml").write_text(toml_text, encoding="utf-8")
+
+    envelope = json.loads(tool_profile(str(src), None))
+    plan = make_plan(
+        "predict churn for the growth team", str(src),
+        envelope["findings"], pb_dir,
+    )
+    plan = approve_plan(plan, "Saif")
+    out = tmp_path / "pkg"
+    run(
+        plan, load_playbook(pb_dir / f"{name}.toml"), _MODEL_CI_RULES, out,
+        approvals=_MODEL_CI_APPROVALS,
+    )
+    return out
+
+
+class TestMetricCiAlphaResolutionEndToEnd:
+    def test_no_stats_stage_uses_engine_default_disclosed(
+        self, tmp_path: Path
+    ) -> None:
+        out = _run_model_ci_playbook(
+            tmp_path, _MODEL_CI_PLAYBOOK_NO_STATS, "test_model_ci_no_stats"
+        )
+        f = json.loads(
+            (out / "findings" / "baseline.json").read_text("utf-8")
+        )["findings"]
+        assert f["metric_ci_alpha_source"] == "engine_default_disclosed"
+        assert f["metric_ci_alpha"] == 0.05
+
+    def test_stats_stage_reuses_pre_registered_alpha(
+        self, tmp_path: Path
+    ) -> None:
+        out = _run_model_ci_playbook(
+            tmp_path, _MODEL_CI_PLAYBOOK_WITH_STATS, "test_model_ci_with_stats"
+        )
+        f = json.loads(
+            (out / "findings" / "baseline.json").read_text("utf-8")
+        )["findings"]
+        assert f["metric_ci_alpha_source"] == "pre_registered"
+        assert f["metric_ci_alpha"] == 0.2  # the playbook's [stats] alpha

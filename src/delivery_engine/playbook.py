@@ -142,6 +142,8 @@ class Stage:
     stat_test: str | None = None       # stats stages only (V14)
     # math
     math_checks: str | None = None     # math stages only (V15)
+    # model (step 24, V12 extended): opt-in, default preserves v1.4 behaviour
+    metric_ci: bool = False            # model stages only
     # ai
     slot: AiSlot | None = None
     numbers_from: str | None = None
@@ -241,7 +243,7 @@ _STAGE_KEYS: Final[dict[StageKind, frozenset[str]]] = {
     StageKind.KIT: _STAGE_KEYS_COMMON | {"tool", "gate", "ops_playbook"},
     StageKind.AI: _STAGE_KEYS_COMMON
     | {"slot", "numbers_from", "human_approval", "feeds_deterministic"},
-    StageKind.MODEL: _STAGE_KEYS_COMMON | {"gate"},
+    StageKind.MODEL: _STAGE_KEYS_COMMON | {"gate", "metric_ci"},
     StageKind.STATS: _STAGE_KEYS_COMMON | {"gate", "stat_test"},
     StageKind.MATH: _STAGE_KEYS_COMMON | {"gate", "math_checks"},
     StageKind.HUMAN_GATE: _STAGE_KEYS_COMMON,
@@ -414,7 +416,19 @@ def _parse_stage(raw: dict[str, Any], index: int) -> Stage:
                 f"never trains before at least the deterministic profile "
                 f"gate has passed. (V12)"
             )
-        return Stage(stage_id=stage_id, kind=kind, needs=needs, gate=gate)
+        # Step 24 (Change 1): metric_ci is opt-in and defaults to false,
+        # so a playbook that declares nothing here trains and reports
+        # exactly as it did before this key existed. (V12 extended)
+        metric_ci_raw = raw.get("metric_ci", False)
+        if not isinstance(metric_ci_raw, bool):
+            raise PlaybookError(
+                f"{where}: metric_ci must be a boolean (true or false), "
+                f"got {type(metric_ci_raw).__name__}. (V12)"
+            )
+        return Stage(
+            stage_id=stage_id, kind=kind, needs=needs, gate=gate,
+            metric_ci=metric_ci_raw,
+        )
 
     return Stage(stage_id=stage_id, kind=kind, needs=needs)
 

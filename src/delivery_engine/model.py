@@ -72,6 +72,9 @@ def train_baseline(
     target: str,
     numeric_features: list[str],
     categorical_features: list[str],
+    metric_ci: bool = False,
+    alpha: float = 0.05,
+    alpha_source: str = "engine_default_disclosed",
 ) -> dict[str, Any]:
     """Trains the deterministic baseline classifier; returns findings.
 
@@ -83,6 +86,16 @@ def train_baseline(
     recall, f1, roc_auc, plus class balance and split sizes.
 
     Same source + same classified columns -> same findings -> same hash.
+
+    metric_ci (step 24, Change 1): opt-in, default False. When False,
+    findings are byte-identical to before this parameter existed. When
+    True, adds Wilson score confidence intervals (Brown, Cai & DasGupta
+    2001) for recall and precision - the same interval the stats stage
+    uses (delivery_engine.stats.wilson_interval; Single-Reader
+    Principle, step 20), so a point estimate from a handful of positive
+    cases is not read as more precise than it is. alpha/alpha_source are
+    resolved by the executor: the playbook's pre-registered [stats]
+    alpha when a stats stage exists, else a disclosed engine default.
     """
     _require_sklearn()
     import numpy as np
@@ -235,7 +248,7 @@ def train_baseline(
     def _r(v: float) -> float:
         return round(float(v), METRIC_DECIMALS)
 
-    return {
+    findings: dict[str, Any] = {
         "model": "LogisticRegression(max_iter=1000)",
         "library": "scikit-learn",
         "random_seed": RANDOM_SEED,
@@ -323,4 +336,90 @@ def train_baseline(
             ),
             "gate": False,
         },
+    }
+
+    # ── Step 24 (Change 1): metric confidence intervals - opt-in, adds
+    # NOTHING to findings when metric_ci is False (byte-identical to
+    # pre-step-24 output).
+    if metric_ci:
+        findings.update(
+            _metric_ci_block(y_test.to_numpy(), y_pred, alpha, alpha_source)
+        )
+
+    return findings
+
+
+def _metric_ci_block(
+    y_test_arr: Any, y_pred: Any, alpha: float, alpha_source: str
+) -> dict[str, Any]:
+    """Wilson score confidence intervals for recall and precision (step
+    24, Change 1) - the same failure G3 exists to prevent one layer up:
+    a point estimate from a handful of positive cases (recall's
+    TP/n_positives_in_test) can look precise while being highly
+    uncertain. Reuses stats.wilson_interval - the Single-Reader
+    Principle applied to a statistic (step 20) - so this is not a
+    second implementation of the Wilson interval. A zero denominator
+    (no positive cases, or the model predicted none) is a disclosed
+    skip, never a crash and never a fabricated interval.
+
+    Factored out of train_baseline so it is independently testable
+    against planted array counts, including the zero-positive
+    degenerate case a real stratified split structurally avoids.
+    """
+    from delivery_engine.stats import wilson_interval
+
+    def _r(v: float) -> float:
+        return round(float(v), METRIC_DECIMALS)
+
+    n_pos_test = int((y_test_arr == 1).sum())
+    n_pred_pos = int((y_pred == 1).sum())
+    tp = int(((y_test_arr == 1) & (y_pred == 1)).sum())
+
+    skipped: list[dict[str, str]] = []
+    recall_ci: dict[str, float] | None
+    precision_ci: dict[str, float] | None
+
+    if n_pos_test == 0:
+        recall_ci = None
+        skipped.append({
+            "what": "recall_ci95",
+            "reason": (
+                "zero positive cases in the test set (0/0) - recall is "
+                "undefined; no confidence interval can be computed, and "
+                "none is fabricated"
+            ),
+        })
+    else:
+        lo, hi = wilson_interval(tp, n_pos_test, alpha)
+        recall_ci = {"ci_low": lo, "ci_high": hi}
+
+    if n_pred_pos == 0:
+        precision_ci = None
+        skipped.append({
+            "what": "precision_ci95",
+            "reason": (
+                "the model predicted zero positive cases in the test "
+                "set (0/0) - precision is undefined; no confidence "
+                "interval can be computed, and none is fabricated"
+            ),
+        })
+    else:
+        lo, hi = wilson_interval(tp, n_pred_pos, alpha)
+        precision_ci = {"ci_low": lo, "ci_high": hi}
+
+    return {
+        "n_positives_in_test": n_pos_test,
+        "recall_ci95": recall_ci,
+        "precision_ci95": precision_ci,
+        "metric_ci_alpha": _r(alpha),
+        "metric_ci_alpha_source": alpha_source,
+        "metric_ci_skipped": skipped,
+        "metric_ci_caveat": (
+            f"recall and precision above carry Wilson score 95% "
+            f"confidence intervals (Brown, Cai & DasGupta 2001) at "
+            f"alpha={_r(alpha)} ({alpha_source}); recall was estimated "
+            f"from {n_pos_test} positive case(s) in the test set - a "
+            f"point estimate from a small count can look precise while "
+            f"remaining highly uncertain."
+        ),
     }
