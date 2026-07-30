@@ -2,12 +2,9 @@
 
 ## Supported versions
 
-| Version | Supported |
-|:--------|:----------|
-| 1.2.x   | ✅ Yes |
-| 1.1.x   | ✅ Yes (security fixes only) |
-| 1.0.x   | ⚠️ Critical fixes only |
-| < 1.0   | ❌ No |
+Only the latest released version is supported. This is a single-maintainer
+project with no maintenance branches — fixes land in the next release, not
+as backports to an older one.
 
 ## Security model
 
@@ -19,10 +16,24 @@ The Delivery Engine is a local analytical workflow tool. It:
 - Does **not** send data to external services
 - Does **not** store credentials or personal data
 - Does **not** expose network services
+- Does **not** collect telemetry. Cross-run local telemetry and opt-in
+  crash transmission were both considered and explicitly declined —
+  PROJECT_CHARTER.md's v1.2 amendment records the decision and the
+  triggers that would revisit it (a bug report that cannot be
+  reproduced, a second contributor, or a user with a real operational
+  dependency)
 
 The SHA-256 hash chain in `manifest.json` provides tamper-evidence for
 output packages. The `declaration.json` (v1.2+) provides a tamper-evident
 human accountability record.
+
+When something fails before the executor starts (so no audit log exists
+yet), `diagnose.py` writes `delivery-engine-diagnostic.json` — privacy by
+construction, not by policy: no usernames, hostnames, absolute paths,
+environment variables, or dataset content. Traceback frames are reduced to
+`basename.py:LINE in function`; the source file is recorded by extension
+only. Nothing is transmitted — the record is written locally, and
+attaching it to an issue is your decision.
 
 ## Reporting a vulnerability
 

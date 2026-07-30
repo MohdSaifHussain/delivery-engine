@@ -260,3 +260,5 @@ docker run --rm delivery-engine python examples/audit_data_quality/run_example.p
 
 The container mirrors CI exactly: Python 3.12 + Node 24 + all dependencies.
 446 tests pass in a clean environment with no local setup required.
+
+[Contributing](.github/CONTRIBUTING.md) · [Security](.github/SECURITY.md) · [Code of Conduct](.github/CODE_OF_CONDUCT.md) · [Cite](CITATION.cff)

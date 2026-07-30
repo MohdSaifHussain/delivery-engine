@@ -7,6 +7,19 @@ shows you how to get from *your* dataset to a sealed, reviewable
 package — in about ten minutes the first time, about one minute after
 that.
 
+## Contents
+
+- [Why playbooks (the part nobody wrote down until now)](#why-playbooks-the-part-nobody-wrote-down-until-now)
+- [The fastest path: one command](#the-fastest-path-one-command)
+- [Supported formats](#supported-formats)
+- [Your first playbook in ten minutes: the generator](#your-first-playbook-in-ten-minutes-the-generator)
+- [Editing a draft into your team's standard](#editing-a-draft-into-your-teams-standard)
+- [Model-stage evaluation keys (step 24)](#model-stage-evaluation-keys-step-24)
+- [Declaring a package final](#declaring-a-package-final)
+- [Reading the package like a reviewer](#reading-the-package-like-a-reviewer)
+- [When a run fails before it starts](#when-a-run-fails-before-it-starts)
+- [One warning worth repeating](#one-warning-worth-repeating)
+
 ## Why playbooks (the part nobody wrote down until now)
 
 A playbook is **your team's analysis standard, frozen as a governed,
@@ -35,6 +48,16 @@ python run_project.py \
     --playbook universal_audit \
     --rules my_rules.json \
     --approver "Your Name"
+```
+
+```mermaid
+flowchart TD
+    A["Your dataset + goal"] --> B["1. Profile"]
+    B --> C["2. Compatibility report"]
+    C --> D{"3. Plan + Human Gate 1"}
+    D -->|approved| E["4. Pre-flight preview"]
+    E --> F["5. Governed execution<br/>DQ gates then analysis stages"]
+    F --> G["6. Sealed package"]
 ```
 
 What happens, in order:
@@ -152,6 +175,113 @@ any p-value exists), or bump the version and move the file from
 Every edit is checked against the constitution (rules V1–V15 in
 the [playbook specification (PLAYBOOK_SPEC.md)](PLAYBOOK_SPEC.md)) the moment the file loads — an invalid playbook
 refuses to load with the rule number and the reason.
+
+## Model-stage evaluation keys (step 24)
+
+Three optional `kind = "model"` stage keys make the baseline's evidence
+more honest about what it measured. All three are opt-in and default to
+the exact pre-step-24 behaviour — a playbook that declares none of them
+trains and reports byte-identical findings to before these keys existed
+(verified by re-running every shipped example with a committed golden and
+comparing findings digests; see `PROJECT_CHARTER.md`'s v1.5 amendment).
+
+**`metric_ci`** (bool, default `false`). When `true`, adds Wilson score
+95% confidence intervals for recall and precision — Brown, Cai &
+DasGupta (2001), "Interval Estimation for a Binomial Proportion",
+*Statistical Science* 16(2); NIST/SEMATECH e-Handbook of Statistical
+Methods §7.2.4.1; computed by
+`statsmodels.stats.proportion.proportion_confint(method="wilson")` via
+`delivery_engine.stats.wilson_interval` — the same function the stats
+stage uses, not a second implementation. Adds to findings:
+`n_positives_in_test`, `recall_ci95`, `precision_ci95`, `metric_ci_alpha`,
+`metric_ci_alpha_source`, `metric_ci_skipped`, `metric_ci_caveat`. Alpha
+is the playbook's pre-registered `[stats]` alpha when a stats stage
+exists (`metric_ci_alpha_source = "pre_registered"`), else a disclosed
+engine default of 0.05 (`"engine_default_disclosed"`). Zero positive
+cases, or zero predicted positives, is recorded in `metric_ci_skipped`
+with a reason — never a crash, never a fabricated interval.
+
+**`split`** (`"random"` | `"time_ordered"` | `"walk_forward"`, default
+`"random"`). Sourced to scikit-learn's own `TimeSeriesSplit`
+documentation: ordinary cross-validation on time-ordered data trains on
+the future and evaluates on the past, which is not what a real
+deployment will ever do. The ordering column is always the plan's
+classified `timestamp_column` — never guessed, never row order;
+declaring `time_ordered` or `walk_forward` with no classified timestamp
+column is a clean feasibility refusal naming the remedy, not a silent
+fallback. `"time_ordered"` holds out the last portion of a stably
+time-sorted dataset as the test set (no shuffle, no stratify).
+`"walk_forward"` runs `TimeSeriesSplit` and evaluates a fresh pipeline
+per fold. Either mode adds `split_mode` and `ordering_column` to
+findings; `walk_forward` additionally adds `n_splits`, `folds` (each
+fold's train size, test size, positive count, and metrics — or a
+disclosed skip with a reason if a fold's train or test portion holds a
+single class), and `fold_metrics_summary` (mean, min, and max **per
+metric, in the same dict** — the range sits structurally beside the
+mean, so a consumer cannot read the average alone and miss a fold that
+caught nothing).
+
+**`n_splits`** (int, default `5`, minimum `2`). Legal only when
+`split = "walk_forward"` — declaring it with any other split is a
+playbook validation error naming the reason.
+
+One stage declaring all three:
+
+```toml
+[[stages]]
+id = "baseline"
+kind = "model"
+gate = "must_pass"
+metric_ci = true
+split = "walk_forward"
+n_splits = 5
+needs = ["dq_gate"]
+```
+
+<details>
+<summary>Findings shape for the stage above (illustrative excerpt)</summary>
+
+```json
+{
+  "model": "LogisticRegression(max_iter=1000)",
+  "split": "time_series_walk_forward",
+  "split_mode": "walk_forward",
+  "ordering_column": "test_time",
+  "n_splits": 5,
+  "target": "pass_fail",
+  "n_positives_in_test": 5,
+  "recall_ci95": {"ci_low": 0.230724, "ci_high": 0.882379},
+  "precision_ci95": {"ci_low": 0.300642, "ci_high": 0.954413},
+  "metric_ci_alpha": 0.05,
+  "metric_ci_alpha_source": "engine_default_disclosed",
+  "metric_ci_skipped": [],
+  "metric_ci_caveat": "recall and precision above carry Wilson score 95% confidence intervals (Brown, Cai & DasGupta 2001) at alpha=0.05 (engine_default_disclosed); recall was estimated from 5 positive case(s) in the test set - a point estimate from a small count can look precise while remaining highly uncertain.",
+  "folds": [
+    {"fold": 1, "train_size": 40, "test_size": 20, "n_positives": 0,
+     "skipped": true,
+     "reason": "this fold's test portion contains a single class (0 positive case(s)) - recall, precision and roc_auc are undefined; no metrics are fabricated"},
+    {"fold": 2, "train_size": 60, "test_size": 20, "n_positives": 3,
+     "metrics": {"accuracy": 0.85, "precision": 0.667, "recall": 0.333, "f1": 0.444, "roc_auc": 0.71}},
+    {"fold": 3, "train_size": 80, "test_size": 20, "n_positives": 5,
+     "metrics": {"accuracy": 0.9, "precision": 0.75, "recall": 0.6, "f1": 0.667, "roc_auc": 0.82}}
+  ],
+  "fold_metrics_summary": {
+    "accuracy": {"mean": 0.875, "min": 0.85, "max": 0.9},
+    "precision": {"mean": 0.7085, "min": 0.667, "max": 0.75},
+    "recall": {"mean": 0.4665, "min": 0.333, "max": 0.6},
+    "f1": {"mean": 0.5555, "min": 0.444, "max": 0.667},
+    "roc_auc": {"mean": 0.765, "min": 0.71, "max": 0.82}
+  }
+}
+```
+
+`metric_ci` here reflects the last successful fold (fold 3: 5 positive
+cases, 3 true positives — recall 3/5 = 0.6, precision 3/4 = 0.75). This
+is a shortened, illustrative excerpt — the real findings dict also
+carries `leakage_warnings`, `g2_pseudoreplication`, and
+`g3_minimum_detectable_effect`, unaffected by these keys.
+
+</details>
 
 ## Declaring a package final
 

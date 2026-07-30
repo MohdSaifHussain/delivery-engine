@@ -14,6 +14,16 @@ labels: bug
 # Exact commands you ran
 ```
 
+## Playbook used
+
+<!-- Which playbook (curated in playbooks/, or generated)? Name and version
+     from its [playbook] table. -->
+
+## Four-gate status on your checkout
+
+<!-- pytest / mypy --strict / ruff check / ruff format --check - all green,
+     or does the bug only reproduce with one of them red? -->
+
 ## Environment
 
 - OS:

@@ -19,7 +19,10 @@ Read these two files — they are the constitutional documents:
 - **Feature requests** — use the Feature Request issue template
 - **Playbook contributions** — new TOML playbooks in `playbooks/`
   (this is the correct way to add new analysis archetypes — never modify
-  the executor to add business logic)
+  the executor to add business logic). A new playbook's `description` is
+  a routing surface — the planner matches goal wording against it — so it
+  must land with its own routing regression tests, and tests for its
+  nearest lexical neighbors, per the standing rule from build step 9
 - **Documentation improvements** — README, USER_GUIDE, QUICKSTART, STEP
   decision records
 - **Test improvements** — planted-answer tests following the existing pattern
@@ -40,8 +43,14 @@ git clone https://github.com/MohdSaifHussain/delivery-engine.git
 cd delivery-engine
 pip install -e ./analystkit-mcp -e ./opskit-mcp -e ".[dev,ml,docs,stats]"
 npm install pptxgenjs docx
-python -m pytest -q   # expect: 394 passed, 1 skipped
+python -m pytest -q   # expect: 446 passed, 1 skipped
 ```
+
+> [!NOTE]
+> If the package is not installed editable in your environment (`pip show
+> delivery-engine` doesn't point at your checkout), run gates and tests
+> with `PYTHONPATH=src` so imports resolve to your working copy instead of
+> whatever is on the path, e.g. `PYTHONPATH=src python -m pytest -q`.
 
 ## The four gates — all must pass before any commit
 

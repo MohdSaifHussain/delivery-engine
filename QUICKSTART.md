@@ -115,6 +115,12 @@ Validation is automatic and strict: if your TOML violates any
 constitutional rule, loading fails with a message naming the rule and
 the fix. You cannot ship a malformed playbook by accident.
 
+> [!TIP]
+> Adding a `kind = "model"` stage? See
+> [USER_GUIDE.md's "Model-stage evaluation keys" section](USER_GUIDE.md#model-stage-evaluation-keys-step-24)
+> for `metric_ci`, `split`, and `n_splits` — opt-in confidence intervals
+> and time-ordered/walk-forward evaluation for the baseline.
+
 ## 5. Choosing your AI level
 
 The engine is honest about where AI sits, and you control it:
@@ -170,6 +176,8 @@ maintainer cannot guess from a pasted traceback. `run_project.py`
 writes it automatically when a run fails unexpectedly. It contains no
 usernames, paths, environment variables, or dataset content.
 
+<details>
+<summary>Per-error remedies</summary>
 
 - **`pip install -e .` fails on analystkit** — you are offline or
   GitHub is unreachable; analystkit installs from its public repo.
@@ -180,3 +188,5 @@ usernames, paths, environment variables, or dataset content.
 - **"Multiple playbooks qualify equally"** — your goal wording ties two
   descriptions. Reword the goal, or lexically differentiate your
   playbook's description (they are routing surfaces).
+
+</details>
