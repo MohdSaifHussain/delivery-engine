@@ -75,6 +75,9 @@ def train_baseline(
     metric_ci: bool = False,
     alpha: float = 0.05,
     alpha_source: str = "engine_default_disclosed",
+    split: str = "random",
+    n_splits: int = 5,
+    ordering_column: str | None = None,
 ) -> dict[str, Any]:
     """Trains the deterministic baseline classifier; returns findings.
 
@@ -96,6 +99,24 @@ def train_baseline(
     cases is not read as more precise than it is. alpha/alpha_source are
     resolved by the executor: the playbook's pre-registered [stats]
     alpha when a stats stage exists, else a disclosed engine default.
+
+    split (step 24, Change 2): "random" (default) is byte-identical to
+    before this parameter existed - the stratified split above, unused
+    by any other branch. "time_ordered" sorts ascending by
+    ordering_column (a stable sort - ties keep their original row
+    order, so ordering is deterministic, never silently arbitrary) and
+    holds out the last TEST_SIZE fraction as test, no shuffle, no
+    stratify: a fab (or any time-ordered process) deploys forward in
+    time, and a random split measures something deployment never
+    experiences. "walk_forward" runs
+    sklearn.model_selection.TimeSeriesSplit(n_splits) over the same
+    time-ordered rows, fitting and evaluating a fresh pipeline per fold;
+    findings carry every fold's train/test size, positive count and
+    metrics, plus a mean/min/max summary - the range sits structurally
+    beside the mean so a consumer cannot read the average alone and
+    miss a fold that caught nothing. ordering_column is supplied by the
+    executor from the plan's classified timestamp_column - never
+    guessed, never row order.
     """
     _require_sklearn()
     import numpy as np
@@ -132,6 +153,12 @@ def train_baseline(
                 f"the source. The source changed after planning - "
                 f"re-profile and re-plan."
             )
+    if ordering_column is not None and ordering_column not in df.columns:
+        raise ModelError(
+            f"ordering_column '{ordering_column}' from the approved plan "
+            f"does not exist in the source. The source changed after "
+            f"planning - re-profile and re-plan."
+        )
     features = [*numeric_features, *categorical_features]
     if not features:
         raise ModelError(
@@ -141,6 +168,8 @@ def train_baseline(
         )
 
     used = [target, *features]
+    if ordering_column is not None:
+        used = [*used, ordering_column]
     before = len(df)
     df = df.dropna(subset=used)
     n_dropped = before - len(df)
@@ -220,40 +249,194 @@ def train_baseline(
             f"meaningful stratified split."
         )
 
-    x = df[features]
-    x_train, x_test, y_train, y_test = train_test_split(
-        x,
-        y,
-        test_size=TEST_SIZE,
-        random_state=RANDOM_SEED,
-        stratify=y,
-    )
-
-    pre = ColumnTransformer(
-        transformers=[
-            ("cat", OneHotEncoder(handle_unknown="ignore"), categorical_features),
-        ],
-        remainder="passthrough",  # numerics pass through untouched
-    )
-    clf = Pipeline(
-        [
-            ("prep", pre),
-            ("model", LogisticRegression(max_iter=1000, random_state=RANDOM_SEED)),
-        ]
-    )
-    clf.fit(x_train, y_train)
-    y_pred = clf.predict(x_test)
-    y_prob = clf.predict_proba(x_test)[:, 1]
+    if split not in ("random", "time_ordered", "walk_forward"):
+        raise ModelError(
+            f"Unknown split '{split}'. Valid: random, time_ordered, "
+            f"walk_forward."
+        )
 
     def _r(v: float) -> float:
         return round(float(v), METRIC_DECIMALS)
+
+    def _fit_score(
+        x_tr: Any, y_tr: Any, x_te: Any, y_te: Any
+    ) -> tuple[Any, Any, dict[str, float]]:
+        pre = ColumnTransformer(
+            transformers=[
+                ("cat", OneHotEncoder(handle_unknown="ignore"), categorical_features),
+            ],
+            remainder="passthrough",  # numerics pass through untouched
+        )
+        clf = Pipeline(
+            [
+                ("prep", pre),
+                ("model", LogisticRegression(max_iter=1000, random_state=RANDOM_SEED)),
+            ]
+        )
+        clf.fit(x_tr, y_tr)
+        y_pr = clf.predict(x_te)
+        y_pb = clf.predict_proba(x_te)[:, 1]
+        return y_pr, y_pb, {
+            "accuracy": _r(accuracy_score(y_te, y_pr)),
+            "precision": _r(precision_score(y_te, y_pr, zero_division=0)),
+            "recall": _r(recall_score(y_te, y_pr, zero_division=0)),
+            "f1": _r(f1_score(y_te, y_pr, zero_division=0)),
+            "roc_auc": _r(roc_auc_score(y_te, y_pb)),
+        }
+
+    # ── Step 24 (Change 2): evaluation-split honesty. "random" below is
+    # byte-identical to the pre-step-24 code path - untouched, still the
+    # only branch that runs by default. "time_ordered" and
+    # "walk_forward" are opt-in and require ordering_column (the plan's
+    # classified timestamp_column, supplied by the executor - never
+    # guessed, never row order).
+    metrics: dict[str, float]
+    folds: list[dict[str, Any]] | None = None
+    fold_metrics_summary: dict[str, Any] | None = None
+    y_test_for_ci: Any = None
+    y_pred_for_ci: Any = None
+    n_train_out: int | None = None
+    n_test_out: int | None = None
+
+    if split == "random":
+        x = df[features]
+        x_train, x_test, y_train, y_test = train_test_split(
+            x,
+            y,
+            test_size=TEST_SIZE,
+            random_state=RANDOM_SEED,
+            stratify=y,
+        )
+        y_pred, _y_prob, metrics = _fit_score(x_train, y_train, x_test, y_test)
+        split_desc = "stratified"
+        n_train_out, n_test_out = len(x_train), len(x_test)
+        g_test_n = len(x_test)
+        y_test_for_ci, y_pred_for_ci = y_test, y_pred
+
+    elif split == "time_ordered":
+        if ordering_column is None:
+            raise ModelError(
+                "split = 'time_ordered' requires the plan to classify a "
+                "timestamp_column; none was supplied. Re-plan against a "
+                "source with a classified timestamp column, or declare "
+                "split = 'random' (the default)."
+            )
+        # Stable sort: ties keep their original row order, so ordering
+        # is deterministic - never silently arbitrary (step-24 hunt H4).
+        ordered = df.sort_values(ordering_column, kind="stable")
+        n_train_rows = round(len(ordered) * (1.0 - TEST_SIZE))
+        train_rows, test_rows = ordered.iloc[:n_train_rows], ordered.iloc[n_train_rows:]
+        x_train = train_rows[features]
+        y_train = (train_rows[target].astype(str) == classes[1]).astype(int)
+        x_test = test_rows[features]
+        y_test = (test_rows[target].astype(str) == classes[1]).astype(int)
+        if y_train.nunique() < 2 or y_test.nunique() < 2:
+            raise ModelError(
+                f"split = 'time_ordered' (sorted ascending by "
+                f"'{ordering_column}', first {1.0 - TEST_SIZE:.0%} train / "
+                f"remainder test) produced a train or test portion with "
+                f"only one class present - no metrics can be computed. "
+                f"Try split = 'random', or a larger / more balanced "
+                f"dataset."
+            )
+        y_pred, _y_prob, metrics = _fit_score(x_train, y_train, x_test, y_test)
+        split_desc = "time_ordered"
+        n_train_out, n_test_out = len(x_train), len(x_test)
+        g_test_n = len(x_test)
+        y_test_for_ci, y_pred_for_ci = y_test, y_pred
+
+    else:  # walk_forward
+        if ordering_column is None:
+            raise ModelError(
+                "split = 'walk_forward' requires the plan to classify a "
+                "timestamp_column; none was supplied. Re-plan against a "
+                "source with a classified timestamp column, or declare "
+                "split = 'random' (the default)."
+            )
+        from sklearn.model_selection import TimeSeriesSplit
+
+        ordered = df.sort_values(ordering_column, kind="stable").reset_index(drop=True)
+        x_all = ordered[features]
+        y_all = (ordered[target].astype(str) == classes[1]).astype(int)
+
+        fold_records: list[dict[str, Any]] = []
+        collected: dict[str, list[float]] = {
+            m: [] for m in ("accuracy", "precision", "recall", "f1", "roc_auc")
+        }
+        last_test: Any = None
+        last_pred: Any = None
+        for i, (tr_idx, te_idx) in enumerate(
+            TimeSeriesSplit(n_splits=n_splits).split(x_all), start=1
+        ):
+            x_tr, x_te = x_all.iloc[tr_idx], x_all.iloc[te_idx]
+            y_tr, y_te = y_all.iloc[tr_idx], y_all.iloc[te_idx]
+            record: dict[str, Any] = {
+                "fold": i,
+                "train_size": len(x_tr),
+                "test_size": len(x_te),
+                "n_positives": int(y_te.sum()),
+            }
+            # Step 24 hunt H3: a fold whose train or test portion holds a
+            # single class is a disclosed skip, never a divide-by-zero
+            # and never a silent 0.0 standing in for an undefined metric.
+            if y_tr.nunique() < 2:
+                record["skipped"] = True
+                record["reason"] = (
+                    "this fold's training portion contains a single "
+                    "class - cannot fit a binary classifier"
+                )
+                fold_records.append(record)
+                continue
+            if y_te.nunique() < 2:
+                record["skipped"] = True
+                record["reason"] = (
+                    f"this fold's test portion contains a single class "
+                    f"({int(y_te.sum())} positive case(s)) - recall, "
+                    f"precision and roc_auc are undefined; no metrics "
+                    f"are fabricated"
+                )
+                fold_records.append(record)
+                continue
+            y_pred_f, _y_prob_f, fold_metrics = _fit_score(x_tr, y_tr, x_te, y_te)
+            record["metrics"] = fold_metrics
+            fold_records.append(record)
+            for k, v in fold_metrics.items():
+                collected[k].append(v)
+            last_test, last_pred = y_te, y_pred_f
+
+        if not collected["accuracy"]:
+            raise ModelError(
+                f"split = 'walk_forward' with n_splits={n_splits} produced "
+                f"no usable fold - every fold's train or test portion "
+                f"contained a single class. Reduce n_splits, use a "
+                f"larger dataset, or use split = 'random'."
+            )
+
+        # The range sits structurally beside the mean in the SAME dict
+        # (step-24 hunt H5): a consumer reading fold_metrics_summary
+        # cannot see the mean without also seeing min and max.
+        fold_metrics_summary = {
+            k: {
+                "mean": _r(sum(vals) / len(vals)),
+                "min": _r(min(vals)),
+                "max": _r(max(vals)),
+            }
+            for k, vals in collected.items()
+        }
+        folds = fold_records
+        split_desc = "time_series_walk_forward"
+        g_test_n = sum(
+            r["test_size"] for r in fold_records if not r.get("skipped")
+        )
+        y_test_for_ci, y_pred_for_ci = last_test, last_pred
+        metrics = {}  # no single metrics dict for walk_forward; see folds
 
     findings: dict[str, Any] = {
         "model": "LogisticRegression(max_iter=1000)",
         "library": "scikit-learn",
         "random_seed": RANDOM_SEED,
         "test_size": TEST_SIZE,
-        "split": "stratified",
+        "split": split_desc,
         "target": target,
         "positive_class": classes[1],
         "negative_class": classes[0],
@@ -270,16 +453,7 @@ def train_baseline(
         ),
         "categorical_features": sorted(categorical_features),
         "n_rows_dropped_nulls": int(n_dropped),
-        "n_train": len(x_train),
-        "n_test": len(x_test),
         "class_balance_positive": _r(float(y.mean())),
-        "metrics": {
-            "accuracy": _r(accuracy_score(y_test, y_pred)),
-            "precision": _r(precision_score(y_test, y_pred, zero_division=0)),
-            "recall": _r(recall_score(y_test, y_pred, zero_division=0)),
-            "f1": _r(f1_score(y_test, y_pred, zero_division=0)),
-            "roc_auc": _r(roc_auc_score(y_test, y_prob)),
-        },
         "note": (
             "Deterministic baseline: fixed integer seeds on splitter and "
             "estimator per scikit-learn's controlling-randomness guidance; "
@@ -288,25 +462,25 @@ def train_baseline(
             "model."
         ),
         # ── G2: pseudoreplication disclosure (Forstmeier et al. 2017) ────────
-        # The stratified split assumes row independence. If rows share a
-        # grouping structure (repeated measures, clustered sampling,
-        # autocorrelated time series) the effective sample size is smaller
-        # than n_test and reported metrics overstate generalisation. The
+        # The split assumes row independence. If rows share a grouping
+        # structure (repeated measures, clustered sampling, autocorrelated
+        # time series) the effective sample size is smaller than the
+        # figure below and reported metrics overstate generalisation. The
         # engine cannot detect grouping from a flat source; human judgment
         # is required. Disclosure only — never a gate.
         "g2_pseudoreplication": {
             "warning": "pseudoreplication_risk",
             "reference": ("Forstmeier, Wagenmakers & Parker (2017) Proc. R. Soc. B 284:20152463"),
-            "assumed_independent_units": len(x_test),
+            "assumed_independent_units": g_test_n,
             "detail": (
-                "The stratified split treats each row as an independent "
-                "statistical unit. If rows share grouping structure "
-                "(repeated measures, clustered sampling, time-series "
-                "autocorrelation) the effective sample size is smaller "
-                "than n_test and reported metrics will overstate "
-                "generalisation. The engine cannot detect grouping from "
-                "a flat source; the human reviewer must confirm "
-                "independence."
+                "The split treats each row as an independent statistical "
+                "unit. If rows share grouping structure (repeated "
+                "measures, clustered sampling, time-series autocorrelation) "
+                "the effective sample size is smaller than "
+                "assumed_independent_units and reported metrics will "
+                "overstate generalisation. The engine cannot detect "
+                "grouping from a flat source; the human reviewer must "
+                "confirm independence."
             ),
             "gate": False,
         },
@@ -324,8 +498,8 @@ def train_baseline(
             "formula": "h = (z_alpha_half + z_beta) / sqrt(n_test)",
             "z_alpha_half": G3_Z_ALPHA_HALF,
             "z_beta": G3_Z_BETA,
-            "n_test": len(x_test),
-            "mde_cohen_h": _r((G3_Z_ALPHA_HALF + G3_Z_BETA) / (len(x_test) ** 0.5)),
+            "n_test": g_test_n,
+            "mde_cohen_h": _r((G3_Z_ALPHA_HALF + G3_Z_BETA) / (g_test_n ** 0.5)),
             "detail": (
                 "With n_test independent observations the minimum "
                 "Cohen's h detectable at power=0.8 and alpha=0.05 "
@@ -338,12 +512,30 @@ def train_baseline(
         },
     }
 
+    # split != "random" is opt-in; these keys are therefore absent (and
+    # findings byte-identical to pre-step-24 output) unless a playbook
+    # actually declares a non-default split.
+    if split != "random":
+        findings["split_mode"] = split
+    if ordering_column is not None:
+        findings["ordering_column"] = ordering_column
+    if split == "walk_forward":
+        findings["n_splits"] = n_splits
+        findings["folds"] = folds
+        findings["fold_metrics_summary"] = fold_metrics_summary
+    else:
+        findings["n_train"] = n_train_out
+        findings["n_test"] = n_test_out
+        findings["metrics"] = metrics
+
     # ── Step 24 (Change 1): metric confidence intervals - opt-in, adds
     # NOTHING to findings when metric_ci is False (byte-identical to
     # pre-step-24 output).
     if metric_ci:
         findings.update(
-            _metric_ci_block(y_test.to_numpy(), y_pred, alpha, alpha_source)
+            _metric_ci_block(
+                y_test_for_ci.to_numpy(), y_pred_for_ci, alpha, alpha_source
+            )
         )
 
     return findings

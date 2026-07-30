@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import csv
 import json
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -26,6 +27,8 @@ import pytest
 from analystkit_mcp.tools import tool_profile
 
 from delivery_engine import approve_plan, load_playbook, make_plan, run
+from delivery_engine.executor import ExecutionStopped
+from delivery_engine.playbook import PlaybookError
 from delivery_engine.store import (
     FindingsStore,
     NumberInjector,
@@ -452,3 +455,307 @@ class TestMetricCiAlphaResolutionEndToEnd:
         )["findings"]
         assert f["metric_ci_alpha_source"] == "pre_registered"
         assert f["metric_ci_alpha"] == 0.2  # the playbook's [stats] alpha
+
+
+# ── Change 2: evaluation-split honesty ───────────────────────────────────────
+
+
+def _time_ordered_signal_csv(path: Path, rows: int = 300) -> Path:
+    """Early period (first half): a small numeric feature (0-6)
+    UNCORRELATED with the label (~20% positive, pseudo-random). Late
+    period (second half): the same feature is a clean binary signal (0
+    or 100) that fully determines the label. A model trained on the
+    whole timeline learns the late-period signal; walk_forward's early
+    folds - trained and evaluated only within the noise region - expose
+    that the model is useless there. A random split blends both regions
+    into one number and conceals it."""
+    start = datetime(2024, 1, 1)
+    out = []
+    for i in range(rows):
+        day = (start + timedelta(days=i)).strftime("%Y-%m-%d")
+        if i < rows // 2:
+            feature = float(i % 7)
+            label = "yes" if (i * 37) % 5 == 0 else "no"
+        else:
+            feature = 100.0 if i % 2 == 0 else 0.0
+            label = "yes" if feature > 50 else "no"
+        out.append([f"C-{i:05d}", day, label, feature])
+    return _csv(
+        path, ["customer_id", "signup_date", "converted", "feature"], out
+    )
+
+
+def _single_class_early_csv(path: Path, rows: int = 100) -> Path:
+    """First 60% of the timeline is a single class ('no'); the tail
+    alternates. With TimeSeriesSplit(n_splits=4) over 100 rows (fold
+    boundaries at 20/40/60/80), the first three folds' TRAINING portions
+    fall entirely inside the single-class prefix and are skipped; the
+    fourth fold's training portion spans into the alternating tail and
+    succeeds - both skip reasons (train-side and, for a shorter prefix,
+    test-side) are exercised across the suite."""
+    start = datetime(2024, 1, 1)
+    out = []
+    for i in range(rows):
+        day = (start + timedelta(days=i)).strftime("%Y-%m-%d")
+        label = "no" if i < 60 else ("yes" if i % 2 == 0 else "no")
+        out.append([f"C-{i:05d}", day, label, float(i)])
+    return _csv(
+        path, ["customer_id", "date_col", "converted", "feature"], out
+    )
+
+
+def _split_playbook_toml(
+    name: str, split_value: str, n_splits: int | None = None
+) -> str:
+    n_splits_line = f"n_splits = {n_splits}\n" if n_splits is not None else ""
+    return f"""\
+schema_version = 1
+
+[playbook]
+name = "{name}"
+version = "1.0.0"
+description = "split honesty test playbook"
+
+[requirements]
+min_rows = 50
+required_kinds = ["binary_target", "id_column"]
+source_types = ["csv"]
+
+[[stages]]
+id = "dq_profile"
+kind = "kit"
+tool = "analystkit_profile"
+gate = "must_pass"
+
+[[stages]]
+id = "dq_validate"
+kind = "kit"
+tool = "analystkit_validate"
+gate = "must_pass"
+needs = ["dq_profile"]
+
+[[stages]]
+id = "plan_approval"
+kind = "human_gate"
+needs = ["dq_profile", "dq_validate"]
+
+[[stages]]
+id = "baseline"
+kind = "model"
+gate = "must_pass"
+split = "{split_value}"
+{n_splits_line}needs = ["dq_profile", "dq_validate", "plan_approval"]
+
+[[stages]]
+id = "package"
+kind = "package"
+needs = ["baseline"]
+
+[deliverables]
+artifacts = ["delivery_package", "audit_log", "manifest"]
+"""
+
+
+def _run_split_playbook(
+    tmp_path: Path, toml_text: str, name: str, src: Path
+) -> Path:
+    pb_dir = tmp_path / f"pb_dir_{name}"
+    pb_dir.mkdir()
+    (pb_dir / f"{name}.toml").write_text(toml_text, encoding="utf-8")
+    envelope = json.loads(tool_profile(str(src), None))
+    plan = make_plan(
+        "predict churn for the growth team", str(src),
+        envelope["findings"], pb_dir,
+    )
+    plan = approve_plan(plan, "Saif")
+    out = tmp_path / f"pkg_{name}"
+    run(
+        plan, load_playbook(pb_dir / f"{name}.toml"), _MODEL_CI_RULES, out,
+        approvals=_MODEL_CI_APPROVALS,
+    )
+    return out
+
+
+class TestEvaluationSplitHonestyUnit:
+    def test_time_ordered_adds_split_mode_and_ordering_column(
+        self, tmp_path: Path
+    ) -> None:
+        from delivery_engine.model import train_baseline
+
+        src = _time_ordered_signal_csv(tmp_path / "signal.csv")
+        f = train_baseline(
+            str(src), "converted", ["feature"], [],
+            split="time_ordered", ordering_column="signup_date",
+        )
+        assert f["split_mode"] == "time_ordered"
+        assert f["ordering_column"] == "signup_date"
+        assert f["split"] == "time_ordered"
+        assert "n_train" in f
+        assert "n_test" in f
+        assert "metrics" in f
+
+    def test_random_default_has_no_new_keys(self, tmp_path: Path) -> None:
+        from delivery_engine.model import train_baseline
+
+        src = _time_ordered_signal_csv(tmp_path / "signal.csv")
+        f = train_baseline(str(src), "converted", ["feature"], [])
+        assert "split_mode" not in f
+        assert "ordering_column" not in f
+        assert "folds" not in f
+        assert f["split"] == "stratified"
+
+    def test_walk_forward_folds_deterministic_across_runs(
+        self, tmp_path: Path
+    ) -> None:
+        from delivery_engine.model import train_baseline
+
+        src = _time_ordered_signal_csv(tmp_path / "signal.csv")
+        kwargs: dict[str, Any] = {
+            "split": "walk_forward", "n_splits": 5,
+            "ordering_column": "signup_date",
+        }
+        f1 = train_baseline(str(src), "converted", ["feature"], [], **kwargs)
+        f2 = train_baseline(str(src), "converted", ["feature"], [], **kwargs)
+        assert f1["folds"] == f2["folds"]
+        assert f1["fold_metrics_summary"] == f2["fold_metrics_summary"]
+
+    def test_fold_range_sits_structurally_beside_the_mean(
+        self, tmp_path: Path
+    ) -> None:
+        """Step-24 hunt H5: a consumer reading fold_metrics_summary
+        cannot see the mean without also seeing min and max - same dict,
+        same level."""
+        from delivery_engine.model import train_baseline
+
+        src = _time_ordered_signal_csv(tmp_path / "signal.csv")
+        f = train_baseline(
+            str(src), "converted", ["feature"], [],
+            split="walk_forward", n_splits=5, ordering_column="signup_date",
+        )
+        for metric_summary in f["fold_metrics_summary"].values():
+            assert {"mean", "min", "max"} <= set(metric_summary)
+
+    def test_single_class_folds_are_skipped_not_fabricated(
+        self, tmp_path: Path
+    ) -> None:
+        """Step-24 hunt H3: a fold whose train or test portion holds a
+        single class is a disclosed skip, never a divide-by-zero and
+        never a silent 0.0 standing in for an undefined metric."""
+        from delivery_engine.model import train_baseline
+
+        src = _single_class_early_csv(tmp_path / "skew.csv")
+        f = train_baseline(
+            str(src), "converted", ["feature"], [],
+            split="walk_forward", n_splits=4, ordering_column="date_col",
+        )
+        skipped = [r for r in f["folds"] if r.get("skipped")]
+        successful = [r for r in f["folds"] if not r.get("skipped")]
+        assert skipped
+        assert successful
+        for r in skipped:
+            assert "reason" in r
+            assert "metrics" not in r
+
+    def test_all_folds_single_class_is_feasibility_failure(
+        self, tmp_path: Path
+    ) -> None:
+        from delivery_engine.model import ModelError, train_baseline
+
+        start = datetime(2024, 1, 1)
+        rows = []
+        for i in range(60):
+            day = (start + timedelta(days=i)).strftime("%Y-%m-%d")
+            label = "yes" if i < 12 else "no"  # positives ALL at the start
+            rows.append([f"C-{i:05d}", day, label, float(i)])
+        src = _csv(
+            tmp_path / "allskip.csv",
+            ["customer_id", "date_col", "converted", "feature"], rows,
+        )
+        with pytest.raises(ModelError, match="no usable fold"):
+            train_baseline(
+                str(src), "converted", ["feature"], [],
+                split="walk_forward", n_splits=4, ordering_column="date_col",
+            )
+
+
+class TestSplitPlaybookValidation:
+    def test_unknown_split_rejected(self, tmp_path: Path) -> None:
+        pb = tmp_path / "bad.toml"
+        pb.write_text(
+            _split_playbook_toml("bad_split", "bogus"), encoding="utf-8"
+        )
+        with pytest.raises(PlaybookError, match="split"):
+            load_playbook(pb)
+
+    def test_n_splits_illegal_without_walk_forward(self, tmp_path: Path) -> None:
+        pb = tmp_path / "bad2.toml"
+        pb.write_text(
+            _split_playbook_toml("bad_n_splits", "random", n_splits=3),
+            encoding="utf-8",
+        )
+        with pytest.raises(PlaybookError, match="n_splits"):
+            load_playbook(pb)
+
+    def test_n_splits_too_small_rejected(self, tmp_path: Path) -> None:
+        pb = tmp_path / "bad3.toml"
+        pb.write_text(
+            _split_playbook_toml("bad_n_splits2", "walk_forward", n_splits=1),
+            encoding="utf-8",
+        )
+        with pytest.raises(PlaybookError, match="n_splits"):
+            load_playbook(pb)
+
+
+class TestEvaluationSplitHonestyEndToEnd:
+    def test_time_ordered_without_timestamp_column_is_clean_refusal(
+        self, tmp_path: Path
+    ) -> None:
+        src = _model_ci_csv(tmp_path / "no_dates.csv")  # no date-like column
+        toml_text = _split_playbook_toml("split_no_ts", "time_ordered")
+        pb_dir = tmp_path / "pb_dir_split_no_ts"
+        pb_dir.mkdir()
+        (pb_dir / "split_no_ts.toml").write_text(toml_text, encoding="utf-8")
+        envelope = json.loads(tool_profile(str(src), None))
+        plan = make_plan(
+            "predict churn for the growth team", str(src),
+            envelope["findings"], pb_dir,
+        )
+        plan = approve_plan(plan, "Saif")
+        out = tmp_path / "pkg_split_no_ts"
+        with pytest.raises(ExecutionStopped, match="timestamp_column"):
+            run(
+                plan, load_playbook(pb_dir / "split_no_ts.toml"),
+                _MODEL_CI_RULES, out, approvals=_MODEL_CI_APPROVALS,
+            )
+
+    def test_walk_forward_min_fold_exposes_what_random_split_conceals(
+        self, tmp_path: Path
+    ) -> None:
+        src = _time_ordered_signal_csv(tmp_path / "signal_e2e.csv")
+
+        out_random = _run_split_playbook(
+            tmp_path, _split_playbook_toml("split_random_cmp", "random"),
+            "split_random_cmp", src,
+        )
+        f_random = json.loads(
+            (out_random / "findings" / "baseline.json").read_text("utf-8")
+        )["findings"]
+        random_recall = f_random["metrics"]["recall"]
+
+        out_wf = _run_split_playbook(
+            tmp_path,
+            _split_playbook_toml("split_wf_cmp", "walk_forward", n_splits=5),
+            "split_wf_cmp", src,
+        )
+        f_wf = json.loads(
+            (out_wf / "findings" / "baseline.json").read_text("utf-8")
+        )["findings"]
+
+        assert f_wf["split_mode"] == "walk_forward"
+        assert f_wf["ordering_column"] == "signup_date"
+        min_fold_recall = f_wf["fold_metrics_summary"]["recall"]["min"]
+
+        # The concealment: a single random-split number cannot show the
+        # fold-to-fold volatility. walk_forward's weakest fold is well
+        # below what the random split reported as one blended number.
+        assert min_fold_recall < random_recall

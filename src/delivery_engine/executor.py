@@ -615,12 +615,34 @@ def _run_model_stage(
         metric_ci_alpha = DEFAULT_METRIC_ALPHA
         metric_ci_alpha_source = "engine_default_disclosed"
 
+    # Step 24 (Change 2): the ordering column for time_ordered/walk_forward
+    # comes from the plan's classified timestamp_column - governed data
+    # approved at Human Gate 1, never guessed and never row order. A
+    # non-random split declared with no classified timestamp_column is a
+    # clean feasibility refusal naming the remedy, not a silent fallback
+    # to row order.
+    timestamp_cols = [c for c, k in kinds if k == "timestamp_column"]
+    ordering_column = timestamp_cols[0] if timestamp_cols else None
+    if stage.split != "random" and ordering_column is None:
+        reason = (
+            f"split = '{stage.split}' requires the plan to classify a "
+            f"timestamp_column, but none was found. Re-plan against a "
+            f"source with a classified timestamp column, or declare "
+            f"split = 'random' (the default) in the playbook."
+        )
+        audit.record(stage.stage_id, "model:baseline", "fail", reason)
+        audit.write(out_dir / "audit_log.jsonl")
+        raise ExecutionStopped(stage.stage_id, reason)
+
     try:
         findings = train_baseline(
             plan.source, target, numeric, categorical,
             metric_ci=stage.metric_ci,
             alpha=metric_ci_alpha,
             alpha_source=metric_ci_alpha_source,
+            split=stage.split,
+            n_splits=stage.n_splits,
+            ordering_column=ordering_column,
         )
         findings["target_candidates"] = sorted(set(targets))
         findings["target_selection"] = (
@@ -639,12 +661,20 @@ def _run_model_stage(
     (out_dir / "findings" / f"{stage.stage_id}.json").write_text(
         store.to_json(stage.stage_id), encoding="utf-8"
     )
+    # Step 24 (Change 2): walk_forward has per-fold sizes, not a single
+    # n_train/n_test - describe whichever shape this run actually has.
+    if "folds" in findings:
+        split_summary = (
+            f"walk_forward, {len(findings['folds'])} fold(s) "
+            f"({findings['n_splits']} declared)"
+        )
+    else:
+        split_summary = f"{findings['split']} {findings['n_train']}/{findings['n_test']} split"
     audit.record(
         stage.stage_id, "model:baseline", "pass",
         f"deterministic baseline trained on target '{target}' (selected "
         f"as first binary candidate of {sorted(set(targets))}) "
-        f"(seed {findings['random_seed']}, stratified "
-        f"{findings['n_train']}/{findings['n_test']} split); metrics "
+        f"(seed {findings['random_seed']}, {split_summary}); metrics "
         f"stored hashed - metric values never gate, training feasibility "
         f"does (declared step 10 semantics)",
         sha256=digest,
