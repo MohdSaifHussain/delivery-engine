@@ -431,6 +431,27 @@ def train_baseline(
         y_test_for_ci, y_pred_for_ci = last_test, last_pred
         metrics = {}  # no single metrics dict for walk_forward; see folds
 
+    # G2's detail prose names the split by its old fixed description for
+    # "random" (byte-identical to pre-step-24 output); the two opt-in
+    # modes get an accurate description instead of a stale one.
+    g2_detail = (
+        "The stratified split treats each row as an independent "
+        "statistical unit. If rows share grouping structure (repeated "
+        "measures, clustered sampling, time-series autocorrelation) "
+        "the effective sample size is smaller than n_test and reported "
+        "metrics will overstate generalisation. The engine cannot "
+        "detect grouping from a flat source; the human reviewer must "
+        "confirm independence."
+    ) if split == "random" else (
+        f"The {split_desc} split treats each row as an independent "
+        f"statistical unit. If rows share grouping structure (repeated "
+        f"measures, clustered sampling, time-series autocorrelation) "
+        f"the effective sample size is smaller than "
+        f"assumed_independent_units and reported metrics will overstate "
+        f"generalisation. The engine cannot detect grouping from a flat "
+        f"source; the human reviewer must confirm independence."
+    )
+
     findings: dict[str, Any] = {
         "model": "LogisticRegression(max_iter=1000)",
         "library": "scikit-learn",
@@ -472,16 +493,7 @@ def train_baseline(
             "warning": "pseudoreplication_risk",
             "reference": ("Forstmeier, Wagenmakers & Parker (2017) Proc. R. Soc. B 284:20152463"),
             "assumed_independent_units": g_test_n,
-            "detail": (
-                "The split treats each row as an independent statistical "
-                "unit. If rows share grouping structure (repeated "
-                "measures, clustered sampling, time-series autocorrelation) "
-                "the effective sample size is smaller than "
-                "assumed_independent_units and reported metrics will "
-                "overstate generalisation. The engine cannot detect "
-                "grouping from a flat source; the human reviewer must "
-                "confirm independence."
-            ),
+            "detail": g2_detail,
             "gate": False,
         },
         # ── G3: minimum detectable effect (Cohen 1988, power=0.8, alpha=0.05) ──
