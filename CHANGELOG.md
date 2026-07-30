@@ -6,6 +6,56 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-07-30
+
+### Added
+- Model-stage evidence honesty (build step 24), grounded in a governed
+  forward-deployed engagement on real semiconductor wafer-fabrication
+  data (UCI SECOM). Three changes, all opt-in — a playbook declaring
+  none of the new keys reproduces byte-identical findings, verified by
+  re-running every shipped example with a committed golden and
+  comparing findings digests.
+  - **Metric confidence intervals** (`metric_ci`, model-stage key,
+    default `false`). When enabled, adds Wilson score 95% confidence
+    intervals (Brown, Cai & DasGupta 2001) for recall and precision, so
+    a point estimate from a handful of positive cases is not read as
+    more precise than it is — the same failure G3 (step 18) exists to
+    prevent one layer up. Reuses `stats.wilson_interval` (newly
+    promoted from a private `_wilson` helper) rather than a second
+    implementation. Alpha is the playbook's pre-registered `[stats]`
+    alpha when a stats stage exists, else a disclosed engine default
+    (0.05). A zero denominator (no positive cases, or the model
+    predicted none) is a disclosed skip, never a crash, never a
+    fabricated interval.
+  - **Evaluation-split honesty** (`split` = `random` | `time_ordered` |
+    `walk_forward`, default `random`; `n_splits`, legal only with
+    `walk_forward`). A random split on time-ordered data measures
+    something deployment never experiences. `time_ordered` holds out
+    the last portion of a stably time-sorted dataset; `walk_forward`
+    runs `TimeSeriesSplit` and evaluates a fresh pipeline per fold.
+    Findings carry every fold's train/test size, positive count and
+    metrics, plus a mean/min/max summary per metric in one dict, so the
+    range sits structurally beside the mean. The ordering column comes
+    from the plan's classified `timestamp_column` — never guessed,
+    never row order; declaring a non-random split with no classified
+    timestamp column is a clean feasibility refusal naming the remedy.
+  - **Identifier-aware injected-numbers scanning** (bug fix, no new
+    playbook key). `verify_artifact_numbers` no longer misreads digits
+    inside a known column name (e.g. `sensor_060`) as an unprovenanced
+    numeric claim — the scanner previously crashed the narrative stage
+    for any dataset with digit-bearing column names. A token is
+    exempted only when it exactly matches a column name from the
+    approved plan AND contains at least one non-digit character (a
+    column literally named `95` cannot launder a bare `95`); the number
+    regex itself is untouched, so a bare `p95` (not a column name) is
+    still caught exactly as step 17 intended.
+- 27 new tests across the three changes (`tests/test_step24.py`).
+
+### Fixed
+- The model-stage audit-log message unconditionally read
+  `findings['n_train']`/`['n_test']`, which don't exist for
+  `walk_forward`'s per-fold findings shape.
+
 ## [1.4.0] - 2026-07-25
 
 ### Added

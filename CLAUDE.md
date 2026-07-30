@@ -173,6 +173,13 @@ Each must pass the full gate before merging:
 
 4. **G2/G3 for model playbooks** — pseudoreplication (G2) and minimum
    detectable effect (G3) guardrails currently skip model-only playbooks.
+   **PARTIALLY CLOSED (v1.5, step 24).** The model stage's own G3-shaped
+   gap — a recall/precision point estimate presented without an interval
+   — is closed by `metric_ci` (opt-in; Wilson score CIs via
+   `stats.wilson_interval`). G2/G3 as declared here (model-only playbooks
+   skipping the *stats*-stage pseudoreplication/MDE scan itself) remain
+   open; the model stage already carries its own `g2_pseudoreplication`/
+   `g3_minimum_detectable_effect` disclosures independently (step 18).
 
 5. **Timeliness metric** — investigate why timeliness shows 0.0% on
    examples with no date column; "not scored" may be more honest there.
@@ -222,6 +229,18 @@ git stash drop
     Declared, not fixed. Normalisation is available if ever required.
     Do not "fix" this by weakening the manifest's claim — the honest
     move is disclosure, as with accuracy and timeliness.
+
+11. **Model-stage evidence honesty (step 24)** — COMPLETE (v1.5).
+    `metric_ci` (Wilson-interval recall/precision CIs), `split` /
+    `n_splits` (`time_ordered` / `walk_forward` evaluation via
+    `TimeSeriesSplit`, ordering column from the plan's classified
+    `timestamp_column`), and a bug fix for `verify_artifact_numbers`
+    misreading digit-bearing column names (e.g. `sensor_060`) as
+    unprovenanced numeric claims. All three model-stage keys are
+    opt-in; a playbook declaring none of them reproduces byte-identical
+    findings (verified against every shipped example's committed
+    golden). 27 tests. See charter amendment v1.5 and
+    `docs/decisions/STEP24_DECISIONS.md`.
 
 
 ## Release checklist

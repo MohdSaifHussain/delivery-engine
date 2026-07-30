@@ -1,7 +1,100 @@
 # PROJECT CHARTER — Delivery Engine
 
-**Version:** 1.1
+**Version:** 1.5
 **Date:** 9 July 2026 (v0.1 founding) · amended 11-25 July 2026 (v0.2 through v1.1)
+### Amendment record (v1.5) — 30 July 2026
+
+**Build Step 24: model-stage evidence honesty, implemented.** Motivated by a
+governed forward-deployed engagement (`docs/decisions/STEP24_DECISIONS.md`)
+that ran this engine end to end against real semiconductor
+wafer-fabrication data (UCI SECOM). Three changes land, all in the model
+stage's territory, and §4.5 is honoured, not bent: no archetype logic
+enters the engine, and every playbook that predates this step remains
+valid and means the same thing. §4.5 states that adding a new *project
+type* means writing a new playbook, never modifying the engine; adding a
+new *capability* by numbered build step with an appended amendment is the
+charter's own established mechanism (step 10 the model stage, step 15
+stats, step 17 math, step 18 the six analyst-error guardrails) - this step
+follows that mechanism, it is not an exception to it.
+
+**The versioning decision, and a correction to it.** The v1.2 amendment's
+rule stands: this project's public API is the re-performability contract
+(§4.8) - same inputs, same hashes - and a change that moves a sealed
+package's manifest is breaking. A working copy that shipped these three
+features as always-on was tested against the committed `churn_analysis`
+golden: every metric value was bit-identical, but the `baseline` findings
+digest moved (`3d720cf9…` → `9a83de91…`) solely because fields were
+*added*. On that evidence every feature here is **opt-in, defaulting to
+present behaviour** - a playbook that declares none of the new keys
+produces byte-identical findings, verified by re-running every shipped
+example with a committed golden and comparing findings digests (§4.8's
+own test, run for real, not assumed). `STEP24_DECISIONS.md` proposed this
+as v1.4.0 MINOR, written when v1.3 was the latest released version; by the
+time this step landed, v1.4.0 had already shipped for an unrelated,
+already-released change (the diagnostic record's `encoding` block, schema
+1.1). This step ships as **v1.5.0** instead - the next available MINOR,
+not a re-litigation of the opt-in-versioning argument, which holds exactly
+as reasoned. The precedent for declining a hash-moving trade for no
+user-facing gain is the v1.3 amendment's withdrawal of the v2.0.0
+python-docx/pptx migration.
+
+**The three changes, each traced to a primary source.**
+1. *Metric confidence intervals* (`metric_ci`, opt-in, default `false`).
+   Wilson score 95% intervals (Brown, Cai & DasGupta 2001;
+   NIST/SEMATECH e-Handbook 7.2.4.1) for recall and precision, computed
+   by `stats.wilson_interval` - promoted from the stats stage's private
+   `_wilson` helper so the model stage calls the same function rather
+   than reimplementing it (the Single-Reader Principle, step 20, applied
+   to a statistic instead of a file parser). This is G3 (step 18)'s
+   failure mode one layer up: a recall estimated from a handful of
+   positive cases is a point estimate presented as if precise. Alpha is
+   the playbook's pre-registered `[stats]` alpha when a stats stage
+   exists, else a disclosed engine constant; a zero denominator is a
+   disclosed skip, never a crash, never a fabricated interval.
+2. *Evaluation-split honesty* (`split` = `random` \| `time_ordered` \|
+   `walk_forward`, opt-in, default `random`; `n_splits`, legal only with
+   `walk_forward`). Sourced to scikit-learn's own `TimeSeriesSplit`
+   documentation, which states plainly that ordinary cross-validation on
+   time-ordered data trains on the future and evaluates on the past.
+   This is the temporal form of the leakage G1 (step 18) already guards
+   against, invisible to G1 because no single feature is implicated - the
+   split itself is. The ordering column is the plan's classified
+   `timestamp_column`, governed data from Human Gate 1, never guessed;
+   declaring a non-random split with none classified is a clean
+   feasibility refusal naming the remedy. Per-fold findings carry a
+   mean/min/max summary per metric in one dict, so the range sits
+   structurally beside the mean and cannot be read away.
+3. *Identifier-aware injected-numbers scanning* (bug fix, no schema
+   key). `verify_artifact_numbers` previously read digits inside a known
+   column name (`sensor_060`) as an unprovenanced numeric claim and
+   crashed the narrative stage for any dataset with digit-bearing column
+   names. The fix is an allowlist by exact, whole-token identifier match
+   from the approved plan - governed data, not an inferred shape - with a
+   non-digit requirement that closes the laundering hole where a column
+   is literally named `95`. The number regex itself is untouched: a bare
+   `p95` (not a column name) is still caught exactly as the step 17
+   amendment celebrates, which is precisely why a regex-boundary
+   loosening was rejected as the fix.
+
+**Deliberately excluded.** The engagement also produced class weighting,
+feature scaling, median imputation, threshold tuning to an operating
+budget, and coefficient-based signal attribution. None are proposed for
+this engine. Step 10 declared the model stage a *deterministic
+baseline* - a reference point, not a delivered model - and §5 places
+iterative experimentation and domain feature engineering explicitly on
+the human's side of the line; those five changes make the baseline a
+*better model*, which is exactly the 30-40% of the lifecycle the charter
+reserves for professional judgment. They remain valuable where they were
+built - the engagement's own workspace - and do not belong in the engine.
+
+**Follow-up queued, not built here.** `playbooks/semiconductor_yield_review.toml`
+was drafted alongside this step to exercise the new keys but is withdrawn from
+this amendment: it declares none of them, so it demonstrates nothing, and it
+skips the step-9 standing rule that a new playbook's description is a routing
+surface requiring its own routing regression tests - a demonstration playbook
+for `metric_ci`/`split`/`n_splits` is queued as a follow-up, to be authored
+with those tests.
+
 ### Amendment record (v1.3) — 25 July 2026
 
 **The v2.0.0 python-docx/pptx migration is withdrawn.** The position
