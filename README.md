@@ -4,7 +4,7 @@
 ![Python](https://img.shields.io/badge/python-3.12%2B-blue)
 ![Type checked](https://img.shields.io/badge/mypy-strict-success)
 ![Lint](https://img.shields.io/badge/ruff-clean-success)
-![Tests](https://img.shields.io/badge/tests-446%20passed-brightgreen)
+![Tests](https://img.shields.io/badge/tests-452%20passed-brightgreen)
 ![Declaration](https://img.shields.io/badge/human--declared--final-EU%20AI%20Act%20Art.14-blue)
 
 **Project patterns as governed, executable workflows.**
@@ -259,6 +259,6 @@ docker run --rm delivery-engine python examples/audit_data_quality/run_example.p
 ```
 
 The container mirrors CI exactly: Python 3.12 + Node 24 + all dependencies.
-446 tests pass in a clean environment with no local setup required.
+452 tests pass in a clean environment with no local setup required.
 
 [Contributing](.github/CONTRIBUTING.md) · [Security](.github/SECURITY.md) · [Code of Conduct](.github/CODE_OF_CONDUCT.md) · [Cite](CITATION.cff)

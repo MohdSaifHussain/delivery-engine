@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-07-31
+
 ### Fixed
 - `generate_playbook.py` restored to the repository root. It was
   accidentally relocated to `historical/` in the v1.0 root cleanup
@@ -24,6 +26,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   report over `run_001..run_NNN` lineage, steps 22–23) — both scripts
   existed and worked but had no documentation coverage in README.md,
   QUICKSTART.md, or USER_GUIDE.md before this entry.
+- Build Step 25: the playbook generator now surfaces the step-24
+  model-stage keys (`metric_ci`, `split`, `n_splits`) as fixed,
+  commented suggestion lines inside a drafted model stage — never as
+  active keys, so a generated draft still loads and means exactly what
+  a pre-step-25 draft meant. `metric_ci` is suggested whenever a model
+  stage is drafted; `split`/`n_splits` only when the profile classifies
+  a `timestamp_column` (the generator's own feasibility-gating pattern,
+  extended). See `docs/decisions/STEP25_DECISIONS.md` and
+  PROJECT_CHARTER.md's v1.6 amendment. 6 new tests
+  (`tests/test_step25.py`) — the first content coverage the
+  model-stage branch of the generator's template has ever had; no
+  existing test required updating.
 
 ## [1.5.0] - 2026-07-30
 

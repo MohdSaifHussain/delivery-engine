@@ -1,7 +1,47 @@
 # PROJECT CHARTER — Delivery Engine
 
-**Version:** 1.5
+**Version:** 1.6
 **Date:** 9 July 2026 (v0.1 founding) · amended 11-25 July 2026 (v0.2 through v1.1)
+### Amendment record (v1.6) — 31 July 2026
+
+**Build Step 25: generator schema-currency, implemented.** A July 2026
+documentation-coverage audit found `delivery_engine.generator` had no
+knowledge of step 24's model-stage evidence-honesty keys (`metric_ci`,
+`split`, `n_splits`): drafts it produces remain valid under the v1.5.0
+loader, but the generator could never surface the engine's own newest
+options - a shipped authoring tool silently behind its own engine's
+schema. `docs/decisions/STEP25_DECISIONS.md` is the spec.
+
+**The commented-suggestion design.** The generator now emits three fixed
+lines as TOML comments inside a drafted model stage - never as active
+keys: `metric_ci = true` whenever a model stage is drafted, and
+`split = "walk_forward"` / `n_splits = 5` only when the profile classifies
+a `timestamp_column`. A comment is invisible to `tomllib`, so a generated
+draft loads and means exactly what a pre-step-25 draft meant; nothing
+about §4.8 is touched. This is the draft principle (step 19) applied one
+layer further: a pipeline must never approve its own rules of engagement,
+and by the same logic a generator must not *activate* an evaluation
+choice on the human's behalf - it surfaces the option, and the human
+uncommenting the line is itself the approval act. The `split`/`n_splits`
+suggestion is feasibility-gated exactly the way the generator already
+gates `stats`/`model` themselves: suggesting a time-ordered split with no
+classified timestamp column would teach a user to write a playbook that
+refuses to run at Human Gate 1's own feasibility check.
+
+**Phase 0 verified the spec against current main before any code was
+written, and found the spec wrong on one point.** `STEP25_DECISIONS.md`
+assumed an existing test pinned the generator's model-stage output bytes
+and would need conscious updating. None does: `tests/test_step19.py` is
+the only file importing `delivery_engine.generator`, and every
+`compile_playbook()` call in it passes `include_stages` of `["math"]`,
+`["stats"]`, or `["math", "stats"]` - never `"model"`. The model-stage
+branch of `_emit_toml` had zero content or byte assertions before this
+step. The spec was corrected in place (an append-only dated note, the
+same pattern this amendment itself follows) before Phase 1 began, rather
+than silently worked around. `tests/test_step25.py` is consequently not
+an update to prior coverage but the first content coverage that branch
+has ever had - a latent test gap closed as a side effect.
+
 ### Amendment record (v1.5) — 30 July 2026
 
 **Build Step 24: model-stage evidence honesty, implemented.** Motivated by a
