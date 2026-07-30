@@ -6,6 +6,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- `generate_playbook.py` restored to the repository root. It was
+  accidentally relocated to `historical/` in the v1.0 root cleanup
+  (commit `9136868`, which bundled it with genuinely local-only dev
+  scripts), while the engine's own runner error
+  (`src/delivery_engine/runner.py:200`) and USER_GUIDE.md's worked
+  example continued to reference it at root — a documentation-coverage
+  audit found the mismatch. `src/delivery_engine/generator.py` (the
+  module behind the script) stayed in `src/` throughout and was never
+  untested; only the root CLI entry point was mis-relocated.
+
+### Added
+- USER_GUIDE.md documentation for `generate_report.py` (the
+  deterministic visual report, step 21) and for `generate_trend.py`
+  together with `run_project.py --lineage` (the across-runs trend
+  report over `run_001..run_NNN` lineage, steps 22–23) — both scripts
+  existed and worked but had no documentation coverage in README.md,
+  QUICKSTART.md, or USER_GUIDE.md before this entry.
+
 ## [1.5.0] - 2026-07-30
 
 ### Added

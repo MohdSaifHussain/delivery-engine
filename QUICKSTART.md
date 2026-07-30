@@ -54,6 +54,10 @@ re-performability, the property everything else here serves.
 Three examples ship, one per audience — see
 [`examples/README.md`](examples/README.md).
 
+Want the same findings as charts instead of prose? `python
+generate_report.py examples/churn_analysis/output/final` — see
+USER_GUIDE.md's ["Seeing it: the visual report"](USER_GUIDE.md#seeing-it-the-visual-report).
+
 ## 3. Run it on YOUR data
 
 Step 1 — profile and check compatibility (the front door):
@@ -79,12 +83,39 @@ change the source path and the goal sentence, run it. The goal wording
 routes to an archetype; a failed requirement can never be overridden by
 wording.
 
+### Running your own dataset with run_project.py
+
+Step 2's `run_example.py` copy is the fastest way to see the whole
+pipeline end to end; `run_project.py` at the repo root is the general
+path — the same profile, plan, Human Gate 1, and governed execution,
+driven by flags instead of a script you edit:
+
+```bash
+python run_project.py \
+    --source path/to/your.csv \
+    --goal "your analysis goal" \
+    --playbook universal_audit \
+    --rules my_rules.json \
+    --approver "Your Name"
+```
+
+Flags left out at a terminal are asked interactively. See
+[USER_GUIDE.md's "The fastest path: one command"](USER_GUIDE.md#the-fastest-path-one-command)
+for what each stage does and what lands in the sealed package.
+
 ## 4. Make it YOURS — write a playbook
 
 **A new project type is a new TOML file, never engine code.** This is
 the core design promise, and it is what makes the engine adaptable to
 your team's actual work — audit coverage reviews, regulatory extracts,
 clinical data checks, whatever your domain's checklist is.
+
+> [!TIP]
+> Copying and editing an existing playbook by hand (below) is one way to
+> start. `generate_playbook.py` is the other: it profiles your data and
+> compiles a draft deterministically — no hand-editing required before
+> your first read. See
+> [USER_GUIDE.md's "Your first playbook in ten minutes: the generator"](USER_GUIDE.md#your-first-playbook-in-ten-minutes-the-generator).
 
 ```bash
 # Windows

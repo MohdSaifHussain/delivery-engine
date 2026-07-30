@@ -17,6 +17,8 @@ that.
 - [Model-stage evaluation keys (step 24)](#model-stage-evaluation-keys-step-24)
 - [Declaring a package final](#declaring-a-package-final)
 - [Reading the package like a reviewer](#reading-the-package-like-a-reviewer)
+- [Seeing it: the visual report](#seeing-it-the-visual-report)
+- [Comparing runs: lineage and the trend report](#comparing-runs-lineage-and-the-trend-report)
 - [When a run fails before it starts](#when-a-run-fails-before-it-starts)
 - [One warning worth repeating](#one-warning-worth-repeating)
 
@@ -330,6 +332,70 @@ package with understanding, not just that the engine ran.
   package.
 - `audit_log.jsonl` — the run's full story, including anything that
   was skipped, flagged, or stopped, with reasons.
+
+## Seeing it: the visual report
+
+`report.html` is the deterministic visual companion to
+`narrative_report.md` — the same hashed findings, drawn as charts instead
+of prose, so a reviewer sees the shape of the data at a glance: DAMA
+scores, validation results, and per-column completeness, plus
+distribution fits, outliers, and entropy when a math stage ran (charter
+step 21). Reach for it after any sealed run:
+
+```bash
+python generate_report.py examples/audit_data_quality/output/final
+```
+
+It reads the package's hashed `dq_profile` and `dq_validate` findings
+(and `math`, when present) from the sealed package's `findings/`
+directory and writes `report.html` into the same directory.
+Deterministic — no AI, no network: the report is a pure function of the
+findings, so the same package produces byte-identical HTML every time.
+
+## Comparing runs: lineage and the trend report
+
+Cleaning a dataset is iterative — fixing one issue exposes the next, and
+a single run only ever shows the latest attempt. `--lineage` preserves
+the whole history instead of overwriting it: each run seals into its own
+`run_001`, `run_002`, ... folder under `--out`, anchored on the run
+sequence number, never the date (charter step 22). Run it twice against
+the same output area as the data improves:
+
+```bash
+python run_project.py \
+    --source data/claims_q3.csv \
+    --goal "Q3 claims quality audit for the compliance review" \
+    --playbook universal_audit \
+    --rules my_rules.json \
+    --approver "Your Name" \
+    --out output/claims_q3 \
+    --lineage
+
+# ... fix what the first run found, then run again ...
+
+python run_project.py \
+    --source data/claims_q3.csv \
+    --goal "Q3 claims quality audit for the compliance review" \
+    --playbook universal_audit \
+    --rules my_rules.json \
+    --approver "Your Name" \
+    --out output/claims_q3 \
+    --lineage
+```
+
+Then render the trend across whatever runs exist:
+
+```bash
+python generate_trend.py output/claims_q3
+```
+
+`trend.html` reads `run_001 .. run_NNN` under the given output area and
+draws each run's DAMA scores, exception counts, and rules evaluated as
+points on a chart (charter step 23). It never computes a delta, a
+percentage improvement, or a "23% better" claim — that would be the
+report authoring a number. The improvement, if there is one, is visual:
+the bars move across attempts, or they do not, and the report shows
+either honestly.
 
 ## When a run fails before it starts
 
