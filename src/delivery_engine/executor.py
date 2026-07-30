@@ -240,7 +240,15 @@ def run(
     )
 
     store = FindingsStore()
-    injector = NumberInjector(store)
+    # Step 24 (Change 3): known identifiers come from the approved plan's
+    # classified column names - governed data approved at Human Gate 1,
+    # never inferred from artifact text. Lets verify_artifact_numbers
+    # exempt digit-bearing column names (sensor_060) without loosening
+    # the number regex that still catches bare "p95".
+    injector = NumberInjector(
+        store,
+        known_identifiers=frozenset(name for name, _kind in plan.column_kinds),
+    )
     ctx: dict[str, Any] = {
         "plan_column_kinds": tuple(plan.column_kinds),
     }  # run context: facts stages learn + integrity anchors from the plan
