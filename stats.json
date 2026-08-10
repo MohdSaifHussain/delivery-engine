@@ -1,16 +1,17 @@
 {
   "_generated": "Machine-written by CI from the JUnit report of the run that executed the tests. Never hand-edited.",
-  "commit": "fe3a2b89ea187ed1d84eb80c6da91b01fe767702",
-  "measured_at": "2026-08-10T01:43:55Z",
+  "commit": "5adfd5d8cc4a05569bc00e973502365b32efb27e",
+  "measured_at": "2026-08-10T05:53:36Z",
+  "measured_at_meaning": "When this measurement last CHANGED. The file is committed only when the count or the anchor differs, so this is not the time CI last ran.",
   "nearest_tag": "v1.6.0",
   "repo": "delivery-engine",
-  "run_url": "https://github.com/MohdSaifHussain/delivery-engine/actions/runs/31347772707",
+  "run_url": "https://github.com/MohdSaifHussain/delivery-engine/actions/runs/31359936425",
   "runner": "pytest",
   "tag_is_head": false,
   "tests_executed": 453,
   "tests_failed": 0,
   "tests_passed": 452,
   "tests_skipped": 1,
-  "version": "fe3a2b8",
+  "version": "5adfd5d",
   "version_type": "commit"
 }
